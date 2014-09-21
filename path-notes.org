@@ -1,0 +1,14 @@
+* Ce site au complet. Mais cette partie surtout.
+http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html#interaction-with-the-game-loop
+
+* Va falloir trouver un moyen de représenter la map.
+  Partir d'un tas de pixel et faire des carrés de façon dynamique?
+  En faire un peu durant le load?
+  Faire le reste selon les besoins?
+
+* Trouver un bon algorithme
+  http://en.wikipedia.org/wiki/Fringe_search
+  + Un bon algo pour balancer les points.
+
+* Trouver une bonne structure de données
+  Aucune calice d'idée.
