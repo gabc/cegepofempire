@@ -1,5 +1,7 @@
-* Ce site au complet. Mais cette partie surtout.
-http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html#interaction-with-the-game-loop
+* Bookmark
+  http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html#interaction-with-the-game-loop
+  http://theory.stanford.edu/~amitp/GameProgramming/MovingObstacles.html
+  http://citeseerx.ist.psu.edu/viewdoc/summary?doi=10.1.1.138.7223
 
 * Va falloir trouver un moyen de représenter la map.
   Partir d'un tas de pixel et faire des carrés de façon dynamique?
@@ -12,3 +14,5 @@ http://theory.stanford.edu/~amitp/GameProgramming/ImplementationNotes.html#inter
 
 * Trouver une bonne structure de données
   Aucune calice d'idée.
+
+
