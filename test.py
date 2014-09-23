@@ -113,6 +113,8 @@ class Pion:
                     visited[next] = True
 
     def voisins(self, case):
+        """Methode sale qui retourne les voisins d'une case.
+        Doit etre refaite parce que, merde."""
         voisin = []
         if case.x == 0 and case.y == 0:
             voisin.append(self.parent.map[case.x+1])
@@ -125,6 +127,20 @@ class Pion:
             return voisin
         if case.y == 0:
             voisin.append(self.parent.map[case.x][case.y+1])
+            voisin.append(self.parent.map[case.x-1][case.y])
+            voisin.append(self.parent.map[case.x+1][case.y])
+            return voisin
+        if case.x == 25 and case.y == 25:
+            voisin.append(self.parent.map[case.x-1])
+            voisin.append(self.parent.map[case.y-1])
+            return voisin
+        if case.x == 25:
+            voisin.append(self.parent.map[case.x][case.y+1])
+            voisin.append(self.parent.map[case.x][case.y-1])
+            voisin.append(self.parent.map[case.x-1][case.y])
+            return voisin
+        if case.y == 25:
+            voisin.append(self.parent.map[case.x][case.y-1])
             voisin.append(self.parent.map[case.x-1][case.y])
             voisin.append(self.parent.map[case.x+1][case.y])
             return voisin
