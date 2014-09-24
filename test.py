@@ -2,8 +2,8 @@
 from tkinter import *
 
 class Vue:
-    def __init__(self, parent):
-        self.parent = parent
+    def __init__(self, p):
+        self.p = p
         
         self.root = Tk()
 
@@ -14,34 +14,29 @@ class Vue:
         
         self.panmenu = PanedWindow(orient=VERTICAL)
         self.panmenu.add(Button(self.root, text='Quitter',command=self.quitter))
-        self.panmenu.add(Button(self.root, text='Affiche', command=self.affiche))
         self.panmenu.add(Button(self.root, text='Deplace', command=self.deplacement))
         self.panmenu.pack()
-
-    def affiche(self):
-        print(self.parent.modele.joueur.depart.x)
-        print('case: ', int(self.parent.modele.joueur.depart.x / 20))
 
     def quitter(self):
         self.root.destroy()
         exit(0)
 
     def toggleMur(self, event):
-        self.parent.modele.map[int(event.x/20)][int(event.y/20)].togglepassable()
+        self.p.m.map[int(event.x/20)][int(event.y/20)].togglepassable()
         
     def addWayPoint(self, event):
         print('Ok: ', event.x, event.y)
-        self.parent.modele.joueur.chemin.append(Case(event.x, event.y))
+        self.p.m.joueur.chemin.append(Case(event.x, event.y))
 
     def deplacement(self):
-        self.parent.modele.joueur.deplacement()
+        self.p.m.joueur.deplacement()
         self.root.after(50, self.deplacement)
 
     def setDepart(self, event):
-        self.parent.modele.joueur.depart = Case(event.x, event.y)
+        self.p.m.joueur.depart = Case(event.x, event.y)
 
     def setArrivee(self, event):
-        self.parent.modele.joueur.arrivee = Case(event.x, event.y)
+        self.p.m.joueur.arrivee = Case(event.x, event.y)
 
     def addMur(self,event):
         print(event.x)
@@ -56,11 +51,11 @@ class Vue:
         self.can.delete("piece")
         self.can.delete("but")
         self.can.delete("mur")
-        self.can.create_text(self.parent.modele.joueur.depart.x, self.parent.modele.joueur.depart.y, text= "@", tags="piece")
-        self.can.create_text(self.parent.modele.joueur.arrivee.x, self.parent.modele.joueur.arrivee.y, text= "X", tags="but")
+        self.can.create_text(self.p.m.joueur.depart.x, self.p.m.joueur.depart.y, text= "@", tags="piece")
+        self.can.create_text(self.p.m.joueur.arrivee.x, self.p.m.joueur.arrivee.y, text= "X", tags="but")
         for i in range(25):
             for j in range(25):
-                if self.parent.modele.map[i][j].passable == False:
+                if self.p.m.map[i][j].passable == False:
                     self.can.create_text(i*20 + 10, j*20 + 10, text = "=", tags = "mur")
                     
     def jouer(self):
@@ -69,8 +64,7 @@ class Vue:
         self.can.pack()
         self.root.after(200,self.jouer)
 
-
-class Case:
+class Point:
     def __init__(self, x, y):
         self.x = x
         self.y = y
@@ -78,11 +72,24 @@ class Case:
 
     def togglepassable(self):
         self.passable = self.passable != True
+
+class Case:
+    def __init__(self, p, passable, parent, poid):
+        self.x = p.x
+        self.y = p.y
+        self.p = p              # Point
+        self.passable = True
+        self.parent = parent
+        self.poid = poid
+
+    def togglepassable(self):
+        self.passable = not self.passable
+
         
 class Pion:
     def __init__(self, parent, depart):
         self.depart = depart
-        self.arrivee = Case(0,0)
+        self.arrivee = Point(0,0)
         self.parent = parent
         self.vitesse = 20
         self.chemin = []
@@ -113,6 +120,8 @@ class Pion:
                     visited[next] = True
 
     def voisins(self, case):
+        """Methode sale qui retourne les voisins d'une case.
+        Doit etre refaite parce que, merde."""
         voisin = []
         if case.x == 0 and case.y == 0:
             voisin.append(self.parent.map[case.x+1])
@@ -125,6 +134,20 @@ class Pion:
             return voisin
         if case.y == 0:
             voisin.append(self.parent.map[case.x][case.y+1])
+            voisin.append(self.parent.map[case.x-1][case.y])
+            voisin.append(self.parent.map[case.x+1][case.y])
+            return voisin
+        if case.x == 25 and case.y == 25:
+            voisin.append(self.parent.map[case.x-1])
+            voisin.append(self.parent.map[case.y-1])
+            return voisin
+        if case.x == 25:
+            voisin.append(self.parent.map[case.x][case.y+1])
+            voisin.append(self.parent.map[case.x][case.y-1])
+            voisin.append(self.parent.map[case.x-1][case.y])
+            return voisin
+        if case.y == 25:
+            voisin.append(self.parent.map[case.x][case.y-1])
             voisin.append(self.parent.map[case.x-1][case.y])
             voisin.append(self.parent.map[case.x+1][case.y])
             return voisin
@@ -166,7 +189,7 @@ class Modele:
         
 class Controleur:
     def __init__(self):
-        self.modele = Modele(self)
+        self.m = Modele(self)
         self.vue = Vue(self)
         self.vue.jouer()
         self.vue.root.mainloop()
