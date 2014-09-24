@@ -64,7 +64,15 @@ class Vue:
         self.can.pack()
         self.root.after(200,self.jouer)
 
+class Point:
+    def __init__(self, x, y):
+        self.x = x
+        self.y = y
 
+class Case:
+    def __init__(self, pt, passable, poid, parent):
+        pass
+        
 class Modele:
     def __init__(self, parent):
         self.parent = parent
