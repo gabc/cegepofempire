@@ -64,18 +64,108 @@ class Vue:
         self.can.pack()
         self.root.after(200,self.jouer)
 
-class Point:
+class Case:
     def __init__(self, x, y):
         self.x = x
         self.y = y
 
-class Case:
+class Noeud:
     def __init__(self, pt, passable, poid, parent):
-        pass
+        self.pt = pt
+        self.passable = passable
+        self.poid = poid        # Ou on le calcule a partir du parent?
+        self.parent = parent    # Noeud precedent. (D'ou on vient)
+
+    def x(self):
+        return self.pt.x
+    def y(self):
+        return self.pt.y
+
+    def passablep(self):
+        return self.passable
+    
+class Joueur:
+    def __init__(self, p):
+        self.p = p              # Modele
+
+    def deplace(self, dep, arr):
+        path = aetoile(dep,arr)
+        if self.h(dep, arr) == 0:
+            if path:
+                del path[0]
+                arr = path[0]
+            else:
+                print("DONE")
+                return
+            self.moveto(dep, arr)
+
+    def moveto(self, dep, arr):
+        while self.distance(dep, arr) != 0:
+            if dep.x < arr.x:
+                dep.x += 1
+            if dep.y < arr.y:
+                dep.y += 1
+            if dep.x > arr.x:
+                dep.x -= 1
+            if dep.y > arr.y:
+                dep.y -= 1
+        
+    def aetoile(self, dep, arr):
+        """ dep c'est un noeud de depart, et arr c'est un point d'arrivee (un noeud au pire) """
+        open = [dep]
+        close = []
+        current = None
+        g = {}                  # Cost_so_far
+        g[dep] = 0
+        came_from = {}
+        
+        while open:
+            current = open[0]   # .pop()?
+
+            # early exit
+
+            for next in self.voisins(current):
+                f = g[nex] + h(current, next)
+                if next not in g or f < g[next]:
+                    g[next] = f
+                    # priority = f + g(arr, next)
+                    open.append(next)
+                    came_from[next] = current
+        return came_from
+    
+    def h(a, b):
+        x1 = a.x()
+        y1 = a.y()
+        x2 = b.x()
+        y2 = b.y()
+        return abs(x1 - x2) + abs(y1 - y2)
+
+    def voisins(n):             # Pardon de la mochete.
+        """Retourne les voisins d'un point, ignorant tout ce qui est pas `passable'""" 
+        voisin = []
+        try:
+            voisin.append(self.p.map[n.x()][n.y()-1])
+        except IndexError:
+            pass
+        try:
+            voisin.append(self.p.map[n.x()][n.y()+1])
+        except IndexError:
+            pass
+        try:
+            voisin.append(self.p.map[n.x()+1][n.y()])
+        except IndexError:
+            pass
+        try:
+            voisin.append(self.p.map[n.x()-1][n.y()])
+        except IndexError:
+            pass
+
+        voisin = filter(self.p.n.passablep, voisin) # Donner un qui est dans le voisin? ._.
         
 class Modele:
     def __init__(self, parent):
         self.parent = parent
+        self.n = Noeud(None, True, 0, None)
         self.joueur = Pion(self, Case(0,0))
         self.map = []
         for i in range(25):
