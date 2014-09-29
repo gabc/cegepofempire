@@ -1,8 +1,0 @@
-Les étapes : 
-1-ouvrir cmd
-2-aller dans le dossier par le cmd (ex : cd J:\mondossier)
-3-faire la commande "git clone  adresse_du_git"
-4-aller dans le dossier clôné par le cmd (ex : cd J:\mondossier\mondossierclone)
-5-faire la commande "git add -A" (le -A veut dire qu'on ajoute tous les fichiers du dossier)
-6-faire la commande "git commit -m "mon_message" " (le -m veut dire qu'on envoie un message lié au update)
-7-faire la commande "git push" (il va demander le user et le password)
