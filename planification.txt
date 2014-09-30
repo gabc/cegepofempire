@@ -1,0 +1,28 @@
+Classe Case
+       methode - isPassable			[X]
+		
+Classe Map
+       methode - setSeed			[X]
+       methode - placeRessourceType		[X]
+       methode - placeRessourcesOverworld	[X]
+       methode - placeRessourcesUnderworld	[X]
+       methode - placeJoueurs			[X]
+       methode - equilibrerRessources		[ ]
+
+       methode - printMapCon			[X]
+       methode - printMapToFile			[X]
+       methode - countRessources		[X]
+	
+Classe Deplacement
+       methode - chemin				[X]
+       methode - astar 				[ ]
+       methode - chemin 			[X]
+       methode - astar 				[X]
+       methode - find  				[X]
+       methode - voisin				[X]
+       methode - h     				[X]
+       methode - g     				[ ]
+       methode - path  				[X]
+       methode - colisionUnite			[ ]
+       methode - trouveLeader   		[ ]
+
