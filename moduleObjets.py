@@ -64,31 +64,34 @@
 #-------------------------------------------
 
 class Joueur():
-    def __init__(self, ID, posX, posY):
+    def __init__(self, ID, name):
+        self.name = name
+        self.ID = ID
+        self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
-        self.ressources = [0,0,0]
+        self.ressources = [0,0,0,0,0]
         # Index des ressources:
         # Nourriture : 0
-        # Bois : 1
+        # BOis: 1
         # Pierre : 2
         # Or : 3
-        # Pétrole : 4
-        # Charbon : 5
-        # Nucléaire : 6
-        # Cristaux
+        # Energie : 4
+
         self.allies = []
         self.units =[]
         self.buildings =[]
+        self.unitsSelectionne =[]
+
 
 
     def changerEre():
         pass
 
-    def construireBuilding(idBuilding, posX ,posY ):
+    def construireBuilding(self, idBuilding, posX ,posY ):
         pass
 
-    def creerUnit(idBuilding, type ):
+    def creerUnit(self, idBuilding, type ):
 
         pass
 
