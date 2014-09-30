@@ -84,7 +84,7 @@ class Deplacement:
     def g(self, n):
         acc = 0
         while n.parent is not None:
-            acc += n.gc
+            acc += n.gc + n.cout
             n = n.parent
         return acc
         
@@ -103,6 +103,7 @@ if __name__ == '__main__':
             self.posY = y
 
     from map import *
+    import cProfile             # Si il est la.
     l=55
     h=25
     liste=[Joueur(1,"a"), Joueur(2,"b")]
@@ -115,10 +116,10 @@ if __name__ == '__main__':
     #m.printMapToFile()
     dx = 2
     dy = 2
-    ax = 20
-    ay = 24
+    ax = 5
+    ay = 5
     d = Deplacement(None, m.mat)
-    path = d.chemin(Foo(dx,dy),(ax,ay))
+    cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
     str = ""
     flag = False
     for i in range(h):
