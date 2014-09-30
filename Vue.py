@@ -157,12 +157,24 @@ class Vue():
         #Pour le cadre Mini-Map
         
         labelMiniMap=Label(self.cadreMiniMap,text="Mini-Map")
-        labelMiniMap.pack()
-     
+        labelMiniMap.grid(column=0,row=0)
+        
+    def rafraichirTemps(self,temps):
+        labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
+        labelTemps.grid(column=0,row=1)
+        
 class Controleur(): 
     def __init__(self):
+        self.temps=0
         self.vue=Vue(self)
+        self.vue.root.after(1000, self.tempsJeu())
         self.vue.root.mainloop()
+    
+    def tempsJeu(self):
+        self.temps +=1
+        self.vue.rafraichirTemps(self.temps)
+        self.vue.root.after(1000,self.tempsJeu)
+        
 
         
 if __name__ == "__main__":
