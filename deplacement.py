@@ -12,6 +12,7 @@ class Noeud:
 class Deplacement:
     def __init__(self, parent, map):
         self.parent = parent
+        
         self.map = map
 
     def chemin(self, unite, arrivee):
@@ -27,16 +28,16 @@ class Deplacement:
             current = open[0]
             del open[0]
             closed.append(current)
-            
-            if h(current, arrivee) == 0:
-                return path(current)
+
+            if self.h(current, arrivee) == 0:
+                return self.path(current)
                 
-            for v in voisin(current):
-                f = g(v) + h(v,arrivee)
+            for v in self.voisin(current):
+                f = self.g(v) + self.h(v,arrivee)
                 v.parent = current  # Je pense que je le fais deja dans voisin(), mais dans le doute
                 v.f = f             # Meeeh
-                v.gc = g(v)         # MEEEEH Je le met ou le +10?
-                    
+                v.gc = self.g(v)         # MEEEEH Je le met ou le +10?
+
                 # if v in open or v in closed and v.f Si il est dans open, ou closed. Et que f est plus petit que l'autre.
                 #  open.append(v) Le remetre dans open.. basically.
                     
@@ -44,7 +45,7 @@ class Deplacement:
                     open.append(v)
                     open.sort(key = lambda x: x.f)
 
-    def voisin(n):
+    def voisin(self, n):
         x = n.x
         y = n.y
         rep = []
@@ -52,7 +53,7 @@ class Deplacement:
             for j in (0,1,-1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) :  
+                    if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
                         n = Noeud(x+i, y+j, 0, 0, n)
                         rep.append(n)
                         if i == 0 or j == 0:
@@ -63,21 +64,64 @@ class Deplacement:
                     pass
         return rep
 
-    def h(a, b):
+    def h(self, a, b):
         x1, y1 = a.x, a.y
         x2, y2 = b.x, b.y
         return abs(x1 - x2) + abs(y1 - y2)
         
-    def g(n):
+    def g(self, n):
         acc = 0
         while n.parent is not None:
             acc += n.gc
             n = n.parent
-            return acc
+        return acc
         
-    def path(n):
+    def path(self, n):
         path = []
         while n.parent is not None:
             path = [n.parent] + path
             n = n.parent
         return path
+
+
+if __name__ == '__main__':
+    class Foo:
+        def __init__(self,x,y):
+            self.posX = x
+            self.posY = y
+
+    from map import *
+    l=55
+    h=25
+    liste=[1,2,3,4]
+    m=Map(l,h)
+    m.setSeed(10)
+    m.placeRessourcesOverworld()
+    m.placeRessourcesUnderworld()
+    m.placeJoueurs(liste)
+    #m.equilibreRessources(liste) <-- To do
+    #m.printMapToFile()
+    dx = 2
+    dy = 2
+    ax = 20
+    ay = 10
+    d = Deplacement(None, m.mat)
+    path = d.chemin(Foo(dx,dy),(ax,ay))
+    str = ""
+    flag = False
+    for i in range(h):
+        for j in range(l):
+            if i == dx and j == dy:
+                str += "D"
+            elif i == ax and j == ay:
+                str += "A"
+            else:
+                for p in path:
+                    if i == p.x and j == p.y:
+                        str +="."
+                        flag = True
+                if not flag:
+                    str += m.mat[j][i].ressource
+                flag = False
+        print(str)
+        str = ""
