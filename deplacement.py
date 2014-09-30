@@ -105,7 +105,7 @@ if __name__ == '__main__':
     from map import *
     l=55
     h=25
-    liste=[1,2,3,4]
+    liste=[Joueur(1,"a"), Joueur(2,"b")]
     m=Map(l,h)
     m.setSeed(10)
     m.placeRessourcesOverworld()
@@ -116,7 +116,7 @@ if __name__ == '__main__':
     dx = 2
     dy = 2
     ax = 20
-    ay = 10
+    ay = 24
     d = Deplacement(None, m.mat)
     path = d.chemin(Foo(dx,dy),(ax,ay))
     str = ""
