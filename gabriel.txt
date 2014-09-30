@@ -1,0 +1,10 @@
+Classe Deplacement
+       methode - chemin [X]
+       methode - astar 	[ ]
+       methode - chemin [X]
+       methode - astar 	[X]
+       methode - find  	[X]
+       methode - voisin	[X]
+       methode - h     	[X]
+       methode - g     	[ ]
+       methode - path  	[X]
