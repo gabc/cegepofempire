@@ -26,3 +26,41 @@ Classe Deplacement
        methode - colisionUnite			[ ]
        methode - trouveLeader   		[ ]
 
+Classe Vue
+       methode - initMenu			[X]
+       methode - initJeu			[X]
+       methode - initCadre			[X]
+       methode - changeLabelNourriture		[X]
+       methode - changeLabelBois		[X]
+       methode - changeLabelPierre		[X]
+       methode - changeLabelOr			[X]
+       methode - changeLabelEnergie		[X]
+       methode - changeLabelPopulation		[X]
+       methode - diplomatieFenetre		[X]
+       methode - diplomatieClic			[X]
+       methode - initLabelBas			[X]
+       methode - rafraichirTemps		[X]
+       methode - tempsJeu			[X]
+       methode - canevas			[X]
+       methode - initMenuOption			[ ]
+       methode - initMenuJoindre		[ ]
+       methode - initMenuCreer			[ ]
+       methode - MiniMap			[ ]
+       methode - InfoSelection			[ ]
+       methode - OptionUnite			[ ]
+	
+Classe Server
+       Classe Action
+       Classe Player
+       Classe Server
+       	      methode - ClientToServer		[X]
+       Classe Controleur
+
+Classe Client
+       Class Action
+       Class Player
+       Class ServerListener
+       	     Methode: sendAndReceive #envoi une requete au serveur et recoit une reponse
+       Class model
+       Class view
+       Class Controleur
