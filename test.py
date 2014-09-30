@@ -6,6 +6,7 @@ class Noeud:
         self.f = f
         self.gc = gc
         self.parent = parent
+        self.cout = 0
         
 class Point:
     def __init__(self, x, y, flag):
@@ -23,7 +24,7 @@ class Point:
 map = []
 path = []
 depart = Noeud(1, 1, 0, 0, None)
-arrivee = Noeud(20,18, 0, 0, None)
+arrivee = Noeud(7,8, 0, 0, None)
 trouble = [(3,5), (4,6), (5,5),(7,7),(10,10),(9,8),(12,14),(20,3),(20,10), (12,15),(12,16),(13,17),(13,18),(12,18), (12,17),(13,19),(13,20)]
 
 PASSABLE = 3
@@ -61,8 +62,14 @@ def voisin(n):
     for i in (-1,1,0):
         for j in (0,1,-1):
             try:
-                if map[x+i][y+j].flag != 3 and (i != 0 or j != 0) :  # Si c'est passable et que les deux i,j sont pas 0.
-                    rep.append(Noeud(x+i, y+j, 0, 0, n))
+                # Si c'est passable et que les deux i,j sont pas 0.
+                if map[x+i][y+j].flag != 3 and (i != 0 or j != 0) :  
+                    n = Noeud(x+i, y+j, 0, 0, n)
+                    rep.append(n)
+                    if i == 0 or j == 0:
+                        n.cout = 10 # ligne droite
+                    else:
+                        n.cout = 14 # diagonale
             except IndexError:
                 pass
     return rep
@@ -102,7 +109,7 @@ def chemin():
             f = g(v) + h(v,arrivee)
             v.parent = current  # Je pense que je le fais déjà dans voisin(), mais dans le doute
             v.f = f             # Meeeh
-            v.gc = g(v) + 10    # MEEEEH Je le met ou le +10?
+            v.gc = g(v)# + 10    # MEEEEH Je le met ou le +10?
 
             # if v in open or v in closed and v.f Si il est dans open, ou closed. Et que f est plus petit que l'autre.
             #  open.append(v) Le remetre dans open.. basically.
