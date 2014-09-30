@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # C:\\Python33\python.exe
+
 class Noeud:
     def __init__(self, x, y, f, gc, parent):
         self.x = x
@@ -40,10 +41,21 @@ class Deplacement:
 
                 # if v in open or v in closed and v.f Si il est dans open, ou closed. Et que f est plus petit que l'autre.
                 #  open.append(v) Le remetre dans open.. basically.
-                    
+                if v in open:
+                    vprime = self.find(v) # [noeud, pos dans la liste]
+                    if v.gc < vprime[0].gc:
+                        del open[vprime[1]]
+                        
                 if v not in open and v not in closed: # Boule infinie?
                     open.append(v)
                     open.sort(key = lambda x: x.f)
+
+    def find(self, n):
+        i = 0
+        for o in open:
+            if o.x == n.x and o.y == n.y:
+                return (o, i)
+            i += 1
 
     def voisin(self, n):
         x = n.x
