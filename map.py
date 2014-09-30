@@ -1,5 +1,6 @@
 import random
 import math
+import moduleObjets
 
 #NOTE: pour l'instant, ceci n'est seulement que pour des hauteurs et largeurs impaires pour les spawns des joueurs
 #Ressources: Matériaux, nourriture, énergie, or. + artefacts
@@ -11,9 +12,9 @@ import math
 
 #Ratio des ressources ( sur 100)
 
-MATE_RATIO=20
-FOOD_RATIO=15
-RARE_RATIO=10
+MATE_RATIO=1
+FOOD_RATIO=1
+RARE_RATIO=1
 ARTE_RATIO=1
 UNDER_RATIO=25
 
@@ -23,7 +24,7 @@ MATE_CHAR='1'
 FOOD_CHAR='2'
 RARE_CHAR='3'
 ARTE_CHAR='4'
-WATER_CHAR='-'
+EMPTY_CHAR='-'
 MATE_UNDER_CHAR='a'
 FOOD_UNDER_CHAR='b'
 RARE_UNDER_CHAR='c'
@@ -67,7 +68,7 @@ class Map:
         self.buildings=[]
         self.largeur=largeur
         self.hauteur=hauteur
-        self.mat=[[Case(j,i,WATER_CHAR, 100,False) for j in range(hauteur)] for i in range(largeur)]        
+        self.mat=[[Case(j,i,EMPTY_CHAR, 100, True) for j in range(hauteur)] for i in range(largeur)]        
 
     def setSeed(self, seed):
         random.seed(seed)
@@ -76,7 +77,7 @@ class Map:
         for i in range(self.hauteur):
             for j in range(self.largeur):
                 nb = random.randrange(100)
-                if nb <= ratio and self.mat[j][i].ressource==WATER_CHAR:
+                if nb <= ratio and self.mat[j][i].ressource==EMPTY_CHAR:
                     self.mat[j][i] = Case(j,i,char,ratio, False)
                 
 
@@ -149,10 +150,14 @@ class Map:
         if self.largeur == self.hauteur:
 
             for angle in listeAngles:
+                joueur=0
                 x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
                 #print("x =", x,"y =", y,"a =",angle)
                 self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)
+                listeJoueurs[joueur].buildings[0]=TownCenter(joueur, x, y)
+                
+                
             #print("Cercle")
 
         #selon une ellipse
@@ -193,7 +198,7 @@ class Map:
         res2=0
         res3=0
         art=0
-        eau=0
+        vide=0
         res1EtUnder=0
         res2EtUnder=0
         res3EtUnder=0
@@ -217,9 +222,9 @@ class Map:
 
                     art += 1
 
-                if self.mat[j][i].ressource == WATER_CHAR:
+                if self.mat[j][i].ressource == EMPTY_CHAR:
 
-                    eau += 1
+                    vide += 1
 
                 if self.mat[j][i].ressource == MATE_UNDER_CHAR:
 
@@ -243,7 +248,7 @@ class Map:
         print('Food=',res2)
         print('Rare=',res3)
         print('Artefacts=',art)
-        print('Eau=',eau)
+        print('Vide=',vide)
         print('Materiaux + under=',res1EtUnder)
         print('Food + under=',res2EtUnder)
         print('Rare + under=',res3EtUnder)
@@ -256,6 +261,8 @@ h=25
 liste=[1,2,3,4]
 
 m=Map(l,h)
+
+m.setSeed(10)
 
 m.placeRessourcesOverworld()
 
