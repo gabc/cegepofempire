@@ -14,8 +14,10 @@ class Deplacement:
         self.parent = parent
         self.map = map
 
-    def chemin(self, depart, arrivee):
-        pass                    # Voir comment on va me passer depart/arrivee
+    def chemin(self, unite, arrivee):
+        depart = Noeud(unite.x, unite.y, 0, 0, None)
+        arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
+        return self.astar(depart, arrive)
 
     def astar(self, depart, arrivee):
         open = [depart]
