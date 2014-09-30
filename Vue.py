@@ -19,6 +19,18 @@ class Vue():
         self.root=Tk()
         self.initJeu()#Pour la classe du Frame Jeu
        
+    #Pour liste de server   
+    #===========================================================================
+    # def initMenu(self):
+    #     self.cadreAttendre=Frame(self.root)
+    #     self.cadreMenu=Frame(self.cadreAttendre)
+    #     self.listeJoueurs=Listbox(self.cadreMenu)
+    #     self.demarreB=Button(self.cadreMenu,text="Demarrer Partie")
+    #     self.demarreB.grid(column=0,row=1)
+    #     self.listeJoueurs.grid(column=0,row=0)
+    #     self.cadreMenu.pack(side=LEFT)
+    #===========================================================================
+       
     def initJeu(self): 
         
         self.cadreJeu=Frame(self.root)
@@ -33,7 +45,7 @@ class Vue():
         self.changeLabelPierre(n)
         self.changeLabelOr(n)
         self.changeLabelPopulation(n)
-        self.diplomatieFenetre()
+        self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
         
@@ -51,6 +63,7 @@ class Vue():
         self.canevas.grid(column=0,row=1,columnspan=3)
         
         self.cadreJeu.pack()
+
         
     def initCadre(self):
         
@@ -80,28 +93,20 @@ class Vue():
     
     ####Pour les images    
         
-    def imgLabelNourriture(self):
+    def imgLabel(self):
         print("")
         #labelNourritureImg=Label(self.cadreRessource,text="Nourriture: 200",relief=SOLID,width=15)
         #labelNourritureImg.grid(column=0,row=0)
         
-    def imgLabelBois(self):
-        print("")
         #labelBoisImg=Label(self.cadreRessource,text="Bois: 150",relief=SOLID,width=15)
         #labelBoisImg.grid(column=2,row=0)
         
-    def imgLabelPierre(self):
-        print("")
         #labelPierreImg=Label(self.cadreRessource,text="Pierre: 100",relief=SOLID,width=15)
         #labelPierreImg.grid(column=0,row=1)
         
-    def imgLabelOr(self):
-        print("")
         #labelOrImg=Label(self.cadreRessource,text="Or: 150",relief=SOLID,width=15)
         #labelOrImg.grid(column=2,row=1)
-        
-    def imgLabelEnergie(self):
-        print("")
+
         #labelEnergieImg=Label(self.cadreRessource,text="Energie: 0",relief=SOLID,width=15)
         #labelEnergieImg.grid(column=0,row=2,columnspan=2)
         
@@ -139,9 +144,14 @@ class Vue():
         
         #Pour le cadre Diplomatie/echange
         
-    def diplomatieFenetre(self):
-        labelDiplomatie=Label(self.cadreDiplomatie,text="Diplomatie/Echange")
+    def diplomatieFenetre(self,event):
+        self.toplevel = Toplevel()
+        
+        
+    def diplomatieClic(self):
+        labelDiplomatie=Label(self.cadreDiplomatie,text="Diplomatie/Echange",relief=SOLID)
         labelDiplomatie.pack()
+        labelDiplomatie.bind("<Button-1>", self.diplomatieFenetre)
         
     def initLabelBas(self):
         #Pour le cadre Option Unite
@@ -162,21 +172,23 @@ class Vue():
     def rafraichirTemps(self,temps):
         labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
         labelTemps.grid(column=0,row=1)
+      
+      
+if __name__ == "__main__":  
+    class Controleur(): 
+        def __init__(self):
+            self.temps=0
+            self.vue=Vue(self)
+            self.vue.root.after(1000, self.tempsJeu())
+            self.vue.root.mainloop()
         
-class Controleur(): 
-    def __init__(self):
-        self.temps=0
-        self.vue=Vue(self)
-        self.vue.root.after(1000, self.tempsJeu())
-        self.vue.root.mainloop()
+        def tempsJeu(self):
+            self.temps +=1
+            self.vue.rafraichirTemps(self.temps)
+            self.vue.root.after(1000,self.tempsJeu)
+            
     
-    def tempsJeu(self):
-        self.temps +=1
-        self.vue.rafraichirTemps(self.temps)
-        self.vue.root.after(1000,self.tempsJeu)
-        
+            
 
-        
-if __name__ == "__main__":
     c = Controleur()
         
