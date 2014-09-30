@@ -1,0 +1,25 @@
+Raphael Goulet
+
+class : Cpu
+méthode : 
+commencé		-rechercheRessources
+commencé		-equilibrationUnits
+commencé		-equilibrationMaisons
+a faire			-passerAuProchainEre
+a faire			-chercherVilagoisNonOccuper
+a faire			-attaqueEnemieCible(enemyPos)
+a faire			-detruireRessources
+a faire			-detruireEnemyTownCenter
+a faire			-defendreBase
+a faire			-rechercheAlly
+a faire			-trahison
+a faire			-calculProportionOffensiveEtProduction
+a faire 		-reajusteMorality
+a faire			-collecterRelics
+a faire			-choisirButAAtteindre
+
+dans Villagois(unit)
+commencé		-AmmassageDuneRessource
+
+
+	
