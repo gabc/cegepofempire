@@ -23,8 +23,8 @@ class Point:
 map = []
 path = []
 depart = Noeud(1, 1, 0, 0, None)
-arrivee = Noeud(5, 6, 0, 0, None)
-trouble = [(3,2),(3,3),(3,4),(3,5), (4,6)]
+arrivee = Noeud(20,18, 0, 0, None)
+trouble = [(3,5), (4,6), (5,5),(7,7),(10,10),(9,8),(12,14),(20,3),(20,10), (12,15),(12,16),(13,17),(13,18),(12,18), (12,17),(13,19),(13,20)]
 
 PASSABLE = 3
 
@@ -102,12 +102,12 @@ def chemin():
             f = g(v) + h(v,arrivee)
             v.parent = current  # Je pense que je le fais déjà dans voisin(), mais dans le doute
             v.f = f             # Meeeh
-            v.gc = g(v)             # MEEEEH
+            v.gc = g(v) + 10    # MEEEEH Je le met ou le +10?
 
             # if v in open or v in closed and v.f Si il est dans open, ou closed. Et que f est plus petit que l'autre.
             #  open.append(v) Le remetre dans open.. basically.
 
-            if v not in open and v not in closed:
+            if v not in open and v not in closed: # Boule infinie?
                 open.append(v)
             open.sort(key = lambda x: x.f)
                 
