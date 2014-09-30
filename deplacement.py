@@ -15,7 +15,7 @@ class Deplacement:
         self.map = map
 
     def chemin(self, unite, arrivee):
-        depart = Noeud(unite.x, unite.y, 0, 0, None)
+        depart = Noeud(unite.posX, unite.posY, 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
         return self.astar(depart, arrive)
 
