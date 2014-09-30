@@ -1,6 +1,6 @@
 import random
 import math
-import moduleObjets
+from moduleObjets import *
 
 #NOTE: pour l'instant, ceci n'est seulement que pour des hauteurs et largeurs impaires pour les spawns des joueurs
 #Ressources: Matériaux, nourriture, énergie, or. + artefacts
@@ -147,18 +147,16 @@ class Map:
         #r = radius, cx & cy = origin, a=angle
         #aire=math.pi*(rayon*rayon)
 
+        joueur=0
+
         if self.largeur == self.hauteur:
 
             for angle in listeAngles:
-                joueur=0
                 x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
                 #print("x =", x,"y =", y,"a =",angle)
                 self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)
-                listeJoueurs[joueur].buildings[0]=TownCenter(joueur, x, y)
-                
-                
-            #print("Cercle")
+                listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
 
         #selon une ellipse
         #Equation pour une ellipse
@@ -176,7 +174,8 @@ class Map:
                 y = math.trunc(middleY + (a*b*math.sin(math.radians(angle))) / math.sqrt( ((math.pow(b,2)) * math.pow(math.cos(math.radians(angle)),2)) + ((math.pow(a,2)) * math.pow(math.sin(math.radians(angle)),2))  ))
                 if x == self.largeur:
                     x = self.largeur -1
-                self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)                          
+                self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)
+                listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
     
     def printMapCon(self):
         for i in range(self.hauteur):
@@ -255,10 +254,18 @@ class Map:
         print('Artefact + under=',resartEtUnder)
         
   
-#For testing purposes
+"""#For testing purposes
 l=55
 h=25
-liste=[1,2,3,4]
+
+j1=Joueur(1,"a")
+j2=Joueur(2,"b")
+
+liste=[]
+
+liste.append(j1)
+liste.append(j2)
+
 
 m=Map(l,h)
 
@@ -276,6 +283,6 @@ m.placeJoueurs(liste)
 
 m.printMapCon()
 
-m.countRessources()
+m.countRessources()"""
 
 
