@@ -1,0 +1,27 @@
+Olivier
+
+Classes à développer:
+
+	Case
+		Méthodes:
+			
+		isPassable()							FAIT
+		
+	Map
+		Méthodes:
+		
+		setSeed(seed)							FAIT
+		placeRessourceType(ratio, char)			FAIT
+		placeRessourcesOverworld(self)			FAIT
+		placeRessourcesUnderworld()				FAIT
+		placeJoueurs(listeJoueurs)				FAIT
+		equilibrerRessources()					PAS FAIT
+		<--Pour tester-->
+		printMapCon()							FAIT
+		printMapToFile()						FAIT
+		countRessources()						FAIT
+		
+	Ressource									PAS FAIT
+	
+		
+	
