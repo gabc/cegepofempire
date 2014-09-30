@@ -1,0 +1,34 @@
+Faits:
+Class: 
+Vue
+Controleur
+
+Méthode:
+	initMenu(self)
+	initJeu(self)
+	initCadre(self)
+	changeLabelNourriture(self,n)
+	changeLabelBois(self,n)
+	changeLabelPierre(self,n)
+	changeLabelOr(self,n)
+	changeLabelEnergie(self,n)
+	changeLabelPopulation(self,n)
+	diplomatieFenetre(self,event)
+	diplomatieClic(self)
+	initLabelBas(self)
+	rafraichirTemps(self)
+	tempsJeu(self)
+	canevas(self)
+	
+
+À faire
+
+Méthode:
+	initMenuOption
+	initMenuJoindre
+	initMenuCreer
+	MiniMap
+	InfoSelection
+	OptionUnite
+	
+	

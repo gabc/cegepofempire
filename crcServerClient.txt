@@ -1,0 +1,18 @@
+Faits:
+- Server
+	- Class Action()
+	- Class Player()
+	- Class Server()
+		- Methode: ClientToServer #recoit une requete du client, et envoi une reponse
+	- Class Controleur()
+
+- Client
+	- Class Action()
+	- Class Player()
+	- Class ServerListener()
+		- Methode: sendAndReceive #envoi une requete au serveur et recoit une reponse
+	- Class model()
+	- Class view()
+	- Class Controleur()
+		
+A Faire:
