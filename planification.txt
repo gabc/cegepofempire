@@ -60,7 +60,31 @@ Classe Client
        Class Action
        Class Player
        Class ServerListener
-       	     Methode: sendAndReceive #envoi une requete au serveur et recoit une reponse
+       	     Methode: sendAndReceive 
        Class model
        Class view
        Class Controleur
+
+Classe CPU
+
+       methode - rechercheRessources		[ ]
+       methode - equilibrationUnits		[ ]
+       methode - equilibrationMaisons		[ ]
+       methode - passerAuProchainEre		[ ]
+       methode - chercherVilagoisNonOccuper	[ ]
+       methode - attaqueEnemieCible(enemyPos)	[ ]
+       methode - detruireRessources		[ ]
+       methode - detruireEnemyTownCenter	[ ]
+       methode - defendreBase			[ ]
+       methode - rechercheAlly			[ ]
+       methode - trahison			[ ]
+       methode - calculProportionOffensiveEtProduction		      [ ]
+       methode - reajusteMorality		[ ]
+       methode - collecterRelics		[ ]
+       methode - choisirButAAtteindre		[ ]
+
+Classe Villageois
+       methode - AmmassageDuneRessource		[ ]
+
+
+	
