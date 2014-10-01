@@ -1,90 +1,90 @@
 Classe Case
-       methode - isPassable			[X]
+       Méthode - isPassable			[X]
 		
 Classe Map
-       methode - setSeed			[X]
-       methode - placeRessourceType		[X]
-       methode - placeRessourcesOverworld	[X]
-       methode - placeRessourcesUnderworld	[X]
-       methode - placeJoueurs			[X]
-       methode - equilibrerRessources		[ ]
+       Méthode - setSeed			[X]
+       Méthode - placeRessourceType		[X]
+       Méthode - placeRessourcesOverworld	[X]
+       Méthode - placeRessourcesUnderworld	[X]
+       Méthode - placeJoueurs			[X]
+       Méthode - equilibrerRessources		[ ]
 
-       methode - printMapCon			[X]
-       methode - printMapToFile			[X]
-       methode - countRessources		[X]
+       Méthode - printMapCon			[X]
+       Méthode - printMapToFile			[X]
+       Méthode - countRessources		[X]
 	
 Classe Deplacement
-       methode - chemin				[X]
-       methode - astar 				[ ]
-       methode - chemin 			[X]
-       methode - astar 				[X]
-       methode - find  				[X]
-       methode - voisin				[X]
-       methode - h     				[X]
-       methode - g     				[ ]
-       methode - path  				[X]
-       methode - colisionUnite			[ ]
-       methode - trouveLeader   		[ ]
+       Méthode - chemin				[X]
+       Méthode - astar 				[ ]
+       Méthode - chemin 			[X]
+       Méthode - astar 				[X]
+       Méthode - find  				[X]
+       Méthode - voisin				[X]
+       Méthode - h     				[X]
+       Méthode - g     				[ ]
+       Méthode - path  				[X]
+       Méthode - colisionUnite			[ ]
+       Méthode - trouveLeader   		[ ]
 
 Classe Vue
-       methode - initMenu			[X]
-       methode - initJeu			[X]
-       methode - initCadre			[X]
-       methode - changeLabelNourriture		[X]
-       methode - changeLabelBois		[X]
-       methode - changeLabelPierre		[X]
-       methode - changeLabelOr			[X]
-       methode - changeLabelEnergie		[X]
-       methode - changeLabelPopulation		[X]
-       methode - diplomatieFenetre		[X]
-       methode - diplomatieClic			[X]
-       methode - initLabelBas			[X]
-       methode - rafraichirTemps		[X]
-       methode - tempsJeu			[X]
-       methode - canevas			[X]
-       methode - initMenuOption			[ ]
-       methode - initMenuJoindre		[ ]
-       methode - initMenuCreer			[ ]
-       methode - MiniMap			[ ]
-       methode - InfoSelection			[ ]
-       methode - OptionUnite			[ ]
+       Méthode - initMenu			[X]
+       Méthode - initJeu			[X]
+       Méthode - initCadre			[X]
+       Méthode - changeLabelNourriture		[X]
+       Méthode - changeLabelBois		[X]
+       Méthode - changeLabelPierre		[X]
+       Méthode - changeLabelOr			[X]
+       Méthode - changeLabelEnergie		[X]
+       Méthode - changeLabelPopulation		[X]
+       Méthode - diplomatieFenetre		[X]
+       Méthode - diplomatieClic			[X]
+       Méthode - initLabelBas			[X]
+       Méthode - rafraichirTemps		[X]
+       Méthode - tempsJeu			[X]
+       Méthode - canevas			[X]
+       Méthode - initMenuOption			[ ]
+       Méthode - initMenuJoindre		[ ]
+       Méthode - initMenuCreer			[ ]
+       Méthode - MiniMap			[ ]
+       Méthode - InfoSelection			[ ]
+       Méthode - OptionUnite			[ ]
 	
 Classe Server
        Classe Action
        Classe Player
        Classe Server
-       	      methode - ClientToServer		[X]
+       	      Méthode - ClientToServer		[X]
        Classe Controleur
 
 Classe Client
        Class Action
        Class Player
        Class ServerListener
-       	     Methode: sendAndReceive 
+       	     Méthode: sendAndReceive 
        Class model
        Class view
        Class Controleur
 
 Classe CPU
 
-       methode - rechercheRessources		[ ]
-       methode - equilibrationUnits		[ ]
-       methode - equilibrationMaisons		[ ]
-       methode - passerAuProchainEre		[ ]
-       methode - chercherVilagoisNonOccuper	[ ]
-       methode - attaqueEnemieCible(enemyPos)	[ ]
-       methode - detruireRessources		[ ]
-       methode - detruireEnemyTownCenter	[ ]
-       methode - defendreBase			[ ]
-       methode - rechercheAlly			[ ]
-       methode - trahison			[ ]
-       methode - calculProportionOffensiveEtProduction		      [ ]
-       methode - reajusteMorality		[ ]
-       methode - collecterRelics		[ ]
-       methode - choisirButAAtteindre		[ ]
+       Méthode - rechercheRessources		[ ]
+       Méthode - equilibrationUnits		[ ]
+       Méthode - equilibrationMaisons		[ ]
+       Méthode - passerAuProchainEre		[ ]
+       Méthode - chercherVilagoisNonOccuper	[ ]
+       Méthode - attaqueEnemieCible(enemyPos)	[ ]
+       Méthode - detruireRessources		[ ]
+       Méthode - detruireEnemyTownCenter	[ ]
+       Méthode - defendreBase			[ ]
+       Méthode - rechercheAlly			[ ]
+       Méthode - trahison			[ ]
+       Méthode - calculProportionOffensiveEtProduction		      [ ]
+       Méthode - reajusteMorality		[ ]
+       Méthode - collecterRelics		[ ]
+       Méthode - choisirButAAtteindre		[ ]
 
 Classe Villageois
-       methode - AmmassageDuneRessource		[ ]
+       Méthode - AmmassageDuneRessource		[ ]
 
 
 	
