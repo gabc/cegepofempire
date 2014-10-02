@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 # C:\\Python33\python.exe
+import time
 
 class Noeud:
     def __init__(self, x, y, f, gc, parent):
@@ -15,7 +16,7 @@ class Deplacement:
         self.parent = parent
         
         self.map = map
-
+        
     def chemin(self, unite, arrivee):
         depart = Noeud(unite.posX, unite.posY, 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
@@ -24,12 +25,20 @@ class Deplacement:
     def astar(self, depart, arrivee):
         open = [depart]
         closed = []
+        temps = time.time()
         
         while open:
             current = open[0]
             del open[0]
             closed.append(current)
 
+            # si c'est trop long. On sort.
+            if time.time() - temps >= 0.05: # 0.0sec
+                return self.path(current)
+            else:
+                # print(time.time() - temps)
+                temps = time.time()
+                
             if self.h(current, arrivee) == 0:
                 return self.path(current)
                 
@@ -84,7 +93,7 @@ class Deplacement:
     def g(self, n):
         acc = 0
         while n.parent is not None:
-            acc += n.gc + n.cout
+            acc += n.gc #+ n.cout
             n = n.parent
         return acc
         
@@ -116,10 +125,11 @@ if __name__ == '__main__':
     #m.printMapToFile()
     dx = 2
     dy = 2
-    ax = 5
-    ay = 5
+    ax = 20
+    ay = 26
     d = Deplacement(None, m.mat)
-    cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
+    # cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
+    path = d.chemin(Foo(dx,dy),(ax,ay))
     str = ""
     flag = False
     for i in range(h):
@@ -138,3 +148,6 @@ if __name__ == '__main__':
                 flag = False
         print(str)
         str = ""
+    for i in path:
+        print(i.x, i.y)
+    print(path)
