@@ -11,6 +11,12 @@ class Noeud:
         self.parent = parent
         self.cout = 0
 
+    def estDans(self, liste):
+        for i in liste:
+            if self.x == i.x and self.y == i.y:
+                return True
+        return False
+
 class Deplacement:
     def __init__(self, parent, map):
         self.parent = parent
@@ -34,34 +40,35 @@ class Deplacement:
             del open[0]
             closed.append(current)
 
-            if len(open) > self.maxnode:
-                print("FOOOO")
-                open = open[:self.maxnode] # Si la liste est trop grande.
+            # if len(open) > self.maxnode:
+            #     print("FOOOO", len(open))
+            #     open = open[:self.maxnode] 
+                # Si la liste est trop grande.
             
             # si c'est trop long. On sort.
-            if time.time() - temps >= 0.05: # 0.0sec
-                return self.path(current)
-            else:
-                # print(time.time() - temps)
-                temps = time.time()
+            # if time.time() - temps >= 0.05: # 0.0sec
+            #     return self.path(current)
+            # else:
+            #     temps = time.time()
                 
             if self.h(current, arrivee) == 0:
+                print(len(open))
                 return self.path(current)
                 
             for v in self.voisin(current):
-                f = self.g(v) + self.h(v,arrivee)
-                v.parent = current  # Je pense que je le fais deja dans voisin(), mais dans le doute
-                v.f = f             # Meeeh
-                v.gc = self.g(v)         # MEEEEH Je le met ou le +10?
+                v.parent = current
+                v.gc = self.g(v)
+                f = v.gc + self.h(v,arrivee)
+                v.f = f         
+                
+                #print(v.gc)
+                # if v in open:
+                #     print("vprime")
+                #     vprime = self.find(v) # [noeud, pos dans la liste]
+                #     if v.gc < vprime[0].gc or v.f < vprime[0].f:
+                #         del open[vprime[1]]
 
-                # if v in open or v in closed and v.f Si il est dans open, ou closed. Et que f est plus petit que l'autre.
-                #  open.append(v) Le remetre dans open.. basically.
-                if v in open:
-                    vprime = self.find(v) # [noeud, pos dans la liste]
-                    if v.gc < vprime[0].gc:
-                        del open[vprime[1]]
-
-                if v not in open and v not in closed: # Boule infinie?
+                if v not in open and v not in closed:
                     open.append(v)
                     open.sort(key = lambda x: x.f)
 
@@ -81,8 +88,8 @@ class Deplacement:
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
                     if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
-                        n = Noeud(x+i, y+j, 0, 0, n)
-                        rep.append(n)
+                        np = Noeud(x+i, y+j, 0, 0, n)
+                        rep.append(np)
                         if i == 0 or j == 0:
                             n.cout = 10 # ligne droite
                         else:
@@ -99,7 +106,7 @@ class Deplacement:
     def g(self, n):
         acc = 0
         while n.parent is not None:
-            acc += n.gc #+ n.cout
+            acc += n.gc + n.cout
             n = n.parent
         return acc
         
@@ -127,16 +134,14 @@ if __name__ == '__main__':
     m.placeRessourcesOverworld()
     m.placeRessourcesUnderworld()
     m.placeJoueurs(liste)
-    #m.equilibreRessources(liste) <-- To do
-    #m.printMapToFile()
+
     dx = 2
     dy = 2
     ax = 1
-    ay = 15
+    ay = 6
     d = Deplacement(None, m.mat)
     cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
-    # path = d.chemin(Foo(dx,dy),(ax,ay))
-
+    #path = d.chemin(Foo(dx,dy),(ax,ay))
     
     str = ""
     flag = False
@@ -159,3 +164,4 @@ if __name__ == '__main__':
     for i in path:
         print(i.x, i.y)
     # print(path)
+    input()
