@@ -68,14 +68,15 @@ class Map:
         self.buildings=[]
         self.largeur=largeur
         self.hauteur=hauteur
-        self.mat=[[Case(j,i,EMPTY_CHAR, 100, True) for j in range(hauteur)] for i in range(largeur)]        
+        print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
+        self.mat=[[Case(j,i,EMPTY_CHAR, 100, True) for j in range(largeur)] for i in range(hauteur)]        
 
     def setSeed(self, seed):
         random.seed(seed)
         
     def placeRessourceType(self, ratio, char):
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 nb = random.randrange(100)
                 if nb <= ratio and self.mat[j][i].ressource==EMPTY_CHAR:
                     self.mat[j][i] = Case(j,i,char,ratio, False)
@@ -90,8 +91,8 @@ class Map:
 
     def placeRessourcesUnderworld(self):
         #UNDERWORLD RESSOURCES
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 res = random.randrange(100)
                 if res <= UNDER_RATIO:
                     if self.mat[j][i].ressource == MATE_CHAR:
