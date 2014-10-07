@@ -16,6 +16,8 @@ class Deplacement:
         self.parent = parent
         
         self.map = map
+
+        self.maxnode = 400
         
     def chemin(self, unite, arrivee):
         depart = Noeud(unite.posX, unite.posY, 0, 0, None)
@@ -32,6 +34,10 @@ class Deplacement:
             del open[0]
             closed.append(current)
 
+            if len(open) > self.maxnode:
+                print("FOOOO")
+                open = open[:self.maxnode] # Si la liste est trop grande.
+            
             # si c'est trop long. On sort.
             if time.time() - temps >= 0.05: # 0.0sec
                 return self.path(current)
@@ -54,7 +60,7 @@ class Deplacement:
                     vprime = self.find(v) # [noeud, pos dans la liste]
                     if v.gc < vprime[0].gc:
                         del open[vprime[1]]
-                        
+
                 if v not in open and v not in closed: # Boule infinie?
                     open.append(v)
                     open.sort(key = lambda x: x.f)
@@ -98,7 +104,7 @@ class Deplacement:
         return acc
         
     def path(self, n):
-        path = []
+        path = [n]              # L'arrivee est dans la liste du path
         while n.parent is not None:
             path = [n.parent] + path
             n = n.parent
@@ -125,14 +131,16 @@ if __name__ == '__main__':
     #m.printMapToFile()
     dx = 2
     dy = 2
-    ax = 20
-    ay = 26
+    ax = 1
+    ay = 15
     d = Deplacement(None, m.mat)
-    # cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
-    path = d.chemin(Foo(dx,dy),(ax,ay))
+    cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
+    # path = d.chemin(Foo(dx,dy),(ax,ay))
+
+    
     str = ""
     flag = False
-    for i in range(h):
+    for i in range(h):          # l et h dans le bon ordre?
         for j in range(l):
             if i == dx and j == dy:
                 str += "D"
@@ -150,4 +158,4 @@ if __name__ == '__main__':
         str = ""
     for i in path:
         print(i.x, i.y)
-    print(path)
+    # print(path)
