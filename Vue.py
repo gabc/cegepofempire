@@ -1,5 +1,5 @@
 from tkinter import *
-
+from moduleObjets import *
 
 #===============================================================================
 # #A Faire
@@ -38,13 +38,12 @@ class Vue():
         self.cadreButton.grid(column=1,row=0)
         self.cadreMenu.pack()
         
-    def canevasClick(self,event):
-        self.canevas = event.widget
-        print("clic at : x:"+str( event.x)+" y:"+str(event.y))
-            
+    def spawnUnit(self,event):
+        vil = Villageois(0, event.x,event.y)
+        self.parent.j.units.append(vil)
+
        
     def initJeu(self): 
-        
         self.cadreJeu=Frame(self.root)
         
         #Call des cadre
@@ -63,22 +62,18 @@ class Vue():
         
         #Milieu
         self.canevas=Canvas(self.cadreJeu,width=800,height=600,bg="#006633")
-        #Pierre
-        self.canevas.create_rectangle(50,50,75,75,fill="grey")
-        self.canevas.create_rectangle(50,100,75,75,fill="grey")
-        #Or
-        self.canevas.create_oval(500,75,550,125,fill="yellow")
-        self.canevas.create_oval(525,100,550,125,fill="yellow")
-        #Arbre(methode)
-        self.canevas.create_polygon(50,200,75,150,100,200,fill="green")
+       
         
         self.canevas.grid(column=0,row=1,columnspan=3)
         
-        self.canevas.bind("<Button-1>", self.canevasClick)
+        self.canevas.bind("<Button-1>", self.spawnUnit)
+        self.canevas.bind("<Button-3>", self.setArrive)
         
         self.cadreJeu.pack()
         self.cadreMenu.pack_forget()
-
+        self.rafraichirCanevas()
+        self.creerLigne()
+        self.placeRessource()
         
     def initCadre(self):
         
@@ -107,7 +102,39 @@ class Vue():
         
     
     ####Pour les images    
+       
         
+    def creerLigne(self):
+        self.longeurLigne=20
+        for i in range (self.parent.l):
+            self.canevas.create_line(i*self.longeurLigne,0,i*self.longeurLigne,self.parent.h*self.longeurLigne,fill="white")
+            
+        for j in range (self.parent.h):
+            self.canevas.create_line(0,j*self.longeurLigne,self.parent.l*self.longeurLigne,j*self.longeurLigne,fill="white")
+        
+    def placeRessource(self):
+        for i in range(self.parent.l):
+            for j in range(self.parent.h):
+                print(self.parent.m.mat[j][i].ressource)
+                if self.parent.m.mat[j][i].ressource == FOOD_CHAR:#nourriture
+                    print("nourr")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="red",tags="food")
+                elif self.parent.m.mat[j][i].ressource == MATE_CHAR:#bois
+                    print("bois")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="brown",tags="food")
+                elif self.parent.m.mat[j][i].ressource == RARE_CHAR:#or
+                    print("or")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="yellow",tags="food")
+                #elif self.parent.m.mat[j][i].ressource == EMPTY_CHAR:#vide
+                #    print("vide")
+                #    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
+                elif self.parent.m.mat[j][i].ressource == ARTE_CHAR:#energie
+                    print("energie")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="blue",tags="food")
+                
+                
+
+            
     def imgLabel(self):
         print("")
         #labelNourritureImg=Label(self.cadreRessource,text="Nourriture: 200",relief=SOLID,width=15)
@@ -184,36 +211,52 @@ class Vue():
         labelMiniMap=Label(self.cadreMiniMap,text="Mini-Map")
         labelMiniMap.grid(column=0,row=0)
         
-<<<<<<< HEAD
     #===========================================================================
-    # def rafraichirTemps(self,temps):
-    #     labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
-    #     labelTemps.grid(column=0,row=1)
+    #def rafraichirTemps(self,temps):
+    #    labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
+    #    labelTemps.grid(column=0,row=1)
     #   
     #===========================================================================
       
+    def setArrive(self,event):
+        print("asdf")
+          
+    def rafraichirCanevas(self):
+        self.canevas.delete("unit")
+        for u in self.parent.j.units:
+            self.canevas.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
+        self.root.after(100, self.rafraichirCanevas)
+        
 if __name__ == "__main__":  
+    from moduleObjets import *
+    from map import *
+    
+
+    
     class Controleur(): 
         def __init__(self):
+            self.l=40
+            self.h=30
+            liste=[Joueur(1,"a"), Joueur(2,"b")]
+            self.m=Map(self.l,self.h)
+            self.m.setSeed(10)
+            self.m.placeRessourcesOverworld()
+            self.m.placeRessourcesUnderworld()
+            
             self.temps=0
+            self.j = Joueur(0, "test")
             self.vue=Vue(self)
-            #self.vue.root.after(1000, self.tempsJeu())
+            #self.vue.root.after(100, self.vue.rafraichirCanevas)
             self.vue.root.mainloop()
         
         #=======================================================================
-        # def tempsJeu(self):
-        #     self.temps +=1
-        #     self.vue.rafraichirTemps(self.temps)
-        #     self.vue.root.after(1000,self.tempsJeu)
+        def tempsJeu(self):
+             self.temps +=1
+             self.vue.rafraichirTemps(self.temps)
+             self.vue.root.after(1000,self.tempsJeu)
         #=======================================================================
             
     
             
 
     c = Controleur()
-=======
-    def rafraichirTemps(self,temps):
-        labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
-        labelTemps.grid(column=0,row=1)
->>>>>>> 74bd3e71191db4ceb019e49e93f1b3b1ede8893e
-        
