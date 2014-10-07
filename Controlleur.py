@@ -1,5 +1,7 @@
 from Vue import *
-
+from moduleObjets import *
+from deplacement import *
+from map import *
 #WTF does the controler do:
 #Pas de menus pour l'instant, on jump directement dans le jeu
 #Une fois le server fini --> faire le menu "host ou join a game"
@@ -26,7 +28,6 @@ class Controleur():
     def __init__(self):
         self.temps=0
         self.vue=Vue(self)
-        self.vue.root.after(1000, self.tempsJeu())
         self.vue.root.mainloop()
         
     def tempsJeu(self):
