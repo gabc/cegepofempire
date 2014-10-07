@@ -17,19 +17,31 @@ class Vue():
     def __init__(self, parent):
         self.parent = parent
         self.root=Tk()
-        self.initJeu()#Pour la classe du Frame Jeu
+        self.initMenu()#Pour la classe du Frame Jeu
        
     #Pour liste de server   
-    #===========================================================================
-    # def initMenu(self):
-    #     self.cadreAttendre=Frame(self.root)
-    #     self.cadreMenu=Frame(self.cadreAttendre)
-    #     self.listeJoueurs=Listbox(self.cadreMenu)
-    #     self.demarreB=Button(self.cadreMenu,text="Demarrer Partie")
-    #     self.demarreB.grid(column=0,row=1)
-    #     self.listeJoueurs.grid(column=0,row=0)
-    #     self.cadreMenu.pack(side=LEFT)
-    #===========================================================================
+    def initMenu(self):
+        self.cadreMenu=Frame(self.root)
+        self.cadreAttendre=Frame(self.cadreMenu)
+        self.cadreButton=Frame(self.cadreMenu)
+        self.listeJoueurs=Listbox(self.cadreAttendre)
+        
+        buttonCreer=Button(self.cadreButton,text="Creer",width=15,command=self.initJeu)
+        buttonCreer.grid(column=1,row=0)
+        buttonJoindre=Button(self.cadreButton,text="Joindre",width=15)
+        buttonJoindre.grid(column=1,row=1)
+        buttonOption=Button(self.cadreButton,text="Options",width=15)
+        buttonOption.grid(column=1,row=2)
+        
+        self.listeJoueurs.grid(column=0,row=0)
+        self.cadreAttendre.grid(column=0,row=0)
+        self.cadreButton.grid(column=1,row=0)
+        self.cadreMenu.pack()
+        
+    def canevasClick(self,event):
+        self.canevas = event.widget
+        print("clic at : x:"+str( event.x)+" y:"+str(event.y))
+            
        
     def initJeu(self): 
         
@@ -62,7 +74,10 @@ class Vue():
         
         self.canevas.grid(column=0,row=1,columnspan=3)
         
+        self.canevas.bind("<Button-1>", self.canevasClick)
+        
         self.cadreJeu.pack()
+        self.cadreMenu.pack_forget()
 
         
     def initCadre(self):
@@ -149,7 +164,7 @@ class Vue():
         
         
     def diplomatieClic(self):
-        labelDiplomatie=Label(self.cadreDiplomatie,text="Diplomatie/Echange",relief=SOLID)
+        labelDiplomatie=Label(self.cadreDiplomatie,text="Diplomatie/Echange",relief=SOLID,height=5,width=25)#anchor:E
         labelDiplomatie.pack()
         labelDiplomatie.bind("<Button-1>", self.diplomatieFenetre)
         
@@ -169,23 +184,27 @@ class Vue():
         labelMiniMap=Label(self.cadreMiniMap,text="Mini-Map")
         labelMiniMap.grid(column=0,row=0)
         
-    def rafraichirTemps(self,temps):
-        labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
-        labelTemps.grid(column=0,row=1)
-      
+    #===========================================================================
+    # def rafraichirTemps(self,temps):
+    #     labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
+    #     labelTemps.grid(column=0,row=1)
+    #   
+    #===========================================================================
       
 if __name__ == "__main__":  
     class Controleur(): 
         def __init__(self):
             self.temps=0
             self.vue=Vue(self)
-            self.vue.root.after(1000, self.tempsJeu())
+            #self.vue.root.after(1000, self.tempsJeu())
             self.vue.root.mainloop()
         
-        def tempsJeu(self):
-            self.temps +=1
-            self.vue.rafraichirTemps(self.temps)
-            self.vue.root.after(1000,self.tempsJeu)
+        #=======================================================================
+        # def tempsJeu(self):
+        #     self.temps +=1
+        #     self.vue.rafraichirTemps(self.temps)
+        #     self.vue.root.after(1000,self.tempsJeu)
+        #=======================================================================
             
     
             
