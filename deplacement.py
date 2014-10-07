@@ -61,20 +61,19 @@ class Deplacement:
                 f = v.gc + self.h(v,arrivee)
                 v.f = f         
                 
-                #print(v.gc)
-                # if v in open:
-                #     print("vprime")
-                #     vprime = self.find(v) # [noeud, pos dans la liste]
-                #     if v.gc < vprime[0].gc or v.f < vprime[0].f:
-                #         del open[vprime[1]]
+                # print(v.gc)
+                if v.estDans(open):
+                    vprime = self.find(v, open) # [noeud, pos dans la liste]
+                    if v.gc < vprime[0].gc or v.f < vprime[0].f:
+                        del open[vprime[1]]
 
                 if not v.estDans(open) and not v.estDans(closed):
                     open.append(v)
                     open.sort(key = lambda x: x.f)
 
-    def find(self, n):
+    def find(self, n, liste):
         i = 0
-        for o in open:
+        for o in liste:
             if o.x == n.x and o.y == n.y:
                 return (o, i)
             i += 1
