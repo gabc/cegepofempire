@@ -68,7 +68,7 @@ class Deplacement:
                 #     if v.gc < vprime[0].gc or v.f < vprime[0].f:
                 #         del open[vprime[1]]
 
-                if v not in open and v not in closed:
+                if not v.estDans(open) and not v.estDans(closed):
                     open.append(v)
                     open.sort(key = lambda x: x.f)
 
@@ -137,8 +137,8 @@ if __name__ == '__main__':
 
     dx = 2
     dy = 2
-    ax = 1
-    ay = 6
+    ax = 20
+    ay = 16
     d = Deplacement(None, m.mat)
     cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
     #path = d.chemin(Foo(dx,dy),(ax,ay))
