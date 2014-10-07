@@ -12,12 +12,14 @@ from Vue import *
 #map.placeJoueurs(listeDeJoueurs)
 #La carte est maintenant generee en MEMOIRE. La il faut la dessiner.
 #vue.DessineMap(map) --> Loop a travers la map. Dessine ce qui se trouve dans le canvas.
-
+#La partie est maintenant commencee.
 
 #Comment se deroule une partie???
-#On attend PAS l'input du joueur. Le jeu peu se derouler sans lui. Tant mieux s'il click sur kkchose.
-#
-#
+#En général:
+#   1.demande au server s'il y a kkchose de nouveau
+#   2.calculs en memoire de: path, positions, creation de units,augmentation/baisse de ressources, attaques
+#   3.dessiner sur le canvas ce qui se trouve dans ses coordonnees
+#   4. message au server s'il y a action
 #
 
 class Controleur(): 
