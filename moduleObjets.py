@@ -10,7 +10,8 @@
 #-------------------------------------------------------------------------------
 
 
-
+## rappel - cree une class ressource , pour les ressources sur la map;
+## besoin d'une position , nom, etre dans une liste et avoir en memoire sa position ( a moin que celel ci puisse etre recuperer autrement
 
 #-------------------------------------------------------------------------------
 #Captain's Log entry : 28/09/2014:
@@ -54,44 +55,93 @@
 
 # le id_objet est une variable static qui ne sert qu'a compter on est rendu au
 # combien ieme objet cree
-# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº on cree les objets
+<<<<<<< HEAD
+# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
+=======
+# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 # le global fait en sorte que partout dans la page la variable et son contenu
 # est garder MEME DANS LES AUTRE FONCTIONS QUI SONT ENFANT DE LEMPLACEME
 # DE LA VARIABLE: NE PAS REUTILISER
 
+<<<<<<< HEAD
+=======
 
 
 #-------------------------------------------
-
-class Joueur():
-    def __init__(self, ID, name):
-        self.name = name
-        self.ID = ID
-        self.currentTime = 0
-        self.ere = 1
-        self.maxUnits = 200
-        self.ressources = [0,0,0,0,0]
+"""
+class Cpu():
+    def __init__(self, ID, posX, posY):
+    Joueur.__init__(self, ID, posX, posY):
+        self.ressourcesAuBesoin = [0,0,0,0,0]
+        self.villagoisParRessources = [0,0,0,0,0]
         # Index des ressources:
-        # Nourriture : 0
-        # BOis: 1
-        # Pierre : 2
-        # Or : 3
-        # Energie : 4
+        # Nourriture          # index 0
+        # Materiel            # index 1
+        # Or                  # index 3
+        # EnergieExploitee    # index 4
+        # Cristaux            # index 5
+        self.mode = 0
+        # mode 0 = balance
+        # mode 1 = offensif
+        # mode 2 = defensif
 
-        self.allies = []
-        self.units =[]
-        self.buildings =[]
-        self.unitsSelectionne =[]
+    def chercherVilagoisNonOccuper():
+        UnitsSelected[] = null
+        for i in self.units[]:
+            if self.units[i].type ="Villagois":
+                if self.units[i].occuper = true:
+                    self.units[i].Select()
+                    # ou peut importe la function de selection
+
 
 
 
     def changerEre():
         pass
 
-    def construireBuilding(self, idBuilding, posX ,posY ):
+    def construireBuilding(idBuilding, posX ,posY ):
         pass
 
-    def creerUnit(self, idBuilding, type ):
+    def creerUnit(idBuilding, type ):
+
+        pass
+
+    def changerAllies():
+        pass
+
+    def envoyerRessources():
+        pass
+
+"""
+
+class Joueur():
+    def __init__(self, ID, posX, posY):
+        self.ere = 1
+        self.maxUnits = 200
+        self.ressources = [0,0,0]
+        # Index des ressources:
+        # Nourriture : 0
+        # Bois : 1
+        # Pierre : 2
+        # Or : 3
+        # PÃƒÆ’Ã‚Â©trole : 4
+        # Charbon : 5
+        # NuclÃƒÆ’Ã‚Â©aire : 6
+        # Cristaux
+        self.allies = []
+        self.units =[]
+        self.buildings =[]
+        self.unitsSelected =[]
+
+
+    def changerEre():
+        pass
+
+    def construireBuilding(idBuilding, posX ,posY ):
+        pass
+
+    def creerUnit(idBuilding, type ):
 
         pass
 
@@ -105,6 +155,7 @@ class Joueur():
 
 
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 id_objet = 0
 
 class Unit():
@@ -168,17 +219,76 @@ class Villageois(Unit):
         self.delaiDeConstruction =20000
         self.hpMax = 100
         self.hpActuel = self.hpMax
-
+        ##self.maxRessource = 10
+        ##self.occuper = false
+        ##self.ressourceParCoup = 1
+        ##self.ressourceCourrante
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
-
-
-
-
-        print("le type de cette unite est : %s" % self.type)
-
-    def recolteRessource():
+        ## self.ressourceCollecting = 0
+        # reference i dans le tableau ressource de la map
+        ## self.ressourceCenter = townCenter
+        # ( batiment de collection de ressource, servant a rechercher sa Pos.)
+    """
+    def scanRessource()
         pass
+        ##  for i in map.ressources[] :
+        ##      scan = 0
+        ##      while scan < 4:
+        ##          if map.ressources[i].posX >= self.posX - self.champDeVision:
+        ##              scan += 1
+        ##          if map.ressources[i].posX <= self.posX + self.champDeVision:
+        ##              scan += 1
+        ##          if map.ressources[i].posY >= self.posY - self.champDeVision:
+        ##              scan += 1
+        ##          if map.ressources[i].posY <= self.posY + self.champDeVision:
+        ##             scan += 1
+        ##          if scan == 4:
+        ##            self.ressourceCollecting = map.ressources[i].tabPos
+        ##            pathfinder(map.ressources[i].pos[x,y])
+        print("le type de cette unite est : %s" % self.type)
+    def collectionRessource():
+        pass
+
+        ##  while self.ressourceCourrante < self.maxRessource :
+        ##      if map.ressource[self.ressourceCollecting].Qte < 0 :
+        ##          if map.ressource[self.ressourceCollecting].Qte <= self.ressourceParCoup :
+        ##              map.ressources[self.ressourceCollecting].Qte = 0
+        ##              map.ressources[self.ressourceCollecting] = null
+        ##          else :
+        ##              self.ressourceCourrante += self.ressourceParCoup
+        ##              map.ressources[self.ressourceCollecting].Qte -= self.ressourceParCoup
+        ##  if self.ressourceCourante > self.maxRessource :
+        ##      self.ressourceCourante = self.maxRessource
+
+    def recolteRessource(*RessourceSelectionnee):
+        pass
+        ##  self.occupee = false
+        ##  ressourceRechercher = *RessourceSelectionnee.tabPos
+        ##  while true :
+        ##   if self.ressourceCollecting != null:
+        ##      coordonneeRessource [] = self.ressourceCollecting.Position[x,y]
+        ##   path finder(coordonneeRessource)
+        ## -- do the way
+        ##      if self.ressourceCollecting = false :
+        ##          scanRessource()
+        ##              if self.ressourceCollecting:
+        ##                  print("arret en court, aucune ressource equivalante FOUND")
+        ##                  self.ressourceCollecting = null
+        ##                  self.occuper = false
+        ##                  return false
+        ##    -----action-collecter ressource-----------
+        ##   self.collectionRessource()
+        ## #----- retourner les ressources
+        ##   pathfinder(self.ressourceCenter.collectingCoords)
+        ##   while self.position != self.ressourceCenter.collectingCoords:
+        ##      pass # wait--
+        ##   self.owner.ressource[ressourceRechercher] += self.ressourceCourante
+        ##   self.ressourceCourante = 0
+        ## ---- ajouter cette ressource au ressource du joueur
+        ## ----- retourner a la position(x,y) de la ressource
+        ## ---- rechercher si une ressource equivalange se trouve dans (self.champDeVision)
+  """
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
@@ -205,6 +315,24 @@ class Guerrier(Unit):
             self.hpActuel -= degatsRecus -self.defense
 
 
+<<<<<<< HEAD
+class Building(Unit):
+    def __init__ (self, ownerID, posX, posY):
+        Unit.__init__(self, ownerID, posX, posY)
+        self.type = "Building"
+        #valeur arbitraire
+        self.hpActuel = 1000
+        self.hpMax = self.hpActuel
+        self.longueur = 100
+        self.largeur = 100
+        self.delaiDeConstruction = 20000
+        self.champDeVision = 50
+
+        #isAlive est herite de Unit
+    def deplacer(self):
+        pass
+        #deplacer est surcharger pour quon ne puisse pas deplace un building
+=======
 
 class Building():
 
@@ -239,17 +367,22 @@ class Building():
         else :
             self.hpActuel -= degatsRecus
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
 class TownCenter(Building):
     """ bref Desc des fonctions:
         uniteCreable(self) -- retourne la liste d'unite creable en String
         ( sinon en objet Unit specifique)
-
+       ##  self.spawnPoint[]
         createUnit(self, Unit)-- a besoin d'un objet unit : place l'Unit dans
         la liste creationQueue et change la variable tempsRestant pour le
         delaiDeConstruction de l'Unit dans l'index 0 -
         -- retourne True si la queue est pas pleine et false si la queue est
+<<<<<<< HEAD
+        pleine
+=======
         pleine--
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
         unitSortir(self) -- fait en sorte de pop la premiere Unit de la queue du
         building, retourne le unit en sois et met le tempsRestant egal au
@@ -257,8 +390,11 @@ class TownCenter(Building):
         ps. ceci ne prend pas en arguments le tempsRestant mais pourrait en
         dependre
 
+<<<<<<< HEAD
+=======
         les deux methodes font en sorte que la queue soit FIFO( first in, first out)
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
 
     """
@@ -314,6 +450,8 @@ class TownCenter(Building):
 
         return UnitCree
 
+<<<<<<< HEAD
+=======
     def annulationUnit(self):
         if len(self.creationQueue != 0):
             self.creationQueue.pop()
@@ -381,6 +519,7 @@ class Barrack(Building):
 
 
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
 
 
@@ -405,7 +544,11 @@ def main():
     print("vie apres dmg de unit1 : %d" % unit2.hpActuel)
     """
 
+<<<<<<< HEAD
+    """"
+=======
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
     building = TownCenter("Tom",0, 0)
 
@@ -421,6 +564,12 @@ def main():
 
     Unit1 =building.unitSortir()
 
+<<<<<<< HEAD
+    print(Unit1.id)
+
+    print(Unit1.type)
+    """
+=======
     print (" id de l'unit %s" % Unit1.id)
 
     print(Unit1.type)
@@ -431,6 +580,7 @@ def main():
 
     print("id du towncenter 2 :%s" % building2.id)
 
+>>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
 
 
