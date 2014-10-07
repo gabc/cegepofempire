@@ -184,6 +184,7 @@ class Vue():
         labelMiniMap=Label(self.cadreMiniMap,text="Mini-Map")
         labelMiniMap.grid(column=0,row=0)
         
+<<<<<<< HEAD
     #===========================================================================
     # def rafraichirTemps(self,temps):
     #     labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
@@ -210,4 +211,9 @@ if __name__ == "__main__":
             
 
     c = Controleur()
+=======
+    def rafraichirTemps(self,temps):
+        labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
+        labelTemps.grid(column=0,row=1)
+>>>>>>> 74bd3e71191db4ceb019e49e93f1b3b1ede8893e
         
