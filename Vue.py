@@ -1,5 +1,6 @@
 from tkinter import *
 from moduleObjets import *
+from map import *
 
 #===============================================================================
 # #A Faire
@@ -113,24 +114,32 @@ class Vue():
             self.canevas.create_line(0,j*self.longeurLigne,self.parent.l*self.longeurLigne,j*self.longeurLigne,fill="white")
         
     def placeRessource(self):
-        for i in range(self.parent.l):
-            for j in range(self.parent.h):
-                print(self.parent.m.mat[j][i].ressource)
+        for i in range(self.parent.h):
+            for j in range(self.parent.l):
+                #print(self.parent.m.mat[j][i].ressource)
                 if self.parent.m.mat[j][i].ressource == FOOD_CHAR:#nourriture
-                    print("nourr")
+                    #print("nourr")
                     self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="red",tags="food")
-                elif self.parent.m.mat[j][i].ressource == MATE_CHAR:#bois
-                    print("bois")
-                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="brown",tags="food")
-                elif self.parent.m.mat[j][i].ressource == RARE_CHAR:#or
-                    print("or")
-                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="yellow",tags="food")
+                elif self.parent.m.mat[j][i].ressource == WOOD_CHAR:#bois
+                    #print("bois")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="brown",tags="wood")
+                elif self.parent.m.mat[j][i].ressource == ROCK_CHAR:#pierre
+                    #print("pierre")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="gray",tags="rock")
                 #elif self.parent.m.mat[j][i].ressource == EMPTY_CHAR:#vide
                 #    print("vide")
                 #    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
                 elif self.parent.m.mat[j][i].ressource == ARTE_CHAR:#energie
-                    print("energie")
-                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="blue",tags="food")
+                    #print("energie")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="blue",tags="artefact")
+
+                elif self.parent.m.mat[j][i].ressource == ENERGY_CHAR:#energie
+                    #print("energie")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="green2",tags="energie")
+                
+                elif self.parent.m.mat[j][i].ressource == GOLD_CHAR:#energie
+                    #print("energie")
+                    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="gold",tags="or")
                 
                 
 
@@ -227,7 +236,7 @@ class Vue():
             self.canevas.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
         self.root.after(100, self.rafraichirCanevas)
         
-if __name__ == "__main__":  
+"""if __name__ == "__main__":  
     from moduleObjets import *
     from map import *
     
@@ -235,16 +244,16 @@ if __name__ == "__main__":
     
     class Controleur(): 
         def __init__(self):
-            self.l=40
-            self.h=30
-            liste=[Joueur(1,"a"), Joueur(2,"b")]
+            self.l=45
+            self.h=35
+            liste=[Joueur(1), Joueur(2)]
             self.m=Map(self.l,self.h)
-            self.m.setSeed(10)
+            #self.m.setSeed(10)
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
             
             self.temps=0
-            self.j = Joueur(0, "test")
+            self.j = Joueur(0)
             self.vue=Vue(self)
             #self.vue.root.after(100, self.vue.rafraichirCanevas)
             self.vue.root.mainloop()
@@ -259,4 +268,4 @@ if __name__ == "__main__":
     
             
 
-    c = Controleur()
+    c = Controleur()"""

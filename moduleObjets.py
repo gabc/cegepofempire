@@ -55,17 +55,15 @@
 
 # le id_objet est une variable static qui ne sert qu'a compter on est rendu au
 # combien ieme objet cree
-<<<<<<< HEAD
+
 # on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
-=======
+
 # on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
->>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
+
 # le global fait en sorte que partout dans la page la variable et son contenu
 # est garder MEME DANS LES AUTRE FONCTIONS QUI SONT ENFANT DE LEMPLACEME
 # DE LA VARIABLE: NE PAS REUTILISER
 
-<<<<<<< HEAD
-=======
 
 
 #-------------------------------------------
@@ -116,7 +114,8 @@ class Cpu():
 """
 
 class Joueur():
-    def __init__(self, ID, posX, posY):
+    def __init__(self, ID):
+        #ORIGINAL INIT: def __init__(self, ID, posX, posY):
         self.ere = 1
         self.maxUnits = 200
         self.ressources = [0,0,0]
@@ -155,7 +154,7 @@ class Joueur():
 
 
 
->>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
+
 id_objet = 0
 
 class Unit():
@@ -315,7 +314,7 @@ class Guerrier(Unit):
             self.hpActuel -= degatsRecus -self.defense
 
 
-<<<<<<< HEAD
+
 class Building(Unit):
     def __init__ (self, ownerID, posX, posY):
         Unit.__init__(self, ownerID, posX, posY)
@@ -332,7 +331,7 @@ class Building(Unit):
     def deplacer(self):
         pass
         #deplacer est surcharger pour quon ne puisse pas deplace un building
-=======
+
 
 class Building():
 
@@ -367,7 +366,7 @@ class Building():
         else :
             self.hpActuel -= degatsRecus
 
->>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
+
 
 class TownCenter(Building):
     """ bref Desc des fonctions:
@@ -450,8 +449,7 @@ class TownCenter(Building):
 
         return UnitCree
 
-<<<<<<< HEAD
-=======
+
     def annulationUnit(self):
         if len(self.creationQueue != 0):
             self.creationQueue.pop()
@@ -519,7 +517,7 @@ class Barrack(Building):
 
 
 
->>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
+
 
 
 
@@ -544,7 +542,7 @@ def main():
     print("vie apres dmg de unit1 : %d" % unit2.hpActuel)
     """
 
-<<<<<<< HEAD
+
     """"
 =======
 
@@ -569,7 +567,7 @@ def main():
 
     print(Unit1.type)
     """
-=======
+
     print (" id de l'unit %s" % Unit1.id)
 
     print(Unit1.type)
@@ -580,7 +578,6 @@ def main():
 
     print("id du towncenter 2 :%s" % building2.id)
 
->>>>>>> eedc307369a81b857623c3a604aff6f643d5a02a
 
 
 

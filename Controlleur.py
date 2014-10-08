@@ -2,6 +2,7 @@ from Vue import *
 from moduleObjets import *
 from deplacement import *
 from map import *
+from Vue import *
 #WTF does the controler do:
 #Pas de menus pour l'instant, on jump directement dans le jeu
 #Une fois le server fini --> faire le menu "host ou join a game"
@@ -24,7 +25,7 @@ from map import *
 #   4. message au server s'il y a action
 #
 
-class Controleur(): 
+"""class Controleur(): 
     def __init__(self):
         self.temps=0
         self.vue=Vue(self)
@@ -36,4 +37,31 @@ class Controleur():
         self.vue.root.after(1000,self.tempsJeu)              
             
 if __name__ == "__main__":  
+    c = Controleur()"""
+
+class Controleur(): 
+        def __init__(self):
+            self.l=45
+            self.h=35
+            liste=[Joueur(1), Joueur(2)]
+            self.m=Map(self.l,self.h)
+            #self.m.setSeed(10)
+            self.m.placeRessourcesOverworld()
+            self.m.placeRessourcesUnderworld()
+            
+            self.temps=0
+            self.j = Joueur(0)
+            self.vue=Vue(self)
+            #self.vue.root.after(100, self.vue.rafraichirCanevas)
+            self.vue.root.mainloop()
+        
+        #=======================================================================
+        def tempsJeu(self):
+             self.temps +=1
+             self.vue.rafraichirTemps(self.temps)
+             self.vue.root.after(1000,self.tempsJeu)
+        #=======================================================================
+            
+if __name__ == "__main__":  
+    
     c = Controleur()
