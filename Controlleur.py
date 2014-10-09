@@ -41,8 +41,8 @@ if __name__ == "__main__":
 
 class Controleur(): 
         def __init__(self):
-            self.l=45
-            self.h=35
+            self.l=39
+            self.h=25
             liste=[Joueur(1), Joueur(2)]
             self.m=Map(self.l,self.h)
             #self.m.setSeed(10)
