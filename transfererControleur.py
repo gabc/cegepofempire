@@ -1,6 +1,9 @@
 from tkinter import *
 import Pyro4
-
+import socket
+import os
+from subprocess import Popen
+import random
 
 #===============================================================================
 # #A Faire
@@ -232,6 +235,12 @@ class Controleur():
         #envoi l'action request seed
         self.sl.sendAndReceive(self.action)
 
+        '''
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("gmail.com"))
+        self.monip = s.getsockname()[0]
+        s.close
+        '''
         
         
         self.vue=Vue(self)
