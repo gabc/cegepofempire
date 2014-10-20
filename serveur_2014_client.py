@@ -1,4 +1,4 @@
-#été
+#!/usr/bin/env python3
 import Pyro4
 import random
 from subprocess import Popen
@@ -55,7 +55,11 @@ class Controleur(object):
         cwd=os.getcwd()
         testJMServeur=cwd+"\\"+"serveur_2014_serveur.py"
         print("AVANT SERVEUR")
-        pid = Popen(["C:\\Python33\\Python.exe", "serveur_2014_serveur.py"]).pid
+        if platform.system() == "Linux":
+            pythonExe = "/usr/bin/python3"
+        else:
+            pythonExe = "C:\\Python33\\Python.exe"
+        pid = Popen([pythonExe, "serveur_2014_serveur.py"]).pid
         
         print("APRES SERVEUR")
         self.serveurLocal=1
