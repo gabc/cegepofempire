@@ -44,13 +44,6 @@ class Modele(object):
 
         
     def prochaineAction(self,cadre):
-        print(self.actionsAFaire)
-        if cadre in self.actionsAFaire:
-            for i in self.actionsAFaire[cadre]:
-                #print("ACTIONENCOURS",i)
-                self.civs[i[0]].actions[i[1]](i[2])
-            del self.actionsAFaire[cadre]
-            #print("NO1",cadre)
-                
-        for i in self.unites:
-            self.unites[i].prochaineAction()
+        for action in self.actionsAFaire:
+            print("Y'a un truc qui se passe", action)
+            self.parent.serveur.faitAction(action)
