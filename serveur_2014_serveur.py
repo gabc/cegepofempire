@@ -85,7 +85,7 @@ class ModeleService(object):
                 self.clients[nom].actionsEnAttentes={}
                 rep= [1,message,rep]
             else:
-                print("AYOYE") # ici on a un probleme car une action doit se produire dans le passé
+                print("AYOYE") # ici on a un probleme car une action doit se produire dans le passÃ©
         else:
             rep= [0,message,list(self.clients.keys())]
         return rep

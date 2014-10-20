@@ -28,7 +28,7 @@ class Modele(object):
     def __init__(self,parent):
         self.parent=parent
         self.unites=[]
-        self.actionsAFaire={}
+        self.actionsAFaire=[]
         
     def initPartie(self,listeNomsJoueurs):
         n=0
@@ -37,12 +37,11 @@ class Modele(object):
             pass
 
         
-    def creerUnite(self,):
-        x=random.randrange(self.parent.largeur_espace)
-        y=random.randrange(self.parent.hauteur_espace)
-        random.seed(self.rdseed)
-        self.actions.append(["creerUnite",[self.nom,x,y]])
-        self.creerEtoiles()
+    def creerUnite(self, unit):
+        x=unit.posX
+        y=unit.posY
+        self.actionsAFaire.append(["creerUnite",[unit.ownerID,x,y]])
+
         
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire:

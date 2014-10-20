@@ -45,7 +45,8 @@ class Controleur(object):
         
         self.modele=Modele(self)
         self.vue=Vue(self)
-
+        self.timerJeu()
+        
     def creerServeur(self):
         if platform.python_version_tuple()[0]=='3':
             p="python3"
@@ -119,6 +120,7 @@ class Controleur(object):
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
                 rep=self.serveur.faitAction([self.nom,self.cadre,0])
+            print(self.actions)
             self.actions=[]
             if rep[0]:
                 for i in rep[2]:

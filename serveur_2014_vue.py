@@ -170,7 +170,8 @@ class Vue(object):
     
     def spawnUnit(self,event):
         vil = Villageois(0, event.x,event.y)
-        self.parent.j.units.append(vil)
+        self.modele.creerUnite(vil)
+        # self.parent.j.units.append(vil)
     
         
     def initCadre(self):
