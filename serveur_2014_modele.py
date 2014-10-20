@@ -40,10 +40,11 @@ class Modele(object):
     def creerUnite(self, unit):
         x=unit.posX
         y=unit.posY
-        self.actionsAFaire.append(["creerUnite",[unit.ownerID,x,y]])
+        self.actionsAFaire.append(["creerUnite",self.parent.cadre,[unit.ownerID,x,y]])
 
         
     def prochaineAction(self,cadre):
+        print(self.actionsAFaire)
         if cadre in self.actionsAFaire:
             for i in self.actionsAFaire[cadre]:
                 #print("ACTIONENCOURS",i)
