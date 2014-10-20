@@ -46,5 +46,10 @@ class Modele(object):
         
     def prochaineAction(self,cadre):
         print(self.actionsAFaire)
-        # if cadre in self.actionsAFaire:
-        #     for action in self.actionsAFaire[cadre]:
+        if cadre in self.actionsAFaire:
+            for action in self.actionsAFaire[cadre]:
+                print("Fait par, ", action[0])
+                print("Fait: ", action[1])
+                if action[0] == "creerUnite":
+                    self.parent.joueurs[action[1][0]].creerUnit("villageois",action[1][1], action[1][2])
+            del self.actionsAFaire[cadre]

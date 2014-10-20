@@ -24,8 +24,8 @@ class Controleur(object):
         self.m.placeRessourcesUnderworld()
         
         self.temps=0
-        self.j = Joueur(0, "test")
-        
+        self.joueurs = {} # = Joueur(0, "test")
+        self.joueurs[0] = Joueur(0, "test")
         self.nom=""
         self.cadre=0
         self.actions=[]

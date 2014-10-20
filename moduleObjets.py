@@ -91,9 +91,9 @@ class Joueur():
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
 
-    def creerUnit(self, idBuilding, type ):
-
-        pass
+    def creerUnit(self, type, x, y):
+        if type == "villageois":
+            self.units.append(Villageois(self.ID, x, y))
 
     def changerAllies():
         pass

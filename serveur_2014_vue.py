@@ -280,8 +280,9 @@ class Vue(object):
           
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
-        for u in self.parent.j.units:
-            self.canevasMilieu.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
+        for j in self.parent.joueurs.values():
+            for u in j.units:
+                self.canevasMilieu.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
         self.root.after(100, self.rafraichirCanevas)
     
     
