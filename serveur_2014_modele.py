@@ -28,7 +28,8 @@ class Modele(object):
     def __init__(self,parent):
         self.parent=parent
         self.unites=[]
-        self.actionsAFaire=[]
+        self.actionsAFaire={}
+        self.actions=[]
         
     def initPartie(self,listeNomsJoueurs):
         n=0
@@ -40,10 +41,15 @@ class Modele(object):
     def creerUnite(self, unit):
         x=unit.posX
         y=unit.posY
-        self.actionsAFaire.append(["creerUnite",self.parent.cadre,[unit.ownerID,x,y]])
+        self.actions.append(["creerUnite",[unit.ownerID,x,y]])
 
         
     def prochaineAction(self,cadre):
-        for action in self.actionsAFaire:
-            print("Y'a un truc qui se passe", action)
-            self.parent.serveur.faitAction(action)
+        # print("Cadre, contr: ", self.parent.cadre, " Cadre, arg: ", cadre)
+        print(self.actionsAFaire)
+        # for action in self.actionsAFaire:
+            
+        
+        # for action in self.actionsAFaire:
+        #     print("Y'a un truc qui se passe", action)
+        #     self.parent.serveur.faitAction([self.parent.nom,self.parent.cadre,action])
