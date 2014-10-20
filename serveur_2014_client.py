@@ -11,12 +11,6 @@ from serveur_2014_modele import *
 from serveur_2014_vue import *
 from helper import Helper
 
-print(platform.platform())
-print(platform.system())
-print(platform.python_version_tuple())
-print(os.getcwd())
-print(os.environ)
-
 
 class Controleur(object):
     def __init__(self):
