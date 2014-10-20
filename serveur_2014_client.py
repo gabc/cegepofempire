@@ -42,11 +42,6 @@ class Controleur(object):
         self.timerJeu()
         
     def creerServeur(self):
-        if platform.python_version_tuple()[0]=='3':
-            p="python3"
-        else:
-            p="python"
-        p="python"
         cwd=os.getcwd()
         testJMServeur=cwd+"\\"+"serveur_2014_serveur.py"
         print("AVANT SERVEUR")
