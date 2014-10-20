@@ -1,4 +1,3 @@
-# -*- coding: ISO-8859-1 -*-
 import random
 import math
 from moduleObjets import *

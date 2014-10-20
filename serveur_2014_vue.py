@@ -1,4 +1,3 @@
-# -*- coding: ISO-8859-1 -*-
 from tkinter import *
 from tkinter.font import *
 import tkinter.simpledialog as sd

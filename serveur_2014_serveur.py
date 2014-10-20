@@ -1,4 +1,3 @@
-# -*- encoding: ISO-8859-1 -*-
 import Pyro4
 import os
 from threading import Timer

@@ -1,4 +1,3 @@
-# -*- coding: ISO-8859-1 -*-
 #été
 import Pyro4
 import random
