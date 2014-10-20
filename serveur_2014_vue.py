@@ -84,9 +84,9 @@ class Vue(object):
         Nom.grid(column=0,row=0)
         self.nomjoueur.grid(column=1,row=0)
         
-        
-        lcree=Labeljm(cadreMenu,text="Pour créer un serveur à l'adresse inscrite  | ")
-        lconnect=Labeljm(cadreMenu,text="Pour vous connecter à un serveur")
+
+        lcree=Labeljm(cadreMenu,text="Pour crÃ©er un serveur Ã  l'adresse inscrite  | ")
+        lconnect=Labeljm(cadreMenu,text="Pour vous connecter Ã  un serveur")
         lcree.grid(column=0,row=1)
         lconnect.grid(column=1,row=1)
         
@@ -232,7 +232,7 @@ class Vue(object):
     
         
     def afficheArtefact(self):
-        #loop dans tou les unité, etc
+        #loop dans tou les unite, etc
 		#for i in self.partie.civs.keys():
        
 	   #afficher les changement
