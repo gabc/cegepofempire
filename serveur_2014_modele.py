@@ -41,15 +41,10 @@ class Modele(object):
     def creerUnite(self, unit):
         x=unit.posX
         y=unit.posY
-        self.actions.append(["creerUnite",[unit.ownerID,x,y]])
+        self.parent.actions.append(["creerUnite",[unit.ownerID,x,y]])
 
         
     def prochaineAction(self,cadre):
-        # print("Cadre, contr: ", self.parent.cadre, " Cadre, arg: ", cadre)
         print(self.actionsAFaire)
-        # for action in self.actionsAFaire:
-            
-        
-        # for action in self.actionsAFaire:
-        #     print("Y'a un truc qui se passe", action)
-        #     self.parent.serveur.faitAction([self.parent.nom,self.parent.cadre,action])
+        # if cadre in self.actionsAFaire:
+        #     for action in self.actionsAFaire[cadre]:
