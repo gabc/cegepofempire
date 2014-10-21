@@ -82,7 +82,6 @@ class Unit():
         self.chemin = []
 
     def faitAction(self):
-        print("Oui?")
         if self.chemin:
             self.deplacer(self.deplaceur, self.chemin)
     
@@ -141,7 +140,6 @@ class Villageois(Unit):
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)            
         else:
-            print(math.trunc(self.posX / 20), math.trunc(self.chemin[0].x), math.trunc(self.posY / 20), math.trunc(self.chemin[0].y))
             if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):      
                 del self.chemin[0]
             if self.chemin:
