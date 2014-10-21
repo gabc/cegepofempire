@@ -1,68 +1,3 @@
-#-------------------------------------------------------------------------------
-# Name:        module objets
-# Purpose:
-#
-# Author:      Sergio F
-#
-# Created:     25/09/2014
-# Copyright:   (c) Sergio F 2014
-# Licence:     <your licence>
-#-------------------------------------------------------------------------------
-
-
-
-
-#-------------------------------------------------------------------------------
-#Captain's Log entry : 28/09/2014:
-# ajouter la fonction recevoirDegats et isAlive a l'objet Unit
-#Fonctionne avec Villageaois
-
-#Creer la class building: changer owner a ownerID, hp a hpActuel et HpMax
-# dans le scrum
-#
-#
-
-#Building herite de Unit
-
-#Creer TownCenter
-#TownCenter a des nouvelle variable  tempsRestant, creationQueue
-#TownCenter a des nouvelles methodes unitSortir
-#: voir __doc__
-#-------------------------------------------------------------------------------
-
-
-
-
-
-
-
-# Captain's Log entry 25/09/2014:
-
-# jai ajouter la variable type aux instances de Unit et de Villageois qui sert
-# a identifier le type en string, vous pouvez quand meme utiliser isinstance a la
-# place,
-# je suis en train de travailler sur d'autres variables qui pourrait etre utile
-
-# jai cru que ca serait bien d'inclure le hpActuel et le hpMax pour ainsi diviser
-# la variable hp qui etais pas trop significative
-
-# chaque unite devrait avoir aussi une vitesse de deplacement cela va etre ajoute
-# comme variable a Unit
-
-
-
-
-# le id_objet est une variable static qui ne sert qu'a compter on est rendu au
-# combien ieme objet cree
-# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Âº on cree les objets
-# le global fait en sorte que partout dans la page la variable et son contenu
-# est garder MEME DANS LES AUTRE FONCTIONS QUI SONT ENFANT DE LEMPLACEME
-# DE LA VARIABLE: NE PAS REUTILISER
-
-
-
-#-------------------------------------------
-
 class Joueur():
     def __init__(self, ID, name):
         self.name = name
@@ -94,6 +29,7 @@ class Joueur():
     def creerUnit(self, type, x, y):
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y))
+            print("Should be done by now")
 
     def changerAllies():
         pass
