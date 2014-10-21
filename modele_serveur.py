@@ -29,7 +29,6 @@ class Modele(object):
         self.parent=parent
         self.unites=[]
         self.actionsAFaire={}
-        self.actions=[]
         
     def initPartie(self,listeNomsJoueurs):
         n=0

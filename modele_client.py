@@ -1,4 +1,5 @@
 import deplacement
+import math
 
 def roundtenth(x):
     """arrondi a la dizaine vers le bas 9 -> 0, 15 -> 10"""
@@ -68,7 +69,7 @@ class Unit():
         self.ownerID = ownerID
 
         self.type = "Unit"
-
+        self.deplaceur = None
         #le hp d'un unit generique est -1
         self.hpMax = -1
         self.hpActuel = self.hpMax
@@ -80,8 +81,10 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
 
-    def deplacer(self, deplaceur, arrive):
-        pass
+    def faitAction(self):
+        print("Oui?")
+        if self.chemin:
+            self.deplacer(self.deplaceur, self.chemin)
     
     def isAlive(self):
         if self.hpActuel <= 0:
@@ -130,22 +133,15 @@ class Villageois(Unit):
         pass
 
     def deplacer(self, deplaceur, arrive):
-        if self.chemin is None or len(self.chemin) == 0:
-            self.isMoving = True
-            self.chemin = deplaceur.chemin(self, arrive)
+        if self.chemin is None or self.chemin == []:
+            self.deplaceur = deplaceur
+            self.chemin = deplaceur.chemin(self, arrive)            
         else:
-            self.effectueDeplacement(self.chemin[0])
-            if roundtenth(self.posX) == int(self.chemin[0].x * 20) and roundtenth(self.posY) == int(self.chemin[0].y):                
+            print(math.trunc(self.posX / 20), math.trunc(self.chemin[0].x), math.trunc(self.posY / 20), math.trunc(self.chemin[0].y))
+            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):      
                 del self.chemin[0]
-
-                # if self.posX < self.chemin[0].x:
-                #     self.posX += self.vitesseX
-                # else:
-                #     self.vitesseX = -self.vitesseX
-                # if self.posY < self.chemin[0].y:
-                #     self.posY += self.vitesseY
-                # else:
-                #     self.vitesseY = -self.vitesseY
+            if self.chemin:
+                self.effectueDeplacement(self.chemin[0])
             
 
 class Guerrier(Unit):
