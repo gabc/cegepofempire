@@ -1,6 +1,6 @@
 import random
 import math
-from moduleObjets import *
+from modele_client import *
 
 #NOTE: pour l'instant, ceci n'est seulement que pour des hauteurs et largeurs impaires pour les spawns des joueurs
 #Ressources: Matériaux, nourriture, énergie, or. + artefacts

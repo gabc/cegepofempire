@@ -6,7 +6,7 @@ import random
 import math
 from helper import *
 from PIL import Image, ImageTk 
-from moduleObjets import *
+from modele_client import *
 from Map import *
 
 class Buttonjm(Button):
