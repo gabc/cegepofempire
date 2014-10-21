@@ -28,6 +28,9 @@ class Deplacement:
     def chemin(self, unite, arrivee):
         depart = Noeud(int(unite.posX/20), int(unite.posY/20), 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
+
+        if not self.map[arrive.x][arrive.y].isPassable():
+            return []
         return self.astar(depart, arrive)
 
     def astar(self, depart, arrivee):
