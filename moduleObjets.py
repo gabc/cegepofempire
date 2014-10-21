@@ -93,10 +93,6 @@ class Unit():
             self.hpActuel -= degatsRecus
 
 
-
-
-
-
         # print(" numero de l'id est : %s" % self.id)
         # print(" numero du owner est : %s" % self.ownerID)
 
@@ -125,23 +121,21 @@ class Villageois(Unit):
         pass
 
     def deplacer(self, deplaceur, arrive):
-        self.chemin = deplaceur.chemin(self, arrive)
-        print(self.chemin)
         if self.chemin is None or len(self.chemin) == 0:
-            print("Chemin None")
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            while self.posX != self.chemin[0].x and self.posY != self.chemin[0].y:
-                print("Noooo")
-                if self.posX > self.chemin[0].x:
-                    self.posX += self.vitesseX
-                else:
-                    self.vitesseX = -self.vitesseX
-                if self.posY > self.chemin[0].y:
-                    self.posY += self.vitesseY
-                else:
-                    self.vitesseY = -self.vitesseY
-            del self.chemin[0]
+            while self.chemin:
+                self.posX = self.chemin[0].x * 20
+                self.posY = self.chemin[0].y * 20
+                # if self.posX < self.chemin[0].x:
+                #     self.posX += self.vitesseX
+                # else:
+                #     self.vitesseX = -self.vitesseX
+                # if self.posY < self.chemin[0].y:
+                #     self.posY += self.vitesseY
+                # else:
+                #     self.vitesseY = -self.vitesseY
+                del self.chemin[0]
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):

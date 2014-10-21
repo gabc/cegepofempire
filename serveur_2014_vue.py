@@ -276,8 +276,9 @@ class Vue(object):
     #===========================================================================
       
     def setArrive(self,event):
-        self.modele.deplaceUnite((0,self.modele.parent.joueurs[0].units[0].id),(event.x, event.y))
-          
+        print("setarr", event.x, event.x/self.longeurLigne)
+        self.modele.deplaceUnite((0,self.modele.parent.joueurs[0].units[0].id),(int(event.x/self.longeurLigne),int(event.y/self.longeurLigne)))
+        
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
         for j in self.parent.joueurs.values():

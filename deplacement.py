@@ -26,7 +26,7 @@ class Deplacement:
         self.maxnode = 400
         
     def chemin(self, unite, arrivee):
-        depart = Noeud(unite.posX, unite.posY, 0, 0, None)
+        depart = Noeud(int(unite.posX/20), int(unite.posY/20), 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
         return self.astar(depart, arrive)
 
@@ -54,7 +54,7 @@ class Deplacement:
             if self.h(current, arrivee) == 0:
                 print(len(open))
                 return self.path(current)
-                
+
             for v in self.voisin(current):
                 v.parent = current
                 v.gc = self.g(v)
@@ -84,6 +84,7 @@ class Deplacement:
         rep = []
         for i in (-1,1,0):
             for j in (0,1,-1):
+                print("dep", x,y)
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
                     if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
@@ -135,16 +136,16 @@ if __name__ == '__main__':
     m.placeRessourcesUnderworld()
 
     # m.placeJoueurs(liste)
-    #m.equilibreRessources(liste) <-- To do
-    #m.printMapToFile()
+
+
     dx = 0
     dy = 0
-    ax = 24
-    ay = 54
+    ax = 12
+    ay = 45
 
     d = Deplacement(None, m.mat)
-    cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
-    #path = d.chemin(Foo(dx,dy),(ax,ay))
+    # cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
+    path = d.chemin(Foo(dx,dy),(ax,ay))
     
     str = ""
     flag = False
