@@ -28,7 +28,6 @@ class Controleur(object):
         
         self.temps=0
         self.joueurs = {} # = Joueur(0, "test")
-        self.joueurs[0] = Joueur(self, 0, "test")
         self.nom=""
         self.cadre=0
         self.actions=[]
