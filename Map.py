@@ -283,7 +283,7 @@ class Map:
         
   
 #For testing purposes
-l=9
+"""l=9
 h=9
 
 j1=Joueur(1,1,1)
@@ -313,4 +313,4 @@ m.printMapCon()
 
 m.printPassable()
 
-#m.countRessources()
+#m.countRessources()"""
