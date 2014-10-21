@@ -67,7 +67,7 @@ class ModeleService(object):
                         
                 else:
                     self.clients[i].actionsEnAttentes[cadreVise]=p[2]
-                print("ACTION ",self.clients[i].nom,self.clients[i].actionsEnAttentes)
+                # print("ACTION ",self.clients[i].nom,self.clients[i].actionsEnAttentes)
 
         rep=[]
         
@@ -79,7 +79,6 @@ class ModeleService(object):
             message=""
             
         if self.clients[nom].actionsEnAttentes:
-            print(nom,self.clients[nom].actionsEnAttentes)
             if cadre<min(self.clients[nom].actionsEnAttentes.keys()):
                 rep= self.clients[nom].actionsEnAttentes
                 self.clients[nom].actionsEnAttentes={}

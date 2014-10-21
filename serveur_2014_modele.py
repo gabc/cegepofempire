@@ -55,7 +55,6 @@ class Modele(object):
                 if action[0] == "creerUnite":
                     self.parent.joueurs[action[1][0]].creerUnit("villageois",action[1][1], action[1][2])
                 elif action[0] == "deplace":
-                    print(action)
                     self.parent.joueurs[action[1][0]].deplaceUnit(action[1][1],action[1][2])
 
             del self.actionsAFaire[cadre]

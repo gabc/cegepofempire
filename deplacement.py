@@ -52,7 +52,6 @@ class Deplacement:
             #     temps = time.time()
                 
             if self.h(current, arrivee) == 0:
-                print(len(open))
                 return self.path(current)
 
             for v in self.voisin(current):

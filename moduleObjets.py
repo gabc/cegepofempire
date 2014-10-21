@@ -1,5 +1,9 @@
 import deplacement
 
+def roundtenth(x):
+    """arrondi a la dizaine vers le bas 9 -> 0, 15 -> 10"""
+    return x if x % 10 == 0 else x - x % 10
+
 class Joueur():
     def __init__(self, parent, ID, name):
         self.parent = parent
@@ -92,17 +96,22 @@ class Unit():
         else :
             self.hpActuel -= degatsRecus
 
-
-        # print(" numero de l'id est : %s" % self.id)
-        # print(" numero du owner est : %s" % self.ownerID)
-
+    def effectueDeplacement(self, arrive):
+        if self.posX > int(arrive.x*20):
+            self.posX -= self.vitesseX
+        elif self.posX < int(arrive.x*20):
+            self.posX += self.vitesseX
+        if self.posY > int(arrive.y*20):
+            self.posY -= self.vitesseY
+        elif self.posY < int(arrive.y*20):
+            self.posY += self.vitesseY            
 
 class Villageois(Unit):
 
     def __init__(self,ownerID, posX, posY):
         Unit.__init__(self,ownerID, posX, posY)
         self.type = "Villageois"
-
+        self.isMoving = False
         #j'ai decider arbitrairement de l'hp: a modifier
         #dautres variables arbitraires yee!!
         self.champDeVision = 50
@@ -122,11 +131,13 @@ class Villageois(Unit):
 
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or len(self.chemin) == 0:
+            self.isMoving = True
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            while self.chemin:
-                self.posX = self.chemin[0].x * 20
-                self.posY = self.chemin[0].y * 20
+            self.effectueDeplacement(self.chemin[0])
+            if roundtenth(self.posX) == int(self.chemin[0].x * 20) and roundtenth(self.posY) == int(self.chemin[0].y):                
+                del self.chemin[0]
+
                 # if self.posX < self.chemin[0].x:
                 #     self.posX += self.vitesseX
                 # else:
@@ -135,7 +146,7 @@ class Villageois(Unit):
                 #     self.posY += self.vitesseY
                 # else:
                 #     self.vitesseY = -self.vitesseY
-                del self.chemin[0]
+            
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
