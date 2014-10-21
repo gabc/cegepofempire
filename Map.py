@@ -12,23 +12,31 @@ from moduleObjets import *
 
 #Ratio des ressources ( sur 100)
 
-MATE_RATIO=1
+WOOD_RATIO=1
 FOOD_RATIO=1
-RARE_RATIO=1
+ROCK_RATIO=1
 ARTE_RATIO=1
+ENERGY_RATIO=1
+GOLD_RATIO=1
 UNDER_RATIO=25
 
 #Caracteres qui representent les ressources, incluant les ressources souterraines
         
-MATE_CHAR='1'
+WOOD_CHAR='1'
 FOOD_CHAR='2'
-RARE_CHAR='3'
+ROCK_CHAR='3'
 ARTE_CHAR='4'
+ENERGY_CHAR='5'
+GOLD_CHAR='6'
 EMPTY_CHAR='-'
-MATE_UNDER_CHAR='a'
+
+WOOD_UNDER_CHAR='a'
 FOOD_UNDER_CHAR='b'
-RARE_UNDER_CHAR='c'
+ROCK_UNDER_CHAR='c'
 ARTE_UNDER_CHAR='d'
+ENERGY_UNDER_CHAR='e'
+GOLD_UNDER_CHAR='f'
+
 PLAYER_CHAR='#'
 
 class Case:
@@ -68,44 +76,52 @@ class Map:
         self.buildings=[]
         self.largeur=largeur
         self.hauteur=hauteur
-        print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
+        #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(j,i,EMPTY_CHAR, 100, True) for j in range(largeur)] for i in range(hauteur)]        
 
     def setSeed(self, seed):
         random.seed(seed)
         
     def placeRessourceType(self, ratio, char):
-        for i in range(self.largeur):
-            for j in range(self.hauteur):
+        for i in range(self.hauteur):
+            for j in range(self.largeur):
                 nb = random.randrange(100)
-                if nb <= ratio and self.mat[j][i].ressource==EMPTY_CHAR:
-                    self.mat[j][i] = Case(j,i,char,ratio, False)
+                if nb <= ratio and self.mat[i][j].ressource==EMPTY_CHAR:
+                    self.mat[i][j] = Case(j,i,char,ratio, False)
                 
 
     def placeRessourcesOverworld(self):
         #OVERWORLD RESSOURCES
-        self.placeRessourceType(MATE_RATIO, MATE_CHAR)
+        self.placeRessourceType(WOOD_RATIO, WOOD_CHAR)
+        self.placeRessourceType(ROCK_RATIO, ROCK_CHAR)
         self.placeRessourceType(FOOD_RATIO, FOOD_CHAR)
-        self.placeRessourceType(RARE_RATIO, RARE_CHAR)
+        self.placeRessourceType(GOLD_RATIO, GOLD_CHAR)
+        self.placeRessourceType(ENERGY_RATIO, ENERGY_CHAR)
         self.placeRessourceType(ARTE_RATIO, ARTE_CHAR)
 
     def placeRessourcesUnderworld(self):
         #UNDERWORLD RESSOURCES
-        for i in range(self.largeur):
-            for j in range(self.hauteur):
+        for i in range(self.hauteur):
+            for j in range(self.largeur):
                 res = random.randrange(100)
                 if res <= UNDER_RATIO:
-                    if self.mat[j][i].ressource == MATE_CHAR:
-                        self.mat[j][i].ressource = MATE_UNDER_CHAR
+                    if self.mat[i][j].ressource == WOOD_CHAR:
+                        self.mat[i][j].ressource = WOOD_UNDER_CHAR
 
-                    if self.mat[j][i].ressource == FOOD_CHAR:
-                        self.mat[j][i].ressource = FOOD_UNDER_CHAR
+                    if self.mat[i][j].ressource == FOOD_CHAR:
+                        self.mat[i][j].ressource = FOOD_UNDER_CHAR
                         
-                    if self.mat[j][i].ressource == RARE_CHAR:
-                        self.mat[j][i].ressource = RARE_UNDER_CHAR
+                    if self.mat[i][j].ressource == ROCK_CHAR:
+                        self.mat[i][j].ressource = ROCK_UNDER_CHAR
                         
-                    if self.mat[j][i].ressource == ARTE_CHAR:
-                        self.mat[j][i].ressource = ARTE_UNDER_CHAR
+                    if self.mat[i][j].ressource == ARTE_CHAR:
+                        self.mat[i][j].ressource = ARTE_UNDER_CHAR
+
+                    if self.mat[i][j].ressource == ENERGY_CHAR:
+                        self.mat[i][j].ressource = ENERGY_UNDER_CHAR
+
+                    if self.mat[i][j].ressource == GOLD_CHAR:
+                        self.mat[i][j].ressource = GOLD_UNDER_CHAR
 
 
     def placeJoueurs(self,listeJoueurs):
@@ -155,8 +171,8 @@ class Map:
             for angle in listeAngles:
                 x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
-                #print("x =", x,"y =", y,"a =",angle)
-                self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)
+                print("x =", x,"y =", y,"a =",angle)
+                self.mat[y][x]=Case(x,y,PLAYER_CHAR,0,False)
                 listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
 
         #selon une ellipse
@@ -175,20 +191,21 @@ class Map:
                 y = math.trunc(middleY + (a*b*math.sin(math.radians(angle))) / math.sqrt( ((math.pow(b,2)) * math.pow(math.cos(math.radians(angle)),2)) + ((math.pow(a,2)) * math.pow(math.sin(math.radians(angle)),2))  ))
                 if x == self.largeur:
                     x = self.largeur -1
-                self.mat[x][y]=Case(x,y,PLAYER_CHAR,0,False)
+                print("x =", x,"y =", y,"a =",angle)
+                self.mat[y][x]=Case(x,y,PLAYER_CHAR,0,False)
                 listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
     
     def printMapCon(self):
         for i in range(self.hauteur):
             for j in range(self.largeur):
-                print(self.mat[j][i].ressource, end="")
+                print(self.mat[i][j].ressource, end="")
             print("")
 
     def printMapToFile(self):
         f = open('map.txt','w')
         for i in range(self.hauteur):
             for j in range(self.largeur):
-                f.write(str(self.mat[j][i].ressource))
+                f.write(str(self.mat[i][j].ressource))
             f.write("\n")
         f.close()
 
@@ -197,56 +214,79 @@ class Map:
         res1=0
         res2=0
         res3=0
+        res4=0
+        res5=0
         art=0
         vide=0
         res1EtUnder=0
         res2EtUnder=0
         res3EtUnder=0
+        res4EtUnder=0
+        res5EtUnder=0
         resartEtUnder=0
         
         for i in range(self.hauteur):
             for j in range(self.largeur):
-                if self.mat[j][i].ressource == MATE_CHAR:
+                if self.mat[i][j].ressource == WOOD_CHAR:
 
                     res1 += 1
 
-                if self.mat[j][i].ressource == FOOD_CHAR:
+                if self.mat[i][j].ressource == FOOD_CHAR:
 
                     res2 += 1
 
-                if self.mat[j][i].ressource == RARE_CHAR:
+                if self.mat[i][j].ressource == ROCK_CHAR:
 
                     res3 += 1
 
-                if self.mat[j][i].ressource == ARTE_CHAR:
+
+                if self.mat[i][j].ressource == ENERGY_CHAR:
+
+                    res4 += 1
+
+                if self.mat[i][j].ressource == GOLD_CHAR:
+
+                    res5 += 1
+
+                if self.mat[i][j].ressource == ARTE_CHAR:
 
                     art += 1
 
-                if self.mat[j][i].ressource == EMPTY_CHAR:
+                if self.mat[i][j].ressource == EMPTY_CHAR:
 
                     vide += 1
 
-                if self.mat[j][i].ressource == MATE_UNDER_CHAR:
+                if self.mat[i][j].ressource == WOOD_UNDER_CHAR:
 
                     res1EtUnder += 1
                     
-                if self.mat[j][i].ressource == FOOD_UNDER_CHAR:
+                if self.mat[i][j].ressource == FOOD_UNDER_CHAR:
 
                     res2EtUnder += 1
                     
-                if self.mat[j][i].ressource == RARE_UNDER_CHAR:
+                if self.mat[i][j].ressource == ROCK_UNDER_CHAR:
 
                     res3EtUnder += 1
+
+                if self.mat[i][j].ressource == ENERGY_UNDER_CHAR:
+
+                    res4EtUnder += 1
+
+                if self.mat[i][j].ressource == ENERGY_UNDER_CHAR:
+
+                    res5EtUnder += 1
                     
-                if self.mat[j][i].ressource == ARTE_UNDER_CHAR:
+                if self.mat[i][j].ressource == ARTE_UNDER_CHAR:
 
                     resartEtUnder += 1
 
         #PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT PRINT
         print("")
-        print('Materiaux=',res1)
+        print('Bois=',res1)
         print('Food=',res2)
-        print('Rare=',res3)
+        print('Pierre=',res3)
+        print('Energie=',res4)
+        print('Or=',res5)
         print('Artefacts=',art)
         print('Vide=',vide)
         print('Materiaux + under=',res1EtUnder)
@@ -255,12 +295,12 @@ class Map:
         print('Artefact + under=',resartEtUnder)
         
   
-"""#For testing purposes
-l=55
-h=25
+#For testing purposes
+"""l=19
+h=5
 
-j1=Joueur(1,"a")
-j2=Joueur(2,"b")
+j1=Joueur(1)
+j2=Joueur(2)
 
 liste=[]
 
@@ -270,7 +310,7 @@ liste.append(j2)
 
 m=Map(l,h)
 
-m.setSeed(10)
+#m.setSeed(10)
 
 m.placeRessourcesOverworld()
 
@@ -285,5 +325,3 @@ m.placeJoueurs(liste)
 m.printMapCon()
 
 m.countRessources()"""
-
-

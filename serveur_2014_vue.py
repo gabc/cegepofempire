@@ -296,25 +296,32 @@ class Vue(object):
             self.canevasMilieu.create_line(0,j*self.longeurLigne,self.parent.l*self.longeurLigne,j*self.longeurLigne,fill="white")
         
     def placeRessource(self):
-        for i in range(self.parent.l):
-            for j in range(self.parent.h):
-                print(self.parent.m.mat[j][i].ressource)
-                if self.parent.m.mat[j][i].ressource == FOOD_CHAR:#nourriture
-                    print("nourr")
-                    self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="red",tags="food")
-                elif self.parent.m.mat[j][i].ressource == MATE_CHAR:#bois
-                    print("bois")
-                    self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="brown",tags="food")
-                elif self.parent.m.mat[j][i].ressource == RARE_CHAR:#or
-                    print("or")
-                    self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="yellow",tags="food")
+        for i in range(self.parent.h):
+            for j in range(self.parent.l):
+                #print(self.parent.m.mat[j][i].ressource)
+                if self.parent.m.mat[i][j].ressource == FOOD_CHAR:#nourriture
+                    #print("nourr")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="red",tags="food")
+                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:#bois
+                    #print("bois")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="brown",tags="wood")
+                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:#pierre
+                    #print("pierre")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="gray",tags="rock")
                 #elif self.parent.m.mat[j][i].ressource == EMPTY_CHAR:#vide
                 #    print("vide")
-                #    self.canevas.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
-                elif self.parent.m.mat[j][i].ressource == ARTE_CHAR:#energie
-                    print("energie")
-                    self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="blue",tags="food")
+                #    self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
+                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:#energie
+                    #print("energie")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="blue",tags="artefact")
+
+                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:#energie
+                    #print("energie")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="green2",tags="energie")
                 
+                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:#energie
+                    #print("energie")
+                    self.canevasMilieu.create_rectangle(j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2+9,i*self.longeurLigne+self.longeurLigne/2+9,fill="gold",tags="or")
                 
 
             
