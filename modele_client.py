@@ -121,12 +121,16 @@ class Villageois(Unit):
         self.delaiDeConstruction =20000
         self.hpMax = 100
         self.hpActuel = self.hpMax
+        self.isSelected = False ##add
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
 
         self.vitesseX = 5
         self.vitesseY = 5
+
+        self.posX = posX #add
+        self.posY = posY #add
             
 
     def recolteRessource():

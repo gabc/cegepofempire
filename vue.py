@@ -35,6 +35,8 @@ class Vue(object):
         self.cadreActif=0
         self.creeCadres()
         self.placeCadre(self.cadreConnection)
+        self.currentX=0
+        self.currentY=0
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -158,7 +160,9 @@ class Vue(object):
         
         self.canevasMilieu.grid(column=0,row=1,columnspan=3)
         
-        self.canevasMilieu.bind("<Button-1>", self.spawnUnit)
+        self.canevasMilieu.bind("<Button-1>", self.selectUnit) #add
+        self.canevasMilieu.bind("<Motion>", self.motion)
+        self.canevasMilieu.bind("<Key>", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
         
         self.cadrePartie.pack()
@@ -166,10 +170,20 @@ class Vue(object):
         self.rafraichirCanevas()
         self.creerLigne()
         self.placeRessource()
-        
+    
+    def selectUnit(self,event): #add
+        for u in self.modele.parent.joueurs[0].units:
+            u.isSelected = False
+            if self.currentX >= u.posX and self.currentX <= (u.posX+5) and self.currentY >= u.posY and self.currentY <= (u.posX+5):
+                u.isSelected = True
+
+    def motion(self,event):
+        self.canevasMilieu.focus_set()
+        self.currentX=event.x
+        self.currentY=event.y
     
     def spawnUnit(self,event):
-        vil = Villageois(0, event.x,event.y)
+        vil = Villageois(0,self.currentX,self.currentY)
         self.modele.creerUnite(vil)
         # self.parent.j.units.append(vil)
     
@@ -283,7 +297,10 @@ class Vue(object):
         self.canevasMilieu.delete("unit")
         for j in self.parent.joueurs.values():
             for u in j.units:
-                self.canevasMilieu.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
+            	if u.isSelected == True:
+                	self.canevasMilieu.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="red", tags="unit")
+            	else:
+               		self.canevasMilieu.create_rectangle(u.posX,u.posY,u.posX+5,u.posY+5,fill="grey", tags="unit")
         self.root.after(100, self.rafraichirCanevas)
     
     
