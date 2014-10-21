@@ -1,6 +1,7 @@
 import random
 from helper import Helper
 import math
+from modele_client import *
 
    
 class Unite(object):
@@ -34,8 +35,11 @@ class Modele(object):
     def initPartie(self,listeNomsJoueurs):
         n=0
 		#init tous les joueur avec leur unite, batiments, etc...
+        print("Nombre total de joueurs: ", listeNomsJoueurs.__len__())
         for j in listeNomsJoueurs:
-            pass
+            print("joueur: ", j)
+            self.parent.joueurs[n] = Joueur(self.parent, 0, j)
+            n += 1
 
         
     def creerUnite(self, unit):
