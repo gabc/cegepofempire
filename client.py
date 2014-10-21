@@ -8,8 +8,8 @@ import platform
 import atexit
 
 from deplacement import *
-from serveur_2014_modele import *
-from serveur_2014_vue import *
+from modele_serveur import *
+from vue import *
 from helper import Helper
 
 
@@ -46,13 +46,12 @@ class Controleur(object):
         
     def creerServeur(self):
         cwd=os.getcwd()
-        testJMServeur=cwd+"\\"+"serveur_2014_serveur.py"
         print("AVANT SERVEUR")
         if platform.system() == "Linux":
             pythonExe = "/usr/bin/python3"
         else:
             pythonExe = "C:\\Python33\\Python.exe"
-        pid = Popen([pythonExe, "serveur_2014_serveur.py"]).pid
+        pid = Popen([pythonExe, "serveur.py"]).pid
         
         print("APRES SERVEUR")
         self.serveurLocal=1
