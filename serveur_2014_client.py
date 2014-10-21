@@ -7,6 +7,7 @@ import socket
 import platform
 import atexit
 
+from deplacement import *
 from serveur_2014_modele import *
 from serveur_2014_vue import *
 from helper import Helper
@@ -19,13 +20,15 @@ class Controleur(object):
         #liste=[Joueur(1,"a"), Joueur(2,"b")]
         
         self.m=Map(self.l,self.h)
-        #self.m.setSeed(10)
-        # self.m.placeRessourcesOverworld()
-        # self.m.placeRessourcesUnderworld()
+        self.m.setSeed(10)
+        self.m.placeRessourcesOverworld()
+        self.m.placeRessourcesUnderworld()
+
+        self.deplaceur = Deplacement(self, self.m.mat)
         
         self.temps=0
         self.joueurs = {} # = Joueur(0, "test")
-        self.joueurs[0] = Joueur(0, "test")
+        self.joueurs[0] = Joueur(self, 0, "test")
         self.nom=""
         self.cadre=0
         self.actions=[]
@@ -61,7 +64,7 @@ class Controleur(object):
         
     def stopServeur(self):
         rep=self.serveur.quitter()
-        print(rep)    
+        # print(rep)    
         self.serveur=0
         input("FERMER")
         
@@ -74,9 +77,9 @@ class Controleur(object):
         if rep[0]:
             self.nom=nom
             self.rnd=random.Random()
-            self.modele.rdseed=rep[2]
+            self.modele.rdseed=10 #rep[2]
             mb.showerror(title="Seed!",message="Got seed from server.")
-            random.seed(frozenset(self.modele.rdseed))
+            random.seed(self.modele.rdseed)#frozenset(self.modele.rdseed))
             # self.m.setSeed(frozenset(self.modele.rdseed))
             # self.m.placeRessourcesOverworld()
             # self.m.placeRessourcesUnderworld()
@@ -88,8 +91,8 @@ class Controleur(object):
         
     def demarrePartie(self):
         rep=self.serveur.demarrePartie()
-        print("rep from server: ", rep)
-    
+        # print("rep from server: ", rep)
+                
     # ******  SECTION d'appels automatique        
     def timerAttend(self):
         if self.serveur:
@@ -110,6 +113,7 @@ class Controleur(object):
             self.modele.prochaineAction(self.cadre)
             self.vue.afficheArtefact()
             if self.actions:
+                print(self.actions)
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
                 rep=self.serveur.faitAction([self.nom,self.cadre,0])

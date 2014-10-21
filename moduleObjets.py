@@ -1,5 +1,8 @@
+import deplacement
+
 class Joueur():
-    def __init__(self, ID, name):
+    def __init__(self, parent, ID, name):
+        self.parent = parent
         self.name = name
         self.ID = ID
         self.currentTime = 0
@@ -29,7 +32,6 @@ class Joueur():
     def creerUnit(self, type, x, y):
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y))
-            print("Should be done by now")
 
     def changerAllies():
         pass
@@ -37,9 +39,16 @@ class Joueur():
     def envoyerRessources():
         pass
 
+    def deplaceUnit(self, unit, arrive):
+        # owner = unit[0]
+        idunit = unit[1]
+        # print(unit)
+        # x = unit[2]
+        # y = unit[3]
 
-
-
+        for u in self.units:
+            if u.id == idunit:
+                u.deplacer(self.parent.deplaceur, arrive)
 
 id_objet = 0
 
@@ -65,11 +74,11 @@ class Unit():
         self.champDeVision = -1
         #idem pour le delai de Construction
         self.delaiDeConstruction = -1
+        self.chemin = []
 
-
-    def deplacer():
+    def deplacer(self, deplaceur, arrive):
         pass
-
+    
     def isAlive(self):
         if self.hpActuel <= 0:
             return False
@@ -88,8 +97,8 @@ class Unit():
 
 
 
-        print(" numero de l'id est : %s" % self.id)
-        print(" numero du owner est : %s" % self.ownerID)
+        # print(" numero de l'id est : %s" % self.id)
+        # print(" numero du owner est : %s" % self.ownerID)
 
 
 class Villageois(Unit):
@@ -108,13 +117,31 @@ class Villageois(Unit):
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
 
-
-
-
-        print("le type de cette unite est : %s" % self.type)
+        self.vitesseX = 5
+        self.vitesseY = 5
+            
 
     def recolteRessource():
         pass
+
+    def deplacer(self, deplaceur, arrive):
+        self.chemin = deplaceur.chemin(self, arrive)
+        print(self.chemin)
+        if self.chemin is None or len(self.chemin) == 0:
+            print("Chemin None")
+            self.chemin = deplaceur.chemin(self, arrive)
+        else:
+            while self.posX != self.chemin[0].x and self.posY != self.chemin[0].y:
+                print("Noooo")
+                if self.posX > self.chemin[0].x:
+                    self.posX += self.vitesseX
+                else:
+                    self.vitesseX = -self.vitesseX
+                if self.posY > self.chemin[0].y:
+                    self.posY += self.vitesseY
+                else:
+                    self.vitesseY = -self.vitesseY
+            del self.chemin[0]
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):

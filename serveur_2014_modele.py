@@ -41,15 +41,22 @@ class Modele(object):
     def creerUnite(self, unit):
         x=unit.posX
         y=unit.posY
-        self.parent.actions.append(["creerUnite",[unit.ownerID,x,y]])
+        self.parent.actions.append(["creerUnite",[unit.ownerID,x,y,unit.type]])
 
+    def deplaceUnite(self, unit, arrive):
+        self.parent.actions.append(["deplace",[unit[0], unit, arrive]])
         
     def prochaineAction(self,cadre):
-        print(self.actionsAFaire)
+        # print(self.actionsAFaire)
         if cadre in self.actionsAFaire:
             for action in self.actionsAFaire[cadre]:
-                print("Fait par, ", action[0])
-                print("Fait: ", action[1])
+                # print("Fait par, ", action[0])
+                # print("Fait: ", action[1])
                 if action[0] == "creerUnite":
                     self.parent.joueurs[action[1][0]].creerUnit("villageois",action[1][1], action[1][2])
+                elif action[0] == "deplace":
+                    print(action)
+                    self.parent.joueurs[action[1][0]].deplaceUnit(action[1][1],action[1][2])
+
             del self.actionsAFaire[cadre]
+            

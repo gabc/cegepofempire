@@ -5,7 +5,7 @@ import tkinter.messagebox as mb
 import random
 import math
 from helper import *
-from PIL import Image, ImageTk
+# from PIL import Image, ImageTk
 from moduleObjets import *
 from Map import *
 
@@ -276,7 +276,7 @@ class Vue(object):
     #===========================================================================
       
     def setArrive(self,event):
-        print("asdf")
+        self.modele.deplaceUnite((0,self.modele.parent.joueurs[0].units[0].id),(event.x, event.y))
           
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")

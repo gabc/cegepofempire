@@ -66,6 +66,7 @@ class Deplacement:
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
                     if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
+                        print("Passable!")
                         n = Noeud(x+i, y+j, 0, 0, n)
                         rep.append(n)
                         if i == 0 or j == 0:
@@ -102,21 +103,21 @@ if __name__ == '__main__':
             self.posX = x
             self.posY = y
 
-    from map import *
+    from Map import *
     l=55
     h=25
-    liste=[Joueur(1,"a"), Joueur(2,"b")]
+    liste=[Joueur(None,1,"a"), Joueur(None,2,"b")]
     m=Map(l,h)
     m.setSeed(10)
     m.placeRessourcesOverworld()
     m.placeRessourcesUnderworld()
-    m.placeJoueurs(liste)
+    # m.placeJoueurs(liste)
     #m.equilibreRessources(liste) <-- To do
     #m.printMapToFile()
-    dx = 2
-    dy = 2
-    ax = 20
-    ay = 24
+    dx = 0
+    dy = 0
+    ax = 24
+    ay = 54
     d = Deplacement(None, m.mat)
     path = d.chemin(Foo(dx,dy),(ax,ay))
     str = ""
@@ -133,7 +134,7 @@ if __name__ == '__main__':
                         str +="."
                         flag = True
                 if not flag:
-                    str += m.mat[j][i].ressource
+                    str += m.mat[i][j].ressource
                 flag = False
         print(str)
         str = ""

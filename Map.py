@@ -40,6 +40,7 @@ class Case:
         self.passable=passable
 
     def isPassable(self):
+        print("Passablep")
         return self.passable
         
 
