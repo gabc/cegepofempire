@@ -123,6 +123,9 @@ class Controleur(object):
                     for k in rep[2][i]:
                         self.modele.actionsAFaire[i].append(k)
                 # print("ACTIONS",self.cadre,"\nREP",rep,"\nACTIONAFAIRE",self.modele.actionsAFaire)  
+            for j in self.joueurs.values():
+                for u in j.units:
+                    u.faitAction()
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
             #print("Cadre",self.cadre)     

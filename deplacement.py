@@ -83,7 +83,7 @@ class Deplacement:
         rep = []
         for i in (-1,1,0):
             for j in (0,1,-1):
-                print("dep", x,y)
+                # print("dep", x,y)
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
                     if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
