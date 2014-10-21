@@ -209,6 +209,12 @@ class Map:
             f.write("\n")
         f.close()
 
+    def printPassable(self):
+        f = open('map.txt','w')
+        for i in range(self.hauteur):
+            for j in range(self.largeur):
+                print(self.mat[i][j].isPassable())
+
     #I like stats
     def countRessources(self):
         res1=0
@@ -296,11 +302,11 @@ class Map:
         
   
 #For testing purposes
-"""l=19
-h=5
+"""l=3
+h=3
 
-j1=Joueur(1)
-j2=Joueur(2)
+j1=Joueur(1,1,1)
+j2=Joueur(2,2,2)
 
 liste=[]
 
@@ -324,4 +330,6 @@ m.placeJoueurs(liste)
 
 m.printMapCon()
 
-m.countRessources()"""
+m.printPassable()"""
+
+#m.countRessources()
