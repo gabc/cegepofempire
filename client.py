@@ -17,7 +17,6 @@ class Controleur(object):
     def __init__(self):
         self.l=40
         self.h=30
-        self.temps=0
         self.nom=""
         self.cadre=0
         self.actions=[]
@@ -71,7 +70,6 @@ class Controleur(object):
             self.modele.rdseed = rep[2]
             #mb.showerror(title="Seed!",message="Got seed from server.")
             random.seed(self.modele.rdseed)
-            print(frozenset(self.modele.rdseed))
             self.m.setSeed(frozenset(self.modele.rdseed))
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
