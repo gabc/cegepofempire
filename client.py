@@ -17,17 +17,13 @@ class Controleur(object):
     def __init__(self):
         self.l=40
         self.h=30
-        #liste=[Joueur(1,"a"), Joueur(2,"b")]
         
         self.m=Map(self.l,self.h)
-        # self.m.setSeed(10)
-        # self.m.placeRessourcesOverworld()
-        # self.m.placeRessourcesUnderworld()
 
         self.deplaceur = Deplacement(self, self.m.mat)
         
         self.temps=0
-        self.joueurs = {} # = Joueur(0, "test")
+        self.joueurs = {}
         self.nom=""
         self.cadre=0
         self.actions=[]
@@ -41,7 +37,6 @@ class Controleur(object):
         
         self.modele=Modele(self)
         self.vue=Vue(self)
-        # self.timerJeu()
         
     def creerServeur(self):
         cwd=os.getcwd()
@@ -78,7 +73,6 @@ class Controleur(object):
             self.modele.rdseed= rep[2]
             #mb.showerror(title="Seed!",message="Got seed from server.")
             random.seed(self.modele.rdseed)
-            print(frozenset(self.modele.rdseed))
             self.m.setSeed(frozenset(self.modele.rdseed))
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
