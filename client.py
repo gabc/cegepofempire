@@ -8,7 +8,7 @@ import platform
 import atexit
 
 from deplacement import *
-from modele_serveur import *
+from modele_client import *
 from vue import *
 from helper import Helper
 
@@ -17,30 +17,29 @@ class Controleur(object):
     def __init__(self):
         self.l=40
         self.h=30
-        #liste=[Joueur(1,"a"), Joueur(2,"b")]
-        
-        self.m=Map(self.l,self.h)
-        self.m.setSeed(10)
-        self.m.placeRessourcesOverworld()
-        self.m.placeRessourcesUnderworld()
-
-        self.deplaceur = Deplacement(self, self.m.mat)
-        
         self.temps=0
-        self.joueurs = {} # = Joueur(0, "test")
         self.nom=""
         self.cadre=0
         self.actions=[]
         self.serveurLocal=0
         self.serveur=0
+        self.myPlayer = None
+        self.attend = False
         
+        self.m=Map(self.l,self.h)
+        self.m.setSeed(10)
+        self.m.placeRessourcesOverworld()
+        self.m.placeRessourcesUnderworld()
+		
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("gmail.com",80))
         self.monip=s.getsockname()[0]
         s.close()
         
+        self.deplaceur = Deplacement(self, self.m.mat)
         self.modele=Modele(self)
         self.vue=Vue(self)
+		
         # self.timerJeu()
         
     def creerServeur(self):
@@ -94,7 +93,7 @@ class Controleur(object):
     # ******  SECTION d'appels automatique        
     def timerAttend(self):
         if self.serveur:
-            rep=self.serveur.faitAction([self.nom,self.cadre,[]])
+            rep=self.serveur.faitAction([self.nom,0,[]])
             if rep[0]: #demarre partie
                 self.modele.initPartie(rep[2][1][0][1])
                 self.vue.initPartie(self.modele)
@@ -108,8 +107,9 @@ class Controleur(object):
     def timerJeu(self):
         if self.serveur:
             self.cadre=self.cadre+1
-            self.modele.prochaineAction(self.cadre)
-            self.vue.afficheArtefact()
+            if self.attend == False:
+                self.modele.prochaineAction(self.cadre)
+                self.vue.afficheArtefact()
             if self.actions:
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
@@ -123,11 +123,13 @@ class Controleur(object):
                     for k in rep[2][i]:
                         self.modele.actionsAFaire[i].append(k)
                 # print("ACTIONS",self.cadre,"\nREP",rep,"\nACTIONAFAIRE",self.modele.actionsAFaire)  
-            for j in self.joueurs.values():
-                for u in j.units:
-                    u.faitAction()
+            #for j in self.joueurs.values():
+            #    for u in j.units:
+            #        u.faitAction()
+            self.attend == False
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
+                self.attend = True
             #print("Cadre",self.cadre)     
             self.vue.root.after(50,self.timerJeu)
         else:
