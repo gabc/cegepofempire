@@ -186,7 +186,7 @@ class Vue(object):
 		self.currentY=event.y
 	
 	def spawnUnit(self,event):
-		vil = Villageois(0,self.currentX,self.currentY)
+		vil = Villageois(0,self.currentX,self.currentY,self)
 		self.modele.creerUnite(vil)
 		# self.parent.j.units.append(vil)
 	
