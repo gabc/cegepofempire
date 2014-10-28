@@ -20,17 +20,28 @@ class Noeud:
 class Deplacement:
     def __init__(self, parent, map):
         self.parent = parent
-        
         self.map = map
-
         self.maxnode = 400
-        
+
+    def assurePassable(self, depart, arrive):
+        while not self.map[arrive.x][arrive.y].isPassable():
+            if arrive.x > depart.x:
+                arrive.x -= 1
+            elif arrive.x < depart.x:
+                arrive.x += 1
+            if arrive.y > depart.y:
+                arrive.y -= 1
+            elif arrive.y < depart.y:
+                arrive.y += 1
+
+        return arrive
+
     def chemin(self, unite, arrivee):
         depart = Noeud(int(unite.posX/20), int(unite.posY/20), 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
 
-        if not self.map[arrive.x][arrive.y].isPassable():
-            return []
+        arrive = self.assurePassable(depart, arrive)
+
         return self.astar(depart, arrive)
 
     def astar(self, depart, arrivee):
@@ -142,8 +153,8 @@ if __name__ == '__main__':
 
     dx = 0
     dy = 0
-    ax = 12
-    ay = 45
+    ax = 0
+    ay = 5
 
     d = Deplacement(None, m.mat)
     # cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
@@ -170,4 +181,5 @@ if __name__ == '__main__':
     for i in path:
         print(i.x, i.y)
     # print(path)
-    input()
+
+    # input()
