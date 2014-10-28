@@ -27,9 +27,6 @@ class Controleur(object):
         self.attend = False
         
         self.m=Map(self.l,self.h)
-        self.m.setSeed(10)
-        self.m.placeRessourcesOverworld()
-        self.m.placeRessourcesUnderworld()
 		
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("gmail.com",80))
@@ -39,8 +36,6 @@ class Controleur(object):
         self.deplaceur = Deplacement(self, self.m.mat)
         self.modele=Modele(self)
         self.vue=Vue(self)
-		
-        # self.timerJeu()
         
     def creerServeur(self):
         cwd=os.getcwd()
@@ -60,8 +55,7 @@ class Controleur(object):
             self.serveur.jeQuitte(self.nom)
         
     def stopServeur(self):
-        rep=self.serveur.quitter()
-        # print(rep)    
+        rep=self.serveur.quitter()   
         self.serveur=0
         input("FERMER")
         
@@ -74,12 +68,13 @@ class Controleur(object):
         if rep[0]:
             self.nom=nom
             self.rnd=random.Random()
-            self.modele.rdseed=10 #rep[2]
-            mb.showerror(title="Seed!",message="Got seed from server.")
-            random.seed(self.modele.rdseed)#frozenset(self.modele.rdseed))
-            # self.m.setSeed(frozenset(self.modele.rdseed))
-            # self.m.placeRessourcesOverworld()
-            # self.m.placeRessourcesUnderworld()
+            self.modele.rdseed = rep[2]
+            #mb.showerror(title="Seed!",message="Got seed from server.")
+            random.seed(self.modele.rdseed)
+            print(frozenset(self.modele.rdseed))
+            self.m.setSeed(frozenset(self.modele.rdseed))
+            self.m.placeRessourcesOverworld()
+            self.m.placeRessourcesUnderworld()
 
             self.vue.afficheAttente()
             self.timerAttend()
@@ -122,10 +117,6 @@ class Controleur(object):
                         self.modele.actionsAFaire[i]=[]
                     for k in rep[2][i]:
                         self.modele.actionsAFaire[i].append(k)
-                # print("ACTIONS",self.cadre,"\nREP",rep,"\nACTIONAFAIRE",self.modele.actionsAFaire)  
-            #for j in self.joueurs.values():
-            #    for u in j.units:
-            #        u.faitAction()
             self.attend == False
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
