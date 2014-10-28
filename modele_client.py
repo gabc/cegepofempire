@@ -346,6 +346,53 @@ class Barrack(Building):
 
 
 
+class Modele(object):
+    id=0
+    def nextId():
+        Modele.id=Modele.id+1
+        return Modele.id
+    
+    def __init__(self,parent):
+        self.parent=parent
+        self.unites=[]
+        self.actionsAFaire={}
+        self.joueurs = {} # = Joueur(0, "test")
+        
+    def initPartie(self,listeNomsJoueurs):
+        n=0
+        #init tous les joueur avec leur unite, batiments, etc...
+        print("Nombre total de joueurs: ", len(listeNomsJoueurs))
+        for j in listeNomsJoueurs:
+            print("joueur: ", j)
+            if j == self.parent.nom:
+                self.parent.myPlayer = Joueur(self.parent, n, j)
+                self.joueurs[j] = self.parent.myPlayer
+            else:
+                self.joueurs[j] = Joueur(self.parent, n, j)
+            n += 1
+
+        
+    def creerUnite(self, unit):
+        x=unit.posX
+        y=unit.posY
+        self.parent.actions.append(["creerUnite",[unit.ownerID,x,y,unit.type]])
+
+    def deplaceUnite(self, unit, arrive):
+        self.parent.actions.append(["deplace",[unit[0], unit, arrive]])
+        
+    def prochaineAction(self,cadre):
+        # print(self.actionsAFaire)
+        if cadre in self.actionsAFaire.keys():
+            for action in self.actionsAFaire[cadre]:
+                print("nom ", action[0])
+                print("action: ", action[1])
+                print("param: ", action[2])
+                if action[1] == "creerUnite":
+                    self.joueurs[action[0]].creerUnit(action[2][0], action[2][1], action[2][2])
+                elif action[0] == "deplace":
+                    self.joueurs[action[1][0]].deplaceUnit(action[1][1],action[1][2])
+
+            del self.actionsAFaire[cadre]
 
 
 
