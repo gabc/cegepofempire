@@ -56,9 +56,9 @@
 # le id_objet est une variable static qui ne sert qu'a compter on est rendu au
 # combien ieme objet cree
 
-# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
-
 # on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
+
+# on peut le mettre dans le module oÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¾ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Âº on cree les objets
 
 # le global fait en sorte que partout dans la page la variable et son contenu
 # est garder MEME DANS LES AUTRE FONCTIONS QUI SONT ENFANT DE LEMPLACEME
@@ -67,35 +67,85 @@
 
 
 #-------------------------------------------
-"""
+
 class Cpu():
     def __init__(self, ID, posX, posY):
     Joueur.__init__(self, ID, posX, posY):
         self.ressourcesAuBesoin = [0,0,0,0,0]
-        self.villagoisParRessources = [0,0,0,0,0]
-        # Index des ressources:
+        self.villageoisParRessources = [0,0,0,0,0]
+        # Index des ressources _Reminder
         # Nourriture          # index 0
         # Materiel            # index 1
         # Or                  # index 3
         # EnergieExploitee    # index 4
         # Cristaux            # index 5
-        self.mode = 0
-        # mode 0 = balance
-        # mode 1 = offensif
-        # mode 2 = defensif
+        #//***************************************************************//
+        #// integer are meant to easily switch from a state to another \ name are understood better
+        balanced = 0
+        offensive = 1
+        defensive = 2
+        self.mode = balanced
+        AgeDePierre = 1, AgeContemporain = 2, AgeModerne = 3, AgeFutur = 4
+        balanced = 1, defensive = 2, offensive = 3
+        Wood = 0, Rock = 0, Gold = 0, Energy = 0, Crystal = 0
+        RessourceTypesNeeded[Wood; Rock; Gold; Energy; Crystal]
+        #mode = balanced
+        this.currentAge = AgeDePierre
+        # these will be needed at the initializing
+        #//***************************************************************
 
-    def chercherVilagoisNonOccuper():
+
+    def chercherVilagoisNonOccuper(self):
         UnitsSelected[] = null
-        for i in self.units[]:
+        for i in self.units:
             if self.units[i].type ="Villagois":
                 if self.units[i].occuper = true:
                     self.units[i].Select()
                     # ou peut importe la function de selection
 
 
+    def balancementCaptif(self):
+        pass
+        ## will be in a loop
+        ## Do you have enought vilagers? Create more/ Do you have enough houses? Create more*/
+        if vilageois <= 5*self.Ere*nbTypeDeRessources AND Mode != Offensif:
+        	Create vilageois // ( select town center / build villager unit /  add unit to queu)
+        if vilageois <= 5 AND Mode == Offfensif:
+        	Create vilageois // ( select town center / build villager unit /  add unit to queu)
+        if self.nbUnits > 0.75 * self.currentMaxUnits AND self.currentMaxUnits < self.MaxUnit:
+        	Create house ( findUnoccupiedVillager().construire(?))
+        for i in (currentRessourceTypesNeeded.getLengh():
+        	if currentRessourceTypesNeeded(i) < nbCollectorsNeeded :
+                self.FindUnocupiedVillager()
+                self.selectedVillager.Find( RessourceTypesNeeded(i))
+                // function Find will take an int and search the needed resource to start //harvesting this resource (in case they cant see any of it yet
+                // Function FindUnoccupiedVillager will look up the list of villagers; which will need a
+                // Bool Occupied; if find â€“select / if villagernotfound â€“ create villager
 
 
-    def changerEre():
+    def positionMaison(self):
+        pass
+        #besoin d un spot logique- trouver emplacement in range from base-fullground
+        # for i in self.batiments: # pour tout batiment MAISON
+            if batiments[Ã®].type = "maison": #REGARDE LES POSITION SUIVANTS CELLE DEJA UTILISEE
+                if verificationPosition(x + 1 , y): # a droite
+                    create house there xy
+                elif verificationPosition(x -1, y): # a gauche
+                    create house there xy
+                elif verificationPosition(x, y +1): # en haut
+                    create house there xy
+                elif verificationPosition(x, y -1): # en bas
+                    create house there xy
+        # search in distance x1-x2 and y1-y2 if theres any spot free in a small range from townCenter
+            # if true, create house at this spot
+    def verificationPosition(self):
+        # for all cases x,y used by the specific building sizes x,y :
+            # if case.passable == True :
+                # if case.type == building.caseType :
+                   # return True
+
+
+    def changerEre(self):
         pass
 
     def construireBuilding(idBuilding, posX ,posY ):
@@ -105,13 +155,28 @@ class Cpu():
 
         pass
 
-    def changerAllies():
+    def changerAllies(self):
+        pass
+# le cpu ne va que s'allier a d'autre cpu pour detruire un autre joueur
+# ou meme d'autre cpu, ceux ci ne vont se separer qu'en difficulter
+# sinon , ils travail en equipe et s'entraide en defensive/offensive
+
+    def calculDistanceRessource(self):
+        pass
+    #si la ressource est bien lointaine, faire une base
+    #de recuperation de ressource plus pres de celles-ci.
+
+
+    def Ere2(self):
         pass
 
-    def envoyerRessources():
+    def Ere3(self):
         pass
 
-"""
+    def Ere4(self):
+        pass
+
+
 
 class Joueur():
     def __init__(self, ID):
@@ -124,16 +189,24 @@ class Joueur():
         # Bois : 1
         # Pierre : 2
         # Or : 3
-        # PÃƒÆ’Ã‚Â©trole : 4
+        # petrole : 4
         # Charbon : 5
-        # NuclÃƒÆ’Ã‚Â©aire : 6
+        # NuclÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©aire : 6
         # Cristaux
         self.allies = []
         self.units =[]
         self.buildings =[]
         self.unitsSelected =[]
+"""
+        self.totalressource = 0
 
-
+    def totalRessources():
+        self.totalRessouce = 0
+        for i in self.ressources:
+            self.totalRessource += self.ressources[i]
+#might be used for cpu capacity of seeing who's not in possibility of
+# defending their own base.
+"""
     def changerEre():
         pass
 
@@ -141,7 +214,6 @@ class Joueur():
         pass
 
     def creerUnit(idBuilding, type ):
-
         pass
 
     def changerAllies():
@@ -198,7 +270,8 @@ class Unit():
             self.hpActuel -= degatsRecus
 
 
-
+    def meurt():
+        pass
 
 
 
@@ -228,64 +301,66 @@ class Villageois(Unit):
         # reference i dans le tableau ressource de la map
         ## self.ressourceCenter = townCenter
         # ( batiment de collection de ressource, servant a rechercher sa Pos.)
-    """
-    def scanRessource()
+
+    def scanRessource():
         pass
-        ##  for i in map.ressources[] :
-        ##      scan = 0
-        ##      while scan < 4:
-        ##          if map.ressources[i].posX >= self.posX - self.champDeVision:
-        ##              scan += 1
-        ##          if map.ressources[i].posX <= self.posX + self.champDeVision:
-        ##              scan += 1
-        ##          if map.ressources[i].posY >= self.posY - self.champDeVision:
-        ##              scan += 1
-        ##          if map.ressources[i].posY <= self.posY + self.champDeVision:
-        ##             scan += 1
-        ##          if scan == 4:
-        ##            self.ressourceCollecting = map.ressources[i].tabPos
-        ##            pathfinder(map.ressources[i].pos[x,y])
-        print("le type de cette unite est : %s" % self.type)
+    """
+          for i in map.ressources[] :
+              scan = 0
+              while scan < 4:
+                  if map.ressources[i].posX >= self.posX - self.champDeVision:
+                      scan += 1
+                  if map.ressources[i].posX <= self.posX + self.champDeVision:
+                      scan += 1
+                  if map.ressources[i].posY >= self.posY - self.champDeVision:
+                      scan += 1
+                  if map.ressources[i].posY <= self.posY + self.champDeVision:
+                     scan += 1
+                  if scan == 4:
+                    self.ressourceCollecting = map.ressources[i].tabPos
+                    pathfinder(map.ressources[i].pos[x,y])
+"""
     def collectionRessource():
         pass
-
-        ##  while self.ressourceCourrante < self.maxRessource :
-        ##      if map.ressource[self.ressourceCollecting].Qte < 0 :
-        ##          if map.ressource[self.ressourceCollecting].Qte <= self.ressourceParCoup :
-        ##              map.ressources[self.ressourceCollecting].Qte = 0
-        ##              map.ressources[self.ressourceCollecting] = null
-        ##          else :
-        ##              self.ressourceCourrante += self.ressourceParCoup
-        ##              map.ressources[self.ressourceCollecting].Qte -= self.ressourceParCoup
-        ##  if self.ressourceCourante > self.maxRessource :
-        ##      self.ressourceCourante = self.maxRessource
-
+    """
+          while self.ressourceCourrante < self.maxRessource :
+              if map.ressource[self.ressourceCollecting].Qte < 0 :
+                  if map.ressource[self.ressourceCollecting].Qte <= self.ressourceParCoup :
+                      map.ressources[self.ressourceCollecting].Qte = 0
+                      map.ressources[self.ressourceCollecting] = null
+                  else :
+                      self.ressourceCourrante += self.ressourceParCoup
+                      map.ressources[self.ressourceCollecting].Qte -= self.ressourceParCoup
+          if self.ressourceCourante > self.maxRessource :
+              self.ressourceCourante = self.maxRessource
+    """
     def recolteRessource(*RessourceSelectionnee):
         pass
-        ##  self.occupee = false
-        ##  ressourceRechercher = *RessourceSelectionnee.tabPos
-        ##  while true :
-        ##   if self.ressourceCollecting != null:
-        ##      coordonneeRessource [] = self.ressourceCollecting.Position[x,y]
-        ##   path finder(coordonneeRessource)
+    """
+          self.occupee = false
+          ressourceRechercher = *RessourceSelectionnee.tabPos
+          while true :
+           if self.ressourceCollecting != null:
+              coordonneeRessource [] = self.ressourceCollecting.Position[x,y]
+           path finder(coordonneeRessource)
         ## -- do the way
-        ##      if self.ressourceCollecting = false :
-        ##          scanRessource()
-        ##              if self.ressourceCollecting:
-        ##                  print("arret en court, aucune ressource equivalante FOUND")
-        ##                  self.ressourceCollecting = null
-        ##                  self.occuper = false
-        ##                  return false
+              if self.ressourceCollecting = false :
+                  scanRessource()
+                      if self.ressourceCollecting:
+                          print("arret en court, aucune ressource equivalante FOUND")
+                          self.ressourceCollecting = null
+                          self.occuper = false
+                          return false
         ##    -----action-collecter ressource-----------
-        ##   self.collectionRessource()
-        ## #----- retourner les ressources
-        ##   pathfinder(self.ressourceCenter.collectingCoords)
-        ##   while self.position != self.ressourceCenter.collectingCoords:
-        ##      pass # wait--
-        ##   self.owner.ressource[ressourceRechercher] += self.ressourceCourante
-        ##   self.ressourceCourante = 0
-        ## ---- ajouter cette ressource au ressource du joueur
-        ## ----- retourner a la position(x,y) de la ressource
+           self.collectionRessource()
+        ##----- retourner les ressources
+           pathfinder(self.ressourceCenter.collectingCoords)
+           while self.position != self.ressourceCenter.collectingCoords:
+              pass # wait--
+           self.owner.ressource[ressourceRechercher] += self.ressourceCourante
+           self.ressourceCourante = 0
+         ##---- ajouter cette ressource au ressource du joueur
+        ##----- retourner a la position(x,y) de la ressource
         ## ---- rechercher si une ressource equivalange se trouve dans (self.champDeVision)
   """
 
