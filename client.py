@@ -20,9 +20,9 @@ class Controleur(object):
         #liste=[Joueur(1,"a"), Joueur(2,"b")]
         
         self.m=Map(self.l,self.h)
-        self.m.setSeed(10)
-        self.m.placeRessourcesOverworld()
-        self.m.placeRessourcesUnderworld()
+        # self.m.setSeed(10)
+        # self.m.placeRessourcesOverworld()
+        # self.m.placeRessourcesUnderworld()
 
         self.deplaceur = Deplacement(self, self.m.mat)
         
@@ -75,12 +75,13 @@ class Controleur(object):
         if rep[0]:
             self.nom=nom
             self.rnd=random.Random()
-            self.modele.rdseed=10 #rep[2]
-            mb.showerror(title="Seed!",message="Got seed from server.")
-            random.seed(self.modele.rdseed)#frozenset(self.modele.rdseed))
-            # self.m.setSeed(frozenset(self.modele.rdseed))
-            # self.m.placeRessourcesOverworld()
-            # self.m.placeRessourcesUnderworld()
+            self.modele.rdseed= rep[2]
+            #mb.showerror(title="Seed!",message="Got seed from server.")
+            random.seed(self.modele.rdseed)
+            print(frozenset(self.modele.rdseed))
+            self.m.setSeed(frozenset(self.modele.rdseed))
+            self.m.placeRessourcesOverworld()
+            self.m.placeRessourcesUnderworld()
 
             self.vue.afficheAttente()
             self.timerAttend()
