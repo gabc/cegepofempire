@@ -38,6 +38,19 @@ class Vue(object):
 		self.currentX = 0
 		self.currentY = 0
 
+		self.food_ress = Image.open("./img/food_ress.png")
+		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
+		self.wood_ress = Image.open("./img/wood_ress.png")
+		self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
+		self.gold_ress = Image.open("./img/gold_ress.png")
+		self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
+		self.energy_ress = Image.open("./img/energy_ress.png")
+		self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
+		self.art_ress = Image.open("./img/art_ress.png")
+		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
+		self.rock_ress = Image.open("./img/rock_ress.png")
+		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+
 	def creeCadres(self):
 		self.creeCadreConnection()
 		self.creeCadreAttente()
@@ -400,25 +413,15 @@ class Vue(object):
 			self.canevasMilieu.create_line(0, j * self.longeurLigne, self.parent.l * self.longeurLigne, j * self.longeurLigne, fill="white")
 	
 	def placeBuilding(self):
+                self.canevasMilieu.delete("building")
                 for j in self.parent.modele.joueurs.values():
                         for i in j.buildings:
                                 print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
-                                self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
+                                self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="building")
 	
 	
 	def placeRessource(self):
-		self.food_ress = Image.open("./img/food_ress.png")
-		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
-		self.wood_ress = Image.open("./img/wood_ress.png")
-		self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
-		self.gold_ress = Image.open("./img/gold_ress.png")
-		self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
-		self.energy_ress = Image.open("./img/energy_ress.png")
-		self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
-		self.art_ress = Image.open("./img/art_ress.png")
-		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
-		self.rock_ress = Image.open("./img/rock_ress.png")
-		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+                self.canvevasMilieu.delete("img")
 		for i in range(self.parent.h):
 			for j in range(self.parent.l):
 				# print(self.parent.m.mat[j][i].ressource)
