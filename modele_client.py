@@ -28,9 +28,7 @@ class Joueur():
         self.unitsSelectionne =[]
         self.actions={"envoieRess":self.envoyerRessources}
 
-    def metToiAJour(self):
-        for u in self.units:
-            u.faitAction()
+
 
     def changerEre():
         pass
@@ -50,7 +48,11 @@ class Joueur():
         print(a,b,c,d,e,f)        
 
     def deplaceUnit(self, unit, arrive):
+        # owner = unit[0]
         idunit = unit[1]
+        # print(unit)
+        # x = unit[2]
+        # y = unit[3]
 
         for u in self.units:
             if u.id == idunit:
@@ -82,8 +84,6 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
-
-        self.actionEnCours = {}
 
     def faitAction(self):
         if self.chemin:
@@ -371,9 +371,7 @@ class Modele(object):
         self.unites=[]
         self.actionsAFaire={}
         self.joueurs = {} # = Joueur(0, "test")
-        self.actions = {"creerUnite" : self.creerUnite,
-                        "deplace" : self.deplaceUnite,}
-
+        
     def initPartie(self,listeNomsJoueurs):
         n=0
         self.playerColors = ["pink", "blue", "green", "yellow", "purple", "brown", "black", "white", "orange"]
@@ -389,17 +387,83 @@ class Modele(object):
             n += 1
 
         
-    def creerUnite(self, args):
-        self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
+    def creerUnite(self, unit):
+        x=unit.posX
+        y=unit.posY
+        self.parent.actions.append(["creerUnite",[unit.ownerID,x,y,unit.type]])
 
-    def deplaceUnite(self, args):
-        self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
+    def deplaceUnite(self, unit, arrive):
+        self.parent.actions.append(["deplace",[unit[0], unit, arrive]])
         
     def prochaineAction(self,cadre):
+        # print(self.actionsAFaire)
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
-                self.actions[action[1]](action)
+                print("nom ", action[0])
+                print("action: ", action[1])
+                print("param: ", action[2])
+                if action[1] == "creerUnite":
+                    self.joueurs[action[0]].creerUnit(action[2][0], action[2][1], action[2][2])
+                elif action[0] == "deplace":
+                    self.joueurs[action[1][0]].deplaceUnit(action[1][1],action[1][2])
+
             del self.actionsAFaire[cadre]
-        # Mise a jour:
-        for j in self.joueurs.keys():
-            self.joueurs[j].metToiAJour()
+
+
+
+
+
+
+
+
+
+
+"""def main():
+    
+    unit1=Unit("player1", 0,0)
+    print("le type de cette unite est : %s" % unit1.type)
+    unit2=Villageois("player2", 100, 100)
+
+    print("pos en xy de l'unit %s : x =%d y =%d" % (unit2.id, unit2.posX, unit2.posY))
+
+    print("vie avant dmg de unit2 : %d" % unit2.hpActuel)
+
+    unit2.recevoirDegats(50)
+
+    print("vie apres dmg de unit1 : %d" % unit2.hpActuel)
+    
+
+
+
+    building = TownCenter("Tom",0, 0,building)
+
+    building.createUnit(Villageois("Tom", 0, 0))
+
+    print(building.tempsRestant)
+
+    building.tempsRestant -= 10000
+
+    print(building.tempsRestant)
+
+    print(building.creationQueue[0].id)
+
+    Unit1 =building.unitSortir()
+
+    print (" id de l'unit %s" % Unit1.id)
+
+    print(Unit1.type)
+
+    print("id du towncenter %s" % building.id)
+
+    building2 = TownCenter("Henry", 1, 1)
+
+    print("id du towncenter 2 :%s" % building2.id)
+
+
+
+
+
+
+
+if __name__ == '__main__':
+    main()"""

@@ -12,12 +12,12 @@ from modele_client import *
 
 #Ratio des ressources ( sur 100)
 
-WOOD_RATIO=10
-FOOD_RATIO=5
-ROCK_RATIO=5
+WOOD_RATIO=1
+FOOD_RATIO=1
+ROCK_RATIO=1
 ARTE_RATIO=1
-ENERGY_RATIO=3
-GOLD_RATIO=3
+ENERGY_RATIO=1
+GOLD_RATIO=1
 UNDER_RATIO=25
 
 #Caracteres qui representent les ressources, incluant les ressources souterraines
@@ -43,7 +43,6 @@ class Case:
         self.ressource=ressource
         self.passable=passable
         self.underRes=0
-        self.nbRessource=0
 
     def isPassable(self):
         return self.passable
@@ -76,7 +75,7 @@ class Map:
         self.hauteur=hauteur
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(j,i,EMPTY_CHAR, True) for j in range(largeur)] for i in range(hauteur)]        
-        
+
     def setSeed(self, seed):
         random.seed(seed)
         
@@ -84,10 +83,8 @@ class Map:
         for i in range(self.hauteur):
             for j in range(self.largeur):
                 nb = random.randrange(100)
-                if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
+                if nb <= ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j] = Case(j,i,char, False)
-                    self.mat[i][j].nbRessource=100
-                    print(nb, char)
 
     def placeRessourceUnder(self, ratio, char):
          for i in range(self.hauteur):
@@ -98,12 +95,10 @@ class Map:
                         
                         self.mat[i][j] = Case(j,i,EMPTY_CHAR,True)
                         self.mat[i][j].underRes=char
-                        self.mat[i][j].nbRessource=100
 
                     else:
 
                         self.mat[i][j].underRes=char
-                        self.mat[i][j].nbRessource=100
                     
 
     def placeRessourcesOverworld(self):
@@ -195,16 +190,6 @@ class Map:
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
     
-    def getListeRessources(self):
-        ressources=[0]
-        
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
-                if self.mat[i][j].nbRessource > 0:
-                    ressources.append(self.mat[i][j])
-
-        return ressources
-
     def printMapCon(self):
         for i in range(self.hauteur):
             for j in range(self.largeur):                
