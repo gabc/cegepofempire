@@ -53,17 +53,6 @@ class Deplacement:
             current = open[0]
             del open[0]
             closed.append(current)
-
-            # if len(open) > self.maxnode:
-            #     print("FOOOO", len(open))
-            #     open = open[:self.maxnode] 
-                # Si la liste est trop grande.
-            
-            # si c'est trop long. On sort.
-            # if time.time() - temps >= 0.05: # 0.0sec
-            #     return self.path(current)
-            # else:
-            #     temps = time.time()
                 
             if self.h(current, arrivee) == 0:
                 return self.path(current)
@@ -74,7 +63,6 @@ class Deplacement:
                 f = v.gc + self.h(v,arrivee)
                 v.f = f         
                 
-                # print(v.gc)
                 if v.estDans(open):
                     vprime = self.find(v, open) # [noeud, pos dans la liste]
                     if v.gc < vprime[0].gc or v.f < vprime[0].f:
@@ -97,7 +85,6 @@ class Deplacement:
         rep = []
         for i in (-1,1,0):
             for j in (0,1,-1):
-                # print("dep", x,y)
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
                     if self.map[y+i][x+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
@@ -129,57 +116,3 @@ class Deplacement:
             path = [n.parent] + path
             n = n.parent
         return path
-
-
-if __name__ == '__main__':
-    class Foo:
-        def __init__(self,x,y):
-            self.posX = x
-            self.posY = y
-
-    from Map import *
-    import cProfile             # Si il est la.
-
-    l=55
-    h=25
-    liste=[Joueur(None,1,"a"), Joueur(None,2,"b")]
-    m=Map(l,h)
-    m.setSeed(10)
-    m.placeRessourcesOverworld()
-    m.placeRessourcesUnderworld()
-
-    # m.placeJoueurs(liste)
-
-
-    dx = 0
-    dy = 0
-    ax = 0
-    ay = 5
-
-    d = Deplacement(None, m.mat)
-    # cProfile.run('path = d.chemin(Foo(dx,dy),(ax,ay))')
-    path = d.chemin(Foo(dx,dy),(ax,ay))
-    
-    str = ""
-    flag = False
-    for i in range(h):          # l et h dans le bon ordre?
-        for j in range(l):
-            if i == dx and j == dy:
-                str += "D"
-            elif i == ax and j == ay:
-                str += "A"
-            else:
-                for p in path:
-                    if i == p.x and j == p.y:
-                        str +="."
-                        flag = True
-                if not flag:
-                    str += m.mat[i][j].ressource
-                flag = False
-        print(str)
-        str = ""
-    for i in path:
-        print(i.x, i.y)
-    # print(path)
-
-    # input()
