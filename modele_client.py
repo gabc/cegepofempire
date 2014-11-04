@@ -85,7 +85,7 @@ class Unit():
         self.actionEnCours = {}
 
     def faitAction(self):
-        if self.chemin:
+        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
     
     def isAlive(self):
