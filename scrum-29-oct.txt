@@ -1,0 +1,40 @@
+Status: not playable
+
+Sergio: 
+
+	DID: rien fait, problèmes d'équipe
+
+	DOING: Travaille sur la structure des messages
+
+
+Gabriel: 
+
+	DID: Sélection d'unités, synchronisation des actions, intégration
+
+	DOING: sélection d'un objet
+
+
+Mohammed:
+
+	DID: Création de unit avec keyboard
+
+	DOING: Synchronisation des actions
+
+Mathias:
+
+	DID: Sélection d'unités
+
+	DOING: Gestion des alliances
+
+
+Raphaël:
+
+	DID: Pseudo-code pour I.A.
+
+	DOING: Classe pour I.A.
+
+Olivier:
+
+	DID: Debugging d'intégration
+
+	DOING: Recolte de ressources avec un unit.
