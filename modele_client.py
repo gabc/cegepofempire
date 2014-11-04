@@ -205,6 +205,9 @@ class Building():
         #idem pour le delai de Construction
         self.delaiDeConstruction = -1
 
+    def faitAction(self):
+        pass
+
     def isAlive(self):
         if self.hpActuel <= 0:
             return False
