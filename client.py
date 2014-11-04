@@ -89,6 +89,7 @@ class Controleur(object):
             rep=self.serveur.faitAction([self.nom,0,[]])
             if rep[0]: #demarre partie
                 self.modele.initPartie(rep[2][1][0][1])
+                self.m.placeJoueurs(self.modele.joueurs, rep[2][1][0][1])
                 self.vue.initPartie(self.modele)
                 self.vue.root.after(10,self.timerJeu)
             elif rep[0]==0: #waiting room

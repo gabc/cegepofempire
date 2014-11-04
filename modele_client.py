@@ -25,6 +25,7 @@ class Joueur():
         self.units =[]
         self.buildings =[]
         self.unitsSelectionne =[]
+        self.actions={"envoieRess":self.envoyerRessources}
 
 
 
@@ -36,13 +37,14 @@ class Joueur():
 
     def creerUnit(self, type, x, y):
         if type == "villageois":
-            self.units.append(Villageois(self.ID, x, y))
+            self.units.append(Villageois(self.ID, x, y,self))
 
     def changerAllies():
         pass
 
-    def envoyerRessources():
-        pass
+    #toute les ressources
+    def envoyerRessources(self,a,b,c,d,e,f):
+        print(a,b,c,d,e,f)        
 
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
@@ -54,7 +56,7 @@ class Joueur():
 id_objet = 0
 
 class Unit():
-    def __init__(self, ownerID, posX, posY):
+    def __init__(self, ownerID, posX, posY,parent):
         global id_objet
         #le global fait en sorte que partout dans la page la variable id_objet
         #est garder MEME DANS LES AUTRE FONCTIONS QUI SONT ENFANT DE LEMPLACEME
@@ -76,6 +78,7 @@ class Unit():
         #idem pour le delai de Construction
         self.delaiDeConstruction = -1
         self.chemin = []
+        self.parent=parent
 
     def faitAction(self):
         if self.chemin:
@@ -106,8 +109,8 @@ class Unit():
 
 class Villageois(Unit):
 
-    def __init__(self,ownerID, posX, posY):
-        Unit.__init__(self,ownerID, posX, posY)
+    def __init__(self,ownerID, posX, posY,parent):
+        Unit.__init__(self,ownerID, posX, posY,parent)
         self.type = "Villageois"
         self.isMoving = False
         #j'ai decider arbitrairement de l'hp: a modifier
@@ -128,8 +131,16 @@ class Villageois(Unit):
         self.posY = posY #add
             
 
-    def recolteRessource():
-        pass
+    def recolteRessource(self,x,y,game_map):
+        if game_map.mat[y][x].nbRessource > 0:
+            game_map.mat[y][x].nbRessource-0.01
+            if game_map.mat[y][x].nbRessource == 0:
+                game_map.mat[y][x].ressource=game_map.EMPTY_CHAR
+            
+    def checkArrive(self, x, y):
+        if self.posX == x and self.posY == y:
+            if game_map.mat[y][x].ressource is not game_map.EMPTY_CHAR:
+               self.recolteRessource(arrive, self.parent.parent.m)
 
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or self.chemin == []:
@@ -140,6 +151,8 @@ class Villageois(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
+        #self.checkArrive(arrive[0].x,arrive[0].y)
+        
             
 
 class Guerrier(Unit):
@@ -374,7 +387,7 @@ class Modele(object):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
 
     def deplaceUnite(self, args):
-        self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1]))
+        self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
         
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
@@ -382,4 +395,3 @@ class Modele(object):
                 self.actions[action[1]](action)
             del self.actionsAFaire[cadre]
         # Mise a jour:
-        
