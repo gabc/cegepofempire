@@ -45,11 +45,7 @@ class Joueur():
         pass
 
     def deplaceUnit(self, unit, arrive):
-        # owner = unit[0]
         idunit = unit[1]
-        # print(unit)
-        # x = unit[2]
-        # y = unit[3]
 
         for u in self.units:
             if u.id == idunit:
@@ -381,8 +377,9 @@ class Modele(object):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1]))
         
     def prochaineAction(self,cadre):
-        # print(self.actionsAFaire)
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
                 self.actions[action[1]](action)
             del self.actionsAFaire[cadre]
+        # Mise a jour:
+        
