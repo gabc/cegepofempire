@@ -12,12 +12,12 @@ from modele_client import *
 
 #Ratio des ressources ( sur 100)
 
-WOOD_RATIO=1
-FOOD_RATIO=1
-ROCK_RATIO=1
+WOOD_RATIO=10
+FOOD_RATIO=5
+ROCK_RATIO=5
 ARTE_RATIO=1
-ENERGY_RATIO=1
-GOLD_RATIO=1
+ENERGY_RATIO=3
+GOLD_RATIO=3
 UNDER_RATIO=25
 
 #Caracteres qui representent les ressources, incluant les ressources souterraines
@@ -76,7 +76,6 @@ class Map:
         self.hauteur=hauteur
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(j,i,EMPTY_CHAR, True) for j in range(largeur)] for i in range(hauteur)]        
-        self.ressources=self.getListeRessources()
         
     def setSeed(self, seed):
         random.seed(seed)
@@ -85,9 +84,10 @@ class Map:
         for i in range(self.hauteur):
             for j in range(self.largeur):
                 nb = random.randrange(100)
-                if nb <= ratio and self.mat[i][j].ressource==EMPTY_CHAR:
+                if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j] = Case(j,i,char, False)
                     self.mat[i][j].nbRessource=100
+                    print(nb, char)
 
     def placeRessourceUnder(self, ratio, char):
          for i in range(self.hauteur):
