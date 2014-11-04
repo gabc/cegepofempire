@@ -421,7 +421,7 @@ class Vue(object):
 	
 	
 	def placeRessource(self):
-                self.canvevasMilieu.delete("img")
+                self.canevasMilieu.delete("img")
                 for i in range(self.parent.h):
                         for j in range(self.parent.l):
 				# print(self.parent.m.mat[j][i].ressource)
