@@ -117,7 +117,7 @@ class Map:
         self.placeRessourceUnder(UNDER_RATIO, GOLD_UNDER_CHAR)
 
 
-    def placeJoueurs(self,listeJoueurs):
+    def placeJoueurs(self,listeJoueurs, listeNomsJoueurs):
 
         nbJoueurs=len(listeJoueurs)
 
@@ -166,7 +166,8 @@ class Map:
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
                 #print("x =", x,"y =", y,"a =",angle)
                 self.mat[y][x]=Case(x,y,PLAYER_CHAR,False)
-                listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
+                listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
+                joueur+=1
 
         #selon une ellipse
         #Equation pour une ellipse
@@ -186,7 +187,8 @@ class Map:
                     x = self.largeur -1
                 #print("x =", x,"y =", y,"a =",angle)
                 self.mat[y][x]=Case(x,y,PLAYER_CHAR,False)
-                listeJoueurs[joueur].buildings.append(TownCenter(joueur, x, y))
+                listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
+                joueur+=1
     
     def printMapCon(self):
         for i in range(self.hauteur):
