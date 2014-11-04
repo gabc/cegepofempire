@@ -387,7 +387,7 @@ class Vue(object):
         print("setarr", event.x, event.x / self.longeurLigne)
         for u in self.parent.myPlayer.units:
             if u.isSelected == True:
-                self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
+                self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
         
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
