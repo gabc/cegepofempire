@@ -14,6 +14,7 @@ class Joueur():
         self.ere = 1
         self.maxUnits = 200
         self.ressources = [0,0,0,0,0]
+        self.playerColor = None
         # Index des ressources:
         # Nourriture : 0
         # BOis: 1
@@ -373,15 +374,16 @@ class Modele(object):
         
     def initPartie(self,listeNomsJoueurs):
         n=0
+        self.playerColors = ["pink", "blue", "green", "yellow", "purple", "brown", "black", "white", "orange"]
         #init tous les joueur avec leur unite, batiments, etc...
         print("Nombre total de joueurs: ", len(listeNomsJoueurs))
         for j in listeNomsJoueurs:
-            print("joueur: ", j)
+            self.joueurs[j] = Joueur(self.parent, n, j)
+            self.joueurs[j].playerColor = self.playerColors[n]
+            print("joueur: ", j, " - color", self.joueurs[j].playerColor)
             if j == self.parent.nom:
-                self.parent.myPlayer = Joueur(self.parent, n, j)
-                self.joueurs[j] = self.parent.myPlayer
-            else:
-                self.joueurs[j] = Joueur(self.parent, n, j)
+                self.parent.myPlayer = self.joueurs[j]
+                print("My player color", self.joueurs[j].playerColor)
             n += 1
 
         

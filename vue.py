@@ -170,8 +170,9 @@ class Vue(object):
 		self.rafraichirCanevas()
 		self.creerLigne()
 		self.placeRessource()
+		self.placeBuilding()
 	
-	# #a changer
+
 	def selectUnit(self, event):  # add
 		print("-------------------------")
 		print("click X: ", self.currentX, " - Y: ", self.currentY)
@@ -188,10 +189,7 @@ class Vue(object):
 		self.canevasMilieu.focus_set()
 		self.currentX = event.x
 		self.currentY = event.y
-	
-	def spawnUnit(self,event):
-		vil = Villageois(0,self.currentX,self.currentY,self)
-		self.modele.creerUnite(vil)
+
 	def spawnUnit(self, event):
 		print("creating vil with owner id: ", self.parent.myPlayer.ID)
 		self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
@@ -375,7 +373,7 @@ class Vue(object):
 	#	 labelTemps.grid(column=0,row=1)
 	# 	
 	#===========================================================================
-		
+	
 	def setArrive(self, event):
 		print("setarr", event.x, event.x / self.longeurLigne)
 		for u in self.parent.myPlayer.units:
@@ -389,7 +387,7 @@ class Vue(object):
 				if u.isSelected == True:
 					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
 				else:
-					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="grey", tags="unit")
+					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
 		self.root.after(100, self.rafraichirCanevas)
 	
 	
@@ -400,34 +398,59 @@ class Vue(object):
 				
 		for j in range (self.parent.h):
 			self.canevasMilieu.create_line(0, j * self.longeurLigne, self.parent.l * self.longeurLigne, j * self.longeurLigne, fill="white")
-		
+	
+	def placeBuilding(self):
+                for j in self.parent.modele.joueurs.values():
+                        for i in j.buildings:
+                                print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
+                                self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
+	
+	
 	def placeRessource(self):
+		self.food_ress = Image.open("./img/food_ress.png")
+		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
+		self.wood_ress = Image.open("./img/wood_ress.png")
+		self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
+		self.gold_ress = Image.open("./img/gold_ress.png")
+		self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
+		self.energy_ress = Image.open("./img/energy_ress.png")
+		self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
+		self.art_ress = Image.open("./img/art_ress.png")
+		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
+		self.rock_ress = Image.open("./img/rock_ress.png")
+		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
 		for i in range(self.parent.h):
 			for j in range(self.parent.l):
 				# print(self.parent.m.mat[j][i].ressource)
 				if self.parent.m.mat[i][j].ressource == FOOD_CHAR:  # nourriture
 					# print("nourr")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="food")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="food")
 				elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:  # bois
 					# print("bois")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="brown", tags="wood")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="brown", tags="wood")
 				elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:  # pierre
 					# print("pierre")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gray", tags="rock")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gray", tags="rock")
 				# elif self.parent.m.mat[j][i].ressource == EMPTY_CHAR:#vide
 				#	 print("vide")
 				#	 self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
 				elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:  # energie
 					# print("energie")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="blue", tags="artefact")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="blue", tags="artefact")
 
 				elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:  # energie
 					# print("energie")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="green2", tags="energie")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="green2", tags="energie")
 					
 				elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:  # energie
 					# print("energie")
-					self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gold", tags="or")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gold", tags="or")
 					
 
 				
