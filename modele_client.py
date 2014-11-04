@@ -27,7 +27,9 @@ class Joueur():
         self.unitsSelectionne =[]
         self.actions={"envoieRess":self.envoyerRessources}
 
-
+    def metToiAJour(self):
+        for u in self.units:
+            u.faitAction()
 
     def changerEre():
         pass
@@ -79,6 +81,8 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
+
+        self.actionEnCours = {}
 
     def faitAction(self):
         if self.chemin:
@@ -395,3 +399,5 @@ class Modele(object):
                 self.actions[action[1]](action)
             del self.actionsAFaire[cadre]
         # Mise a jour:
+        for j in self.joueurs.keys():
+            self.joueurs[j].metToiAJour()
