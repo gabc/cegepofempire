@@ -31,6 +31,8 @@ class Joueur():
     def metToiAJour(self):
         for u in self.units:
             u.faitAction()
+        for b in self.buildings:
+            b.faitAction()
 
     def changerEre():
         pass
@@ -400,3 +402,4 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
+            
