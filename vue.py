@@ -401,7 +401,7 @@ class Vue(object):
 					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
 				else:
 					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
-		self.root.after(100, self.rafraichirCanevas)
+
 	
 	
 	def creerLigne(self):
