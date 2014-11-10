@@ -69,7 +69,7 @@ class Controleur(object):
             self.rnd=random.Random()
             self.modele.rdseed = rep[2]
             #mb.showerror(title="Seed!",message="Got seed from server.")
-            random.seed(self.modele.rdseed)
+            random.seed(frozenset(self.modele.rdseed))
             self.m.setSeed(frozenset(self.modele.rdseed))
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
