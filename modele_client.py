@@ -200,6 +200,7 @@ class Villageois(Unit):
             case.nbRessource-=1
             print(self.id, "IS COLLECTING", case.nbRessource)
             if case.nbRessource == 0:
+                self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
                 case.passable=True;
                 self.status="return"

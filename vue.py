@@ -514,7 +514,11 @@ class Vue(object):
 				if len(self.parent.myPlayer.objectsSelectionne) > 0:
 					if i == self.parent.myPlayer.objectsSelectionne[0]:
 						self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="unit")
-	
+
+			"""for c in self.parent.m.toDelete:
+				self.canevasMilieu.create_rectangle(c.posX * self.longeurLigne + self.longeurLigne/ 2 - 9, c.posY * self.longeurLigne + self.longeurLigne/ 2 - 9,c.posX * self.longeurLigne + self.longeurLigne/ 2 + 9,c.posY * self.longeurLigne + self.longeurLigne/ 2 + 9,fill="#006633", tags="vide")"""
+			
+                        
 	def creerLigne(self):
 		for i in range (self.parent.l):
 			self.canevasMilieu.create_line(i * self.longeurLigne, 0, i * self.longeurLigne, self.parent.h * self.longeurLigne, fill="white")
