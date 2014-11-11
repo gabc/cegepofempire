@@ -14,6 +14,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
+        self.maxUnitsCourrant = 10
         self.ressources = [0,0,0,0,0]
         self.playerColor = None
         # Index des ressources:
@@ -22,7 +23,13 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-
+        self.nbTypeDeRessources = 3
+        self.ageDePierre = 1
+        self.ageContemporain = 2
+        self.ageModerne = 3
+        self.ageFutur = 4
+        self.ageCourrante = self.ageDePierre
+        self.changerErePossible = False
         self.allies = []
         self.units =[]
         self.buildings =[]
@@ -35,8 +42,39 @@ class Joueur():
         for b in self.buildings:
             b.faitAction()
 
-    def changerEre():
-        pass
+    def changerEre(self):
+        self.changerEreVerif()
+        if self.changerErePossible == True:
+            if self.ageCourrante == self.ageDePierre:
+                self.Ere2()
+            elif self.ageCourrante == self.ageContemporain:
+                self.Ere3()
+            elif self.ageCourrante == self.ageModerne:
+                self.Ere4()
+            print(" changement d'ere reussi ")
+        print("age courante est " + str(self.ageCourrante))
+
+
+    def changerEreVerif(self):
+        for i in range(self.nbTypeDeRessources):
+            if self.ressources[i] > 10:
+                self.changerErePossible = True
+                print("peut changer d'ere ! ")
+
+    def Ere2(self):
+        self.ageCourrante = self.ageContemporain
+        self.nbTypeDeRessources = 4
+
+
+
+    def Ere3(self):
+        self.ageCourrante = self.ageModerne
+        self.nbTypeDeRessources = 5
+
+
+    def Ere4(self):
+        self.ageCourrante = self.ageFutur
+
 
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
@@ -135,7 +173,7 @@ class Villageois(Unit):
 
         self.posX = posX
         self.posY = posY
-
+		
     def recolteRessource(self,x,y,game_map):
         if game_map.mat[y][x].nbRessource > 0:
             game_map.mat[y][x].nbRessource-0.01
@@ -164,12 +202,6 @@ class Villageois(Unit):
             else:
                 self.finishDeplacement()
         #self.checkArrive(arrive[0].x,arrive[0].y)
-
-
-
-
-
-
 
 
 class Guerrier(Unit):
@@ -315,6 +347,17 @@ class TownCenter(Building):
             return True
         else :
             return False
+
+class Maison(Building):
+    def __init__(self, ownerID, posX, posY):
+        Building.__init__(self, ownerID,posX,posY)
+        self.type="Maison"
+
+        self.hpActuel = 700
+        self.hpMax = self.hpActuel
+        self.longueur = 100
+        self.largeur = 100
+        self.delaiDeConstruction = 10000
 
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY):
