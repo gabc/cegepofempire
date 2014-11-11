@@ -407,12 +407,14 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for n in self.parent.unites:# il faut reussir a avoir la liste des unités
-                if n.ownerID is not self.ownerID:
-                    if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
-                        self.target = n
-                        self.actionEnCours = "attaqueCible"
-                        self.attaqueCible(n)
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
+                for n in i:
+                    if n.ownerID is not self.ownerID:
+                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.actionEnCours = "attaqueCible"
+                            self.attaqueCible(n)
+                            break
 
 
     def faitAction(self):
@@ -428,6 +430,10 @@ class Tower(Building):
         if self.cooldown != 100:
             self.cooldown += 1
             print("cooldown de la tour ", self.cooldown)
+        if self.hpActuel  ==0:
+            del self
+            print (" je  suis mort")
+
 
 
 #
@@ -479,4 +485,6 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
+
+
 
