@@ -31,12 +31,14 @@ class Vue(object):
         self.parent = parent
         self.modele = self.parent.modele
         self.root = Tk()
+        self.root.title("Cegep of empire")
         self.root.protocol('WM_DELETE_WINDOW', self.intercepteFermeture)
         self.cadreActif = 0
         self.creeCadres()
         self.placeCadre(self.cadreConnection)
         self.currentX = 0
         self.currentY = 0
+        self.longeurLigne = 20
         
         self.food_ress = Image.open("./img/food_ress.png")
         self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
@@ -173,7 +175,7 @@ class Vue(object):
         
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
         
-        self.canevasMilieu.bind("<Button-1>", self.selectUnit)  # add
+        self.canevasMilieu.bind("<Button-1>", self.selectObject)  # add
         self.canevasMilieu.bind("<Motion>", self.motion)
         self.canevasMilieu.bind("<Key>", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
@@ -186,22 +188,24 @@ class Vue(object):
         self.placeBuilding()
     
 
-    def selectUnit(self, event):  # add
+    def selectObject(self, event):  # add
         print("-------------------------")
         print("click X: ", self.currentX, " - Y: ", self.currentY)
-        if len(self.parent.myPlayer.unitsSelectionne) > 0:
-            self.parent.myPlayer.unitsSelectionne.pop()
+        if len(self.parent.myPlayer.objectsSelectionne) > 0:
+            self.parent.myPlayer.objectsSelectionne.pop()
         for u in self.parent.myPlayer.units:
-            u.isSelected = False
-        for u in self.parent.myPlayer.units:
-            print("units X: ", u.posX, " - Y: ", u.posY)
             if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
-                u.isSelected = True
-                self.parent.myPlayer.unitsSelectionne.append(u)
-                
-                print("selected: ", u.posX)
+                self.parent.myPlayer.objectsSelectionne.append(u)
+                print("selected object: ", u.type)
                 break
-        #print (self.parent.myPlayer.unitsSelectionne[0])    
+        
+        if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
+            for b in self.parent.myPlayer.buildings:
+                if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
+                    self.parent.myPlayer.objectsSelectionne.append(b)
+                    print("selected object: ", b.type)
+                    break
+        #print (self.parent.myPlayer.objectsSelectionne[0])    
         self.optionUnite()
 
     def motion(self, event):
@@ -305,55 +309,56 @@ class Vue(object):
             if j.name != self.parent.nom:
                 self.autreJoueur.append(j.name)
         
-        self.var = StringVar(self.toplevel)
-        self.var.set(self.autreJoueur[0])
+        if len(self.autreJoueur) > 0:
+            self.var = StringVar(self.toplevel)
+            self.var.set(self.autreJoueur[0])
         # titres
-        labelAllie = Label(self.cadreAlliance, text="Alliance", width=15)
-        labelAllie.grid(column=0, row=0, columnspan=2)
-        
-        labelEchange = Label(self.cadreEchange, text="Echange", width=15)
-        labelEchange.grid(column=0, row=0, columnspan=2)
-        
-        # dropdown menu
-        self.listeEchange = OptionMenu(self.cadreEchange, self.var, self.autreJoueur)  # tranfere a modele_client
-        self.listeEchange.grid(column=0, row=1, columnspan=2)
-        
-        # labels
-        
-        labelDiplomatieNourriture = Label(self.cadreEchange, text="Nourriture", relief=SOLID, width=15)
-        labelDiplomatieNourriture.grid(column=0, row=2)
-        
-        labelDiplomatieBois = Label(self.cadreEchange, text="Bois", relief=SOLID, width=15)
-        labelDiplomatieBois.grid(column=0, row=3)
-        
-        labelDiplomatieOr = Label(self.cadreEchange, text="Or", relief=SOLID, width=15)
-        labelDiplomatieOr.grid(column=0, row=4)
-        
-        labelDiplomatiePierre = Label(self.cadreEchange, text="Pierre", relief=SOLID, width=15)
-        labelDiplomatiePierre.grid(column=0, row=5)
-        
-        labelDiplomatieEnergie = Label(self.cadreEchange, text="Energie", relief=SOLID, width=15)
-        labelDiplomatieEnergie.grid(column=0, row=6)
-        
-        # Sliders
-        
-        self.sliderNourriture = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-        self.sliderNourriture.grid(column=1, row=2)
-        
-        self.sliderBois = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-        self.sliderBois.grid(column=1, row=3)
-        
-        self.sliderOr = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-        self.sliderOr.grid(column=1, row=4)
-        
-        self.sliderPierre = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-        self.sliderPierre.grid(column=1, row=5)
-        
-        self.sliderEnergie = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-        self.sliderEnergie.grid(column=1, row=6)
-
-        buttonEnvoyer = Button(self.cadreEchange, text="Envoyer", command=self.envoyerRessource)
-        buttonEnvoyer.grid(column=0, row=7, columnspan=2)
+            labelAllie = Label(self.cadreAlliance, text="Alliance", width=15)
+            labelAllie.grid(column=0, row=0, columnspan=2)
+            
+            labelEchange = Label(self.cadreEchange, text="Echange", width=15)
+            labelEchange.grid(column=0, row=0, columnspan=2)
+            
+            # dropdown menu
+            self.listeEchange = OptionMenu(self.cadreEchange, self.var, self.autreJoueur)  # tranfere a modele_client
+            self.listeEchange.grid(column=0, row=1, columnspan=2)
+            
+            # labels
+            
+            labelDiplomatieNourriture = Label(self.cadreEchange, text="Nourriture", relief=SOLID, width=15)
+            labelDiplomatieNourriture.grid(column=0, row=2)
+            
+            labelDiplomatieBois = Label(self.cadreEchange, text="Bois", relief=SOLID, width=15)
+            labelDiplomatieBois.grid(column=0, row=3)
+            
+            labelDiplomatieOr = Label(self.cadreEchange, text="Or", relief=SOLID, width=15)
+            labelDiplomatieOr.grid(column=0, row=4)
+            
+            labelDiplomatiePierre = Label(self.cadreEchange, text="Pierre", relief=SOLID, width=15)
+            labelDiplomatiePierre.grid(column=0, row=5)
+            
+            labelDiplomatieEnergie = Label(self.cadreEchange, text="Energie", relief=SOLID, width=15)
+            labelDiplomatieEnergie.grid(column=0, row=6)
+            
+            # Sliders
+            
+            self.sliderNourriture = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+            self.sliderNourriture.grid(column=1, row=2)
+            
+            self.sliderBois = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+            self.sliderBois.grid(column=1, row=3)
+            
+            self.sliderOr = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+            self.sliderOr.grid(column=1, row=4)
+            
+            self.sliderPierre = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+            self.sliderPierre.grid(column=1, row=5)
+            
+            self.sliderEnergie = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+            self.sliderEnergie.grid(column=1, row=6)
+    
+            buttonEnvoyer = Button(self.cadreEchange, text="Envoyer", command=self.envoyerRessource)
+            buttonEnvoyer.grid(column=0, row=7, columnspan=2)
         
     def envoyerRessource(self):
         # Nom,Nourriture,Bois,Or,Pierre,Energie
@@ -376,30 +381,27 @@ class Vue(object):
         #labelOptionUnite = Label(self.cadreOptionUnite, text="Option d'unite")
         #labelOptionUnite.grid(column=0, row=0, columnspan=2)
         
-        if len(self.parent.myPlayer.unitsSelectionne) > 0:
-            print("type: ", self.parent.myPlayer.unitsSelectionne[0].type)
-        
-        if len(self.parent.myPlayer.unitsSelectionne) < 1:
-            print("grid forget")
+        if len(self.parent.myPlayer.objectsSelectionne) == 0:
+            print("No object selected: grid forget")
             self.cadreOptionVillageois.grid_forget()
             self.cadreOptionTownCenter.grid_forget()
         
         # TownCenter
-        elif self.parent.myPlayer.unitsSelectionne[0].type == "TownCenter":
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
             self.cadreOptionTownCenter.grid(column=0, row=2)
         
         # Barracks
-        elif self.parent.myPlayer.unitsSelectionne[0].type == "Building":
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Building":
             buttonCree = Button(self.cadreOptionUnite, text="Cree", width=8)  # text="Cree",command=,
             buttonCree.grid(column=0, row=1)
         
         # Villageois
-        elif self.parent.myPlayer.unitsSelectionne[0].type == "Villageois":
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Villageois":
             print("ici")
             self.cadreOptionVillageois.grid(column=0, row=2)
         
         # Attaquant
-        elif self.parent.myPlayer.unitsSelectionne[0].type == "Guerrier":
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
             buttonAttaquer = Button(self.cadreOptionUnite, text="Attaquer", width=8)
             buttonAttaquer.grid(column=0, row=1)
         
@@ -432,23 +434,28 @@ class Vue(object):
     #===========================================================================
     
     def setArrive(self, event):
-        print("setarr", event.x, event.x / self.longeurLigne)
-        for u in self.parent.myPlayer.units:
-            if u.isSelected == True:
-                self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
-				#self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
+        print("setarr", event.x, event.x / self.longeurLigne)##
+        if len(self.parent.myPlayer.objectsSelectionne) > 0:
+            u = self.parent.myPlayer.objectsSelectionne[0]
+            self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
+            #self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
         
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
         for j in self.parent.modele.joueurs.values():
             for u in j.units:
-                if u.isSelected == True:
-                    self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
-                else:
-                    self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                    if u == self.parent.myPlayer.objectsSelectionne[0]:
+                        self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+                        
+            for i in j.buildings:
+                self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
+                if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                    if i == self.parent.myPlayer.objectsSelectionne[0]:
+                        self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="unit")
     
     def creerLigne(self):
-        self.longeurLigne = 20
         for i in range (self.parent.l):
             self.canevasMilieu.create_line(i * self.longeurLigne, 0, i * self.longeurLigne, self.parent.h * self.longeurLigne, fill="white")
                 

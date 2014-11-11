@@ -1,0 +1,6 @@
+isSelected -> removed and replaced with "self.parent.myPlayer.unitsSelectionne" (no need to loop throught every player and then every units)
+renamed selectUnit to selectObject
+renamed list unitsSelectionne to objectsSelectionne
+working selection of town center
+self.longeurLigne moved to init of vue
+renamed windows title to "Cegep of empire" instead of "Tk"
