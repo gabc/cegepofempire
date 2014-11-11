@@ -14,6 +14,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
+        self.maxUnitsCourrant = 10
         self.ressources = [0,0,0,0,0]
         self.playerColor = None
         # Index des ressources:
@@ -22,7 +23,13 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-
+        self.nbTypeDeRessources = 3
+        self.ageDePierre = 1
+        self.ageContemporain = 2
+        self.ageModerne = 3
+        self.ageFutur = 4
+        self.ageCourrante = self.ageDePierre
+        self.changerErePossible = False
         self.allies = []
         self.units =[]
         self.buildings =[]
@@ -35,8 +42,39 @@ class Joueur():
         for b in self.buildings:
             b.faitAction()
 
-    def changerEre():
-        pass
+    def changerEre(self):
+        self.changerEreVerif()
+        if self.changerErePossible == True:
+            if self.ageCourrante == self.ageDePierre:
+                self.Ere2()
+            elif self.ageCourrante == self.ageContemporain:
+                self.Ere3()
+            elif self.ageCourrante == self.ageModerne:
+                self.Ere4()
+            print(" changement d'ere reussi ")
+        print("age courante est " + str(self.ageCourrante))
+
+
+    def changerEreVerif(self):
+        for i in range(self.nbTypeDeRessources):
+            if self.ressources[i] > 10:
+                self.changerErePossible = True
+                print("peut changer d'ere ! ")
+
+    def Ere2(self):
+        self.ageCourrante = self.ageContemporain
+        self.nbTypeDeRessources = 4
+
+
+
+    def Ere3(self):
+        self.ageCourrante = self.ageModerne
+        self.nbTypeDeRessources = 5
+
+
+    def Ere4(self):
+        self.ageCourrante = self.ageFutur
+
 
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
@@ -59,8 +97,11 @@ class Joueur():
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
         for u in self.units:
-            if u.id == idunit:
+            if u.id == idunit:               
+                #print(arrive)
+                u.status="deplace"
                 u.deplacer(self.parent.deplaceur, arrive)
+                u.target=arrive
 
 id_objet = 0
 
@@ -88,6 +129,9 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
+        self.target=(self.posX, self.posY)
+        self.status="spawned"
+
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
@@ -111,15 +155,16 @@ class Unit():
             self.posX -= self.vitesseX
         elif self.posX < int(arrive.x*20):
             self.posX += self.vitesseX
+
         if self.posY > int(arrive.y*20):
             self.posY -= self.vitesseY
         elif self.posY < int(arrive.y*20):
             self.posY += self.vitesseY
 
 class Villageois(Unit):
-
     def __init__(self,ownerID, posX, posY,parent):
         Unit.__init__(self,ownerID, posX, posY,parent)
+
         self.type = "Villageois"
         self.isMoving = False
         #j'ai decider arbitrairement de l'hp: a modifier
@@ -136,38 +181,71 @@ class Villageois(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
 
-        self.posX = posX #add
-        self.posY = posY #add
+    def faitAction(self):
+        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+            self.deplacer(self.deplaceur, self.chemin)
+        elif self.status is not "spawned":    #Sinon check son target si il ne viens pas juste de spawn
+            self.checkArrive(self.target, self.parent.parent.m)
 
+        if self.status=="return":
+            self.deplacer(self.deplaceur, self.getTownCenterCoords())
+            self.status="waiting"
 
-    def recolteRessource(self,x,y,game_map):
-        if game_map.mat[y][x].nbRessource > 0:
-            game_map.mat[y][x].nbRessource-0.01
-            if game_map.mat[y][x].nbRessource == 0:
-                game_map.mat[y][x].ressource=game_map.EMPTY_CHAR
+    def getTownCenterCoords(self):
+        for b in self.parent.buildings:
+            if b.type=="TownCenter":
+                x=b.posX
+                y=b.posY
+                break
+        return(x,y)
 
-    def checkArrive(self, x, y):
-        if self.posX == x and self.posY == y:
-            if game_map.mat[y][x].ressource is not game_map.EMPTY_CHAR:
-               self.recolteRessource(arrive, self.parent.parent.m)
+    def recolteRessource(self, case):
+        if case.nbRessource > 0:
+            case.nbRessource-=1
+            print(self.id, "IS COLLECTING", case.nbRessource)
+            if case.nbRessource == 0:
+                case.ressource='0'
+                self.status="return"
+                
+        return case
+            
+    def checkArrive(self, target, game_map):
+        #check si le target est en pixels ou en cases de jeu
+        if target[0] > game_map.largeur and target[1] > game_map.hauteur:
+            arrive=game_map.mat[math.trunc(target[1]/20)][math.trunc(target[0]/20)]
+        else:
+            arrive=game_map.mat[target[1]][target[0]]
+
+        x = math.trunc(self.posX / 20)
+        y = math.trunc(self.posY / 20)
+        
+        #Si il est dans le range de 1 case de son arrivee
+        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
+            if arrive.ressource is not "-":
+                arrive=self.recolteRessource(arrive)
+                game_map.mat[arrive.posY][arrive.posX]=arrive
+
+    def finishDeplacement(self):
+        self.posX = math.trunc(self.posX / 20) * 20 + 7
+        self.posY = math.trunc(self.posY / 20) * 20 + 7
+        print("done deplacement")
 
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or self.chemin == []:
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):
+            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)) or self.compteur_deplacement > 10:
+                self.compteur_deplacement = 0
+                self.posX += 1
+                self.posY += 2
+                print("Del chemin")
                 del self.chemin[0]
             if self.chemin:
+                self.compteur_deplacement +=1
                 self.effectueDeplacement(self.chemin[0])
-        #self.checkArrive(arrive[0].x,arrive[0].y)
-
-
-
-
-
-
-
+            else:
+                self.finishDeplacement()
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
@@ -313,6 +391,17 @@ class TownCenter(Building):
         else :
             return False
 
+class Maison(Building):
+    def __init__(self, ownerID, posX, posY):
+        Building.__init__(self, ownerID,posX,posY)
+        self.type="Maison"
+
+        self.hpActuel = 700
+        self.hpMax = self.hpActuel
+        self.longueur = 100
+        self.largeur = 100
+        self.delaiDeConstruction = 10000
+
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY):
         Building.__init__(ownerID,posX,posY)
@@ -411,12 +500,14 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for n in self.parent.unites:# il faut reussir a avoir la liste des unités
-                if n.ownerID is not self.ownerID:
-                    if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
-                        self.target = n
-                        self.actionEnCours = "attaqueCible"
-                        self.attaqueCible(n)
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
+                for n in i:
+                    if n.ownerID is not self.ownerID:
+                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.actionEnCours = "attaqueCible"
+                            self.attaqueCible(n)
+                            break
 
 
     def faitAction(self):
@@ -432,6 +523,10 @@ class Tower(Building):
         if self.cooldown != 100:
             self.cooldown += 1
             print("cooldown de la tour ", self.cooldown)
+        if self.hpActuel  ==0:
+            del self
+            print (" je  suis mort")
+
 
 
 #
@@ -487,4 +582,6 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
+
+
 

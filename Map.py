@@ -86,7 +86,7 @@ class Map:
                 nb = random.randrange(100)
                 if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j] = Case(j,i,char, False)
-                    self.mat[i][j].nbRessource=100
+                    self.mat[i][j].nbRessource=50
 
     def placeRessourceUnder(self, ratio, char):
          for i in range(self.hauteur):
@@ -97,12 +97,12 @@ class Map:
                         
                         self.mat[i][j] = Case(j,i,EMPTY_CHAR,True)
                         self.mat[i][j].underRes=char
-                        self.mat[i][j].nbRessource=100
+                        self.mat[i][j].nbRessource=50
 
                     else:
 
                         self.mat[i][j].underRes=char
-                        self.mat[i][j].nbRessource=100
+                        self.mat[i][j].nbRessource=50
                     
 
     def placeRessourcesOverworld(self):
@@ -193,13 +193,34 @@ class Map:
                 self.mat[y][x]=Case(x,y,PLAYER_CHAR,False)
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
+
+        #vide les cases trop pres des spawns
+
+        listeRes=self.getListeRessources()
+
+        for j in listeNomsJoueurs:
+            x=listeJoueurs[j].buildings[0].posX
+            y=listeJoueurs[j].buildings[0].posY
+
+            for r in listeRes:
+                #si pos x de la ressource est dans le range de 1 case du town center
+                if r.posX >= x - 1 and r.posX <= x + 1:
+                    #si pos y de la ressource est dans le range de 1 case du town center
+                    if r.posY >= y - 1 and r.posY <= y + 1:
+                        r.ressource=EMPTY_CHAR
+                        r.nbRessource=0
+                        r.passable=True
+                        self.mat[r.posY][r.posX]=r
+                        print(r.posX, r.posY)
+                        listeRes.remove(r)
+        
     
     def getListeRessources(self):
-        ressources=[0]
+        ressources=[]
         
         for i in range(self.hauteur):
             for j in range(self.largeur):
-                if self.mat[i][j].nbRessource > 0:
+                if self.mat[i][j].ressource is not EMPTY_CHAR:
                     ressources.append(self.mat[i][j])
 
         return ressources
