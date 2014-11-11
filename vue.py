@@ -37,6 +37,19 @@ class Vue(object):
         self.placeCadre(self.cadreConnection)
         self.currentX = 0
         self.currentY = 0
+		
+		self.food_ress = Image.open("./img/food_ress.png")
+		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
+		self.wood_ress = Image.open("./img/wood_ress.png")
+		self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
+		self.gold_ress = Image.open("./img/gold_ress.png")
+		self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
+		self.energy_ress = Image.open("./img/energy_ress.png")
+		self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
+		self.art_ress = Image.open("./img/art_ress.png")
+		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
+		self.rock_ress = Image.open("./img/rock_ress.png")
+		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -199,10 +212,6 @@ class Vue(object):
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
-        # vil = Villageois(self.parent.myPlayer.ID,self.currentX,self.currentY)
-        # self.modele.creerUnite(vil)
-        # self.parent.j.units.append(vil)
-    
         
     def initCadre(self):
         
@@ -216,25 +225,15 @@ class Vue(object):
         self.cadreDiplomatie = Frame(self.cadrePartie)
         self.cadreDiplomatie.grid(column=2, row=0)
         # Bas
-        
-        
-        
-        
-        
-        self.cadreOptionVillageois = Frame(self.cadrePartie)
+
+		self.cadreOptionVillageois = Frame(self.cadrePartie)
         buttonConstruire = Button(self.cadreOptionVillageois, text="Construire", width=8)
         buttonConstruire.grid(column=0, row=1)
-        
-        
-        
+            
         self.cadreOptionTownCenter = Frame(self.cadrePartie)
         buttonCree = Button(self.cadreOptionTownCenter, text="Cree", width=8)  # text="Cree",command=,
         buttonCree.grid(column=0, row=1)
-        
-        
-        
-        
-        
+           
         self.cadreInfoSelection = Frame(self.cadrePartie)
         self.cadreInfoSelection.grid(column=1, row=2)
         
@@ -436,7 +435,8 @@ class Vue(object):
         print("setarr", event.x, event.x / self.longeurLigne)
         for u in self.parent.myPlayer.units:
             if u.isSelected == True:
-                self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
+                self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
+				#self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
         
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
@@ -446,8 +446,6 @@ class Vue(object):
                     self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 else:
                     self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
-        self.root.after(100, self.rafraichirCanevas)
-    
     
     def creerLigne(self):
         self.longeurLigne = 20
@@ -466,18 +464,6 @@ class Vue(object):
     
     
     def placeRessource(self):
-        self.food_ress = Image.open("./img/food_ress.png")
-        self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
-        self.wood_ress = Image.open("./img/wood_ress.png")
-        self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
-        self.gold_ress = Image.open("./img/gold_ress.png")
-        self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
-        self.energy_ress = Image.open("./img/energy_ress.png")
-        self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
-        self.art_ress = Image.open("./img/art_ress.png")
-        self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
-        self.rock_ress = Image.open("./img/rock_ress.png")
-        self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
         for i in range(self.parent.h):
             for j in range(self.parent.l):
                 # print(self.parent.m.mat[j][i].ressource)
@@ -510,25 +496,7 @@ class Vue(object):
                     # print("energie")
                     self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
                     # self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gold", tags="or")
-                    
-
-                
-    def imgLabel(self):
-        print("")
-        # labelNourritureImg=Label(self.cadreRessource,text="Nourriture: 200",relief=SOLID,width=15)
-        # labelNourritureImg.grid(column=0,row=0)
-        
-        # labelBoisImg=Label(self.cadreRessource,text="Bois: 150",relief=SOLID,width=15)
-        # labelBoisImg.grid(column=2,row=0)
-        
-        # labelPierreImg=Label(self.cadreRessource,text="Pierre: 100",relief=SOLID,width=15)
-        # labelPierreImg.grid(column=0,row=1)
-        
-        # labelOrImg=Label(self.cadreRessource,text="Or: 150",relief=SOLID,width=15)
-        # labelOrImg.grid(column=2,row=1)
-
-        # labelEnergieImg=Label(self.cadreRessource,text="Energie: 0",relief=SOLID,width=15)
-        # labelEnergieImg.grid(column=0,row=2,columnspan=2)
+					
         
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
