@@ -103,7 +103,7 @@ class Controleur(object):
             self.cadre=self.cadre+1
             if self.attend == False:
                 self.modele.prochaineAction(self.cadre)
-                self.vue.afficheArtefact()
+                self.vue.rafraichirCanevas()
             if self.actions:
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
