@@ -1,5 +1,6 @@
 import deplacement
 import math
+import timeit
 
 def roundtenth(x):
     """arrondi a la dizaine vers le bas 9 -> 0, 15 -> 10"""
@@ -13,6 +14,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
+        self.maxUnitsCourrant = 10
         self.ressources = [0,0,0,0,0]
         self.playerColor = None
         # Index des ressources:
@@ -21,11 +23,17 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-
+        self.nbTypeDeRessources = 3
+        self.ageDePierre = 1
+        self.ageContemporain = 2
+        self.ageModerne = 3
+        self.ageFutur = 4
+        self.ageCourrante = self.ageDePierre
+        self.changerErePossible = False
         self.allies = []
         self.units =[]
         self.buildings =[]
-        self.unitsSelectionne =[]
+        self.objectsSelectionne =[]
         self.actions={"envoieRess":self.envoyerRessources}
 
     def metToiAJour(self):
@@ -34,8 +42,39 @@ class Joueur():
         for b in self.buildings:
             b.faitAction()
 
-    def changerEre():
-        pass
+    def changerEre(self):
+        self.changerEreVerif()
+        if self.changerErePossible == True:
+            if self.ageCourrante == self.ageDePierre:
+                self.Ere2()
+            elif self.ageCourrante == self.ageContemporain:
+                self.Ere3()
+            elif self.ageCourrante == self.ageModerne:
+                self.Ere4()
+            print(" changement d'ere reussi ")
+        print("age courante est " + str(self.ageCourrante))
+
+
+    def changerEreVerif(self):
+        for i in range(self.nbTypeDeRessources):
+            if self.ressources[i] > 10:
+                self.changerErePossible = True
+                print("peut changer d'ere ! ")
+
+    def Ere2(self):
+        self.ageCourrante = self.ageContemporain
+        self.nbTypeDeRessources = 4
+
+
+
+    def Ere3(self):
+        self.ageCourrante = self.ageModerne
+        self.nbTypeDeRessources = 5
+
+
+    def Ere4(self):
+        self.ageCourrante = self.ageFutur
+
 
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
@@ -49,7 +88,7 @@ class Joueur():
 
     #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
-        print(a,b,c,d,e,f)        
+        print(a,b,c,d,e,f)
 
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
@@ -89,10 +128,11 @@ class Unit():
         self.target=(self.posX, self.posY)
         self.status="spawned"
 
+
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
-    
+
     def isAlive(self):
         if self.hpActuel <= 0:
             return False
@@ -111,15 +151,16 @@ class Unit():
             self.posX -= self.vitesseX
         elif self.posX < int(arrive.x*20):
             self.posX += self.vitesseX
+
         if self.posY > int(arrive.y*20):
             self.posY -= self.vitesseY
         elif self.posY < int(arrive.y*20):
-            self.posY += self.vitesseY            
+            self.posY += self.vitesseY
 
 class Villageois(Unit):
-
     def __init__(self,ownerID, posX, posY,parent):
         Unit.__init__(self,ownerID, posX, posY,parent)
+
         self.type = "Villageois"
         self.isMoving = False
         #j'ai decider arbitrairement de l'hp: a modifier
@@ -180,17 +221,27 @@ class Villageois(Unit):
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posY][arrive.posX]=arrive
 
+    def finishDeplacement(self):
+        self.posX = math.trunc(self.posX / 20) * 20 + 7
+        self.posY = math.trunc(self.posY / 20) * 20 + 7
+        print("done deplacement")
+
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or self.chemin == []:
             self.deplaceur = deplaceur
-            self.chemin = deplaceur.chemin(self, arrive)            
+            self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):      
+            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)) or self.compteur_deplacement > 10:
+                self.compteur_deplacement = 0
+                self.posX += 1
+                self.posY += 2
+                print("Del chemin")
                 del self.chemin[0]
             if self.chemin:
+                self.compteur_deplacement +=1
                 self.effectueDeplacement(self.chemin[0])
-        
-            
+            else:
+                self.finishDeplacement()
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
@@ -336,6 +387,17 @@ class TownCenter(Building):
         else :
             return False
 
+class Maison(Building):
+    def __init__(self, ownerID, posX, posY):
+        Building.__init__(self, ownerID,posX,posY)
+        self.type="Maison"
+
+        self.hpActuel = 700
+        self.hpMax = self.hpActuel
+        self.longueur = 100
+        self.largeur = 100
+        self.delaiDeConstruction = 10000
+
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY):
         Building.__init__(ownerID,posX,posY)
@@ -392,6 +454,80 @@ class Barrack(Building):
         else :
             return False
 
+# modifier le 11/11/2014
+class Tower(Building):
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY)
+        self.type = "Tower"
+        self.hpActuel = 400
+        self.hpMax = hpActuel
+        self.longueur =20
+        self.largeur = 20
+        self.delaiDeConstruction = -1
+        self.champDeVision = -1
+        self.champDaggro = 30
+        self.target=None
+        self.targetedBy = None
+        self.actionEnCours = None
+        self.degat = 50
+        self.cooldown = 100
+
+
+    def attaqueCible(self):
+        if self.target.isAlive():
+            if helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= champDaggro:
+                if self.cooldown == 100:
+                    self.target.recevoirDegats(self.degat)
+                    self.cooldown = 0
+
+
+
+            else:
+                self.actionEncours ="scanEnemy"
+        else:
+            self.actionEnCours="scanEnemy"
+
+
+
+
+
+    def scanEnemy(self):
+        if self.targetedBy and target is None:
+            self.target = self.targetedBy
+            self.attaqueCible(targetedBy)
+        else:
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
+                for n in i:
+                    if n.ownerID is not self.ownerID:
+                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.actionEnCours = "attaqueCible"
+                            self.attaqueCible(n)
+                            break
+
+
+    def faitAction(self):
+        if self.actionEnCours == None:
+            self.actionEncours ="scanEnemy"
+        if self.actionEnCours == "scanEnemy":
+            self.scanEnemy()
+        if self.actionEnCours == "attaqueCible":
+            self.attaqueCible()
+
+
+    def   metToiAJour(self):
+        if self.cooldown != 100:
+            self.cooldown += 1
+            print("cooldown de la tour ", self.cooldown)
+        if self.hpActuel  ==0:
+            del self
+            print (" je  suis mort")
+
+
+
+#
+
+
 
 
 
@@ -400,7 +536,7 @@ class Modele(object):
     def nextId():
         Modele.id=Modele.id+1
         return Modele.id
-    
+
     def __init__(self,parent):
         self.parent=parent
         self.unites=[]
@@ -423,13 +559,13 @@ class Modele(object):
                 print("My player color", self.joueurs[j].playerColor)
             n += 1
 
-        
+
     def creerUnite(self, args):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
 
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
-        
+
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
@@ -438,4 +574,6 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
-            
+
+
+
