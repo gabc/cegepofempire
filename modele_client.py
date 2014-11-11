@@ -54,8 +54,11 @@ class Joueur():
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
         for u in self.units:
-            if u.id == idunit:
+            if u.id == idunit:               
+                #print(arrive)
+                u.status="deplace"
                 u.deplacer(self.parent.deplaceur, arrive)
+                u.target=arrive
 
 id_objet = 0
 
@@ -83,6 +86,8 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
+        self.target=(self.posX, self.posY)
+        self.status="spawned"
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
@@ -131,20 +136,49 @@ class Villageois(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
 
-        self.posX = posX #add
-        self.posY = posY #add
-            
+    def faitAction(self):
+        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+            self.deplacer(self.deplaceur, self.chemin)
+        elif self.status is not "spawned":    #Sinon check son target si il ne viens pas juste de spawn
+            self.checkArrive(self.target, self.parent.parent.m)
 
-    def recolteRessource(self,x,y,game_map):
-        if game_map.mat[y][x].nbRessource > 0:
-            game_map.mat[y][x].nbRessource-0.01
-            if game_map.mat[y][x].nbRessource == 0:
-                game_map.mat[y][x].ressource=game_map.EMPTY_CHAR
+        if self.status=="return":
+            self.deplacer(self.deplaceur, self.getTownCenterCoords())
+            self.status="waiting"
+
+    def getTownCenterCoords(self):
+        for b in self.parent.buildings:
+            if b.type=="TownCenter":
+                x=b.posX
+                y=b.posY
+                break
+        return(x,y)
+
+    def recolteRessource(self, case):
+        if case.nbRessource > 0:
+            case.nbRessource-=1
+            print(self.id, "IS COLLECTING", case.nbRessource)
+            if case.nbRessource == 0:
+                case.ressource='0'
+                self.status="return"
+                
+        return case
             
-    def checkArrive(self, x, y):
-        if self.posX == x and self.posY == y:
-            if game_map.mat[y][x].ressource is not game_map.EMPTY_CHAR:
-               self.recolteRessource(arrive, self.parent.parent.m)
+    def checkArrive(self, target, game_map):
+        #check si le target est en pixels ou en cases de jeu
+        if target[0] > game_map.largeur and target[1] > game_map.hauteur:
+            arrive=game_map.mat[math.trunc(target[1]/20)][math.trunc(target[0]/20)]
+        else:
+            arrive=game_map.mat[target[1]][target[0]]
+
+        x = math.trunc(self.posX / 20)
+        y = math.trunc(self.posY / 20)
+        
+        #Si il est dans le range de 1 case de son arrivee
+        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
+            if arrive.ressource is not "-":
+                arrive=self.recolteRessource(arrive)
+                game_map.mat[arrive.posY][arrive.posX]=arrive
 
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or self.chemin == []:
@@ -155,7 +189,6 @@ class Villageois(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-        #self.checkArrive(arrive[0].x,arrive[0].y)
         
             
 
