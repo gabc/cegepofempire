@@ -122,6 +122,7 @@ class Unit():
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
+        self.compteur_deplacement = 0
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
@@ -152,9 +153,9 @@ class Unit():
             self.posY += self.vitesseY
 
 class Villageois(Unit):
-
     def __init__(self,ownerID, posX, posY,parent):
         Unit.__init__(self,ownerID, posX, posY,parent)
+
         self.type = "Villageois"
         self.isMoving = False
         #j'ai decider arbitrairement de l'hp: a modifier
@@ -195,9 +196,14 @@ class Villageois(Unit):
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):
+            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)) or self.compteur_deplacement > 10:
+                self.compteur_deplacement = 0
+                self.posX += 1
+                self.posY += 2
+                print("Del chemin")
                 del self.chemin[0]
             if self.chemin:
+                self.compteur_deplacement +=1
                 self.effectueDeplacement(self.chemin[0])
             else:
                 self.finishDeplacement()
