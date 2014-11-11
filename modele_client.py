@@ -45,6 +45,10 @@ class Joueur():
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y,self))
 
+    def creerJoueurBuilding(self, type, x, y):
+        if type == "tower":
+            self.buildings.append(Tower(self.ID, x, y,self))
+
     def changerAllies():
         pass
 
@@ -371,8 +375,8 @@ class Tower(Building):
         Building.__init__(self, ownerID, posX, posY)
         self.type = "Tower"
         self.hpActuel = 400
-        self.hpMax = hpActuel
-        self.longueur =20
+        self.hpMax = self.hpActuel
+        self.longueur = 20
         self.largeur = 20
         self.delaiDeConstruction = -1
         self.champDeVision = -1
@@ -448,7 +452,8 @@ class Modele(object):
         self.actionsAFaire={}
         self.joueurs = {} # = Joueur(0, "test")
         self.actions = {"creerUnite" : self.creerUnite,
-                        "deplace" : self.deplaceUnite,}
+                        "deplace" : self.deplaceUnite,
+                        "creerBuilding": self.creerBuilding,}
 
     def initPartie(self,listeNomsJoueurs):
         n=0
@@ -471,6 +476,9 @@ class Modele(object):
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
 
+    def creerBuilding(self, args):
+        self.joueurs[args[0]].creerJoueurBuilding(args[2][0], args[2][1], args[2][2])
+        
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
