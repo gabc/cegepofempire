@@ -1,12 +1,14 @@
 import modele_client
+import client
+import Map
 import random
 """
 1- besoin de variable de selection estSelectionner sur les units
-    ainsi on peut leur donner un ordre a eux simplement par la vÃƒÂ©rification dans la liste
+    ainsi on peut leur donner un ordre a eux simplement par la vÃƒÆ’Ã‚Â©rification dans la liste
     en ne verifiant que CETTE variable
 2- besoin de verifier mes methodes a transferer vers le fichier ModuleObject
 """
-class Cpu(modele_client.Joueur):
+class Cpu(modele_client.Joueur,parent):
     def __init__(self, ID, posX, posY):
         modele_client.Joueur.__init__(self, ID, posX, posY)
         self.ressources = [0,0,0,0,0]
@@ -28,7 +30,8 @@ class Cpu(modele_client.Joueur):
         self.offensive = 1
         self.defensive = 2
         self.mode = self.balanced
-
+        self.cherchePosX = 0
+        self.cherchePosY = 0
         #ageDePierre = 1
         #ageContemporain = 2
         #ageModerne = 3
@@ -42,6 +45,7 @@ class Cpu(modele_client.Joueur):
         self.gold = 0
         self.energy = 0
         self.ressourcesAuBesoin = [self.food, self.wood, self.rock, self.gold, self.energy]
+        self.iteratorNumber = 1
         # these will be needed at the initializing
         #//***************************************************************
 
@@ -75,11 +79,11 @@ class Cpu(modele_client.Joueur):
                 self.units.append(u1)
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
                 print("cree 1 villagoie!") #// ( select town center / build villager unit /  add unit to queu)
-                u1 = modele_client.Villageois(0,0,0)
+                u1 = modele_client.Villageois(self.ID,0,0)
                 self.units.append(u1)
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
             print("Cherche Villageoi non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
-            m1 = modele_client.Maison(0,100,100)
+            m1 = modele_client.Maison(self.ID,100,100)
             self.buildings.append(m1)
         for i in range(self.nbTypeDeRessources):
             if self.villageoisParRessources[i] < self.nbCollecteurParRessourcesAuBesoin[i] :
@@ -88,7 +92,7 @@ class Cpu(modele_client.Joueur):
                 self.villageoisParRessources[i] += 1
                 #// function Find will take an int and search the needed resource to start //harvesting this resource (in case they cant see any of it yet
                 #// Function FindUnoccupiedVillager will look up the list of villagers; which will need a
-                #// Bool Occupied; if find ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œselect / if villagernotfound ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦ÃƒÂ¢Ã¢â€šÂ¬Ã…â€œ create villager
+                #// Bool Occupied; if find ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“select / if villagernotfound ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ create villager
 
     def calculVillageois(self):
         self.nbVillageois = 0
@@ -96,29 +100,39 @@ class Cpu(modele_client.Joueur):
             if i.type == "Villageois":
                 self.nbVillageois += 1
 
-    def positionMaison(self):
-        #besoin d un spot logique- trouver emplacement in range from base-fullground
-        for i in self.batiments: # pour tout batiment MAISON
-        #    if i.type = "maison": #REGARDE LES POSITION SUIVANTS CELLE DEJA UTILISEE
-            if verificationPosition(i.PosX + 1 , i.PosY): # a droite
-                modele_client.creationBuilding(i.PosX + 1 , i.PosY)
-        #        elif verificationPosition(x -1, y): # a gauche
-        #            create house there xy
-        #        elif verificationPosition(x, y +1): # en haut
-        #            create house there xy
-        #        elif verificationPosition(x, y -1): # en bas
-        #            create house there xy
-        # search in distance x1-x2 and y1-y2 if theres any spot free in a small range from townCenter
-            # if True, create house at this spot
 
-    def verificationPosition(self, PosX, PosY):
-        pass # a transferer.. OU?
-        # for all cases x,y used by the specific building sizes x,y :
-            # if case.passable == True :
-                # if case.type == "Ground" :
-                   # return True
+    #considerant que les batiments sont positionner sur une case
+    #et que les cases sont separer par une ou deux pixels, laissant
+    #les units se deplacer -- important --
+    def verificationPosition(self, matrice): # m.mat
+        self.iteratorNumber = 1
+        while self.iteratorNumber < 10 and False:
+            for i in self.buildings:
+                if matrice[i.posY + self.iteratorNumber][i.posX].isPassable == True :
+                    print("fait le batiment en haut de : " + i.type)
+                    self.cherchePosY = i.posY + self.iteratorNumber
+                    self.cherchePosX = i.posX
+                    return True
+                    break
+                elif matrice[i.posY - self.iteratorNumber][i.posX].isPassable == True :
+                    print("fait le batiment en bas de : " + i.type)
+                    self.cherchePosY = i.posY - self.iteratorNumber
+                    self.cherchePosX = i.posX
+                    return True
+                    break
+                elif matrice[i.posY][i.posX + self.iteratorNumber].isPassable == True :
+                    print("fait le batiment a droite de : " + i.type)
+                    self.cherchePosY = i.posY
+                    self.cherchePosX = i.posX + self.iteratorNumber
+                    return True
+                    break
+                elif matrice[i.posY][i.posX - self.iteratorNumber].isPassable == True :
+                    print("fait le batiment a gauche de : " + i.type)
+                    self.cherchePosY = i.posY
+                    self.cherchePosX = i.posX - self.iteratorNumber
+                    return True
+                    break
 
-    # a transferer vers ModuleObject..
     def changerEre(self):
         self.changerEreVerif()
         if self.changerErePossible == True:
@@ -183,7 +197,9 @@ class Cpu(modele_client.Joueur):
 class Controleur():
     def __init__(self):
         self.cpu = Cpu(0, 0, 0)
-
+        self.m = Map(40,30)
+        self.m.placeRessourcesOverworld()
+        self.m.placeRessourcesUnderworld()
 if __name__ == '__main__':
     c = Controleur()
     count = 0
