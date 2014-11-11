@@ -1,5 +1,6 @@
 import deplacement
 import math
+import timeit
 
 def roundtenth(x):
     """arrondi a la dizaine vers le bas 9 -> 0, 15 -> 10"""
@@ -25,7 +26,7 @@ class Joueur():
         self.allies = []
         self.units =[]
         self.buildings =[]
-        self.unitsSelectionne =[]
+        self.objectsSelectionne =[]
         self.actions={"envoieRess":self.envoyerRessources}
 
     def metToiAJour(self):
@@ -49,7 +50,7 @@ class Joueur():
 
     #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
-        print(a,b,c,d,e,f)        
+        print(a,b,c,d,e,f)
 
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
@@ -87,7 +88,7 @@ class Unit():
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
-    
+
     def isAlive(self):
         if self.hpActuel <= 0:
             return False
@@ -110,7 +111,7 @@ class Unit():
         if self.posY > int(arrive.y*20):
             self.posY -= self.vitesseY
         elif self.posY < int(arrive.y*20):
-            self.posY += self.vitesseY            
+            self.posY += self.vitesseY
 
 class Villageois(Unit):
 
@@ -140,7 +141,7 @@ class Villageois(Unit):
             game_map.mat[y][x].nbRessource-0.01
             if game_map.mat[y][x].nbRessource == 0:
                 game_map.mat[y][x].ressource=game_map.EMPTY_CHAR
-            
+
     def checkArrive(self, x, y):
         if self.posX == x and self.posY == y:
             if game_map.mat[y][x].ressource is not game_map.EMPTY_CHAR:
@@ -156,15 +157,20 @@ class Villageois(Unit):
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):      
+            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
             else:
                 self.finishDeplacement()
         #self.checkArrive(arrive[0].x,arrive[0].y)
-        
-            
+
+
+
+
+
+
+
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
@@ -366,6 +372,74 @@ class Barrack(Building):
         else :
             return False
 
+# modifier le 11/11/2014
+class Tower(Building):
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY)
+        self.type = "Tower"
+        self.hpActuel = 400
+        self.hpMax = hpActuel
+        self.longueur =20
+        self.largeur = 20
+        self.delaiDeConstruction = -1
+        self.champDeVision = -1
+        self.champDaggro = 30
+        self.target=None
+        self.targetedBy = None
+        self.actionEnCours = None
+        self.degat = 50
+        self.cooldown = 100
+
+
+    def attaqueCible(self):
+        if self.target.isAlive():
+            if helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= champDaggro:
+                if self.cooldown == 100:
+                    self.target.recevoirDegats(self.degat)
+                    self.cooldown = 0
+
+
+
+            else:
+                self.actionEncours ="scanEnemy"
+        else:
+            self.actionEnCours="scanEnemy"
+
+
+
+
+
+    def scanEnemy(self):
+        if self.targetedBy and target is None:
+            self.target = self.targetedBy
+            self.attaqueCible(targetedBy)
+        else:
+            for n in self.parent.unites:# il faut reussir a avoir la liste des unités
+                if n.ownerID is not self.ownerID:
+                    if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        self.target = n
+                        self.actionEnCours = "attaqueCible"
+                        self.attaqueCible(n)
+
+
+    def faitAction(self):
+        if self.actionEnCours == None:
+            self.actionEncours ="scanEnemy"
+        if self.actionEnCours == "scanEnemy":
+            self.scanEnemy()
+        if self.actionEnCours == "attaqueCible":
+            self.attaqueCible()
+
+
+    def   metToiAJour(self):
+        if self.cooldown != 100:
+            self.cooldown += 1
+            print("cooldown de la tour ", self.cooldown)
+
+
+#
+
+
 
 
 
@@ -374,7 +448,7 @@ class Modele(object):
     def nextId():
         Modele.id=Modele.id+1
         return Modele.id
-    
+
     def __init__(self,parent):
         self.parent=parent
         self.unites=[]
@@ -397,13 +471,13 @@ class Modele(object):
                 print("My player color", self.joueurs[j].playerColor)
             n += 1
 
-        
+
     def creerUnite(self, args):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
 
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
-        
+
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
@@ -412,4 +486,4 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
-            
+
