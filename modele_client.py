@@ -26,7 +26,7 @@ class Joueur():
         self.allies = []
         self.units =[]
         self.buildings =[]
-        self.unitsSelectionne =[]
+        self.objectsSelectionne =[]
         self.actions={"envoieRess":self.envoyerRessources}
 
     def metToiAJour(self):
