@@ -37,19 +37,19 @@ class Vue(object):
         self.placeCadre(self.cadreConnection)
         self.currentX = 0
         self.currentY = 0
-		
-		self.food_ress = Image.open("./img/food_ress.png")
-		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
-		self.wood_ress = Image.open("./img/wood_ress.png")
-		self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
-		self.gold_ress = Image.open("./img/gold_ress.png")
-		self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
-		self.energy_ress = Image.open("./img/energy_ress.png")
-		self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
-		self.art_ress = Image.open("./img/art_ress.png")
-		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
-		self.rock_ress = Image.open("./img/rock_ress.png")
-		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+        
+        self.food_ress = Image.open("./img/food_ress.png")
+        self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
+        self.wood_ress = Image.open("./img/wood_ress.png")
+        self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
+        self.gold_ress = Image.open("./img/gold_ress.png")
+        self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
+        self.energy_ress = Image.open("./img/energy_ress.png")
+        self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
+        self.art_ress = Image.open("./img/art_ress.png")
+        self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
+        self.rock_ress = Image.open("./img/rock_ress.png")
+        self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -226,7 +226,7 @@ class Vue(object):
         self.cadreDiplomatie.grid(column=2, row=0)
         # Bas
 
-		self.cadreOptionVillageois = Frame(self.cadrePartie)
+        self.cadreOptionVillageois = Frame(self.cadrePartie)
         buttonConstruire = Button(self.cadreOptionVillageois, text="Construire", width=8)
         buttonConstruire.grid(column=0, row=1)
             
