@@ -194,7 +194,7 @@ class Vue(object):
         for u in self.parent.myPlayer.units:
             u.isSelected = False
         for u in self.parent.myPlayer.units:
-            print("units X: ", u.posX, " - Y: ", u.posY)
+            # print("units X: ", u.posX, " - Y: ", u.posY)
             if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
                 u.isSelected = True
                 self.parent.myPlayer.unitsSelectionne.append(u)

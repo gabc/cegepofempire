@@ -106,6 +106,7 @@ class Unit():
             self.posX -= self.vitesseX
         elif self.posX < int(arrive.x*20):
             self.posX += self.vitesseX
+
         if self.posY > int(arrive.y*20):
             self.posY -= self.vitesseY
         elif self.posY < int(arrive.y*20):
@@ -131,9 +132,8 @@ class Villageois(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
 
-        self.posX = posX #add
-        self.posY = posY #add
-            
+        self.posX = posX
+        self.posY = posY
 
     def recolteRessource(self,x,y,game_map):
         if game_map.mat[y][x].nbRessource > 0:
@@ -146,15 +146,22 @@ class Villageois(Unit):
             if game_map.mat[y][x].ressource is not game_map.EMPTY_CHAR:
                self.recolteRessource(arrive, self.parent.parent.m)
 
+    def finishDeplacement(self):
+        self.posX = math.trunc(self.posX / 20) * 20 + 7
+        self.posY = math.trunc(self.posY / 20) * 20 + 7
+        print("done deplacement")
+
     def deplacer(self, deplaceur, arrive):
         if self.chemin is None or self.chemin == []:
             self.deplaceur = deplaceur
-            self.chemin = deplaceur.chemin(self, arrive)            
+            self.chemin = deplaceur.chemin(self, arrive)
         else:
             if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)):      
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
+            else:
+                self.finishDeplacement()
         #self.checkArrive(arrive[0].x,arrive[0].y)
         
             
