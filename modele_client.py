@@ -200,7 +200,8 @@ class Villageois(Unit):
             case.nbRessource-=1
             print(self.id, "IS COLLECTING", case.nbRessource)
             if case.nbRessource == 0:
-                case.ressource='0'
+                case.ressource='-'
+                case.passable=True;
                 self.status="return"
                 
         return case
