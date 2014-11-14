@@ -15,3 +15,4 @@ def trouvePixel(x, y):
     """Avec les coordonnée d'une case, retrouve les pixels de son centre"""
     px = x * 20 + 10
     py = y * 20 + 10
+    return (px,py)
