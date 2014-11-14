@@ -101,13 +101,15 @@ class Controleur(object):
     def timerJeu(self):
         if self.serveur:
             self.cadre=self.cadre+1
-            if self.attend == False:
-                self.modele.prochaineAction(self.cadre)
-                self.vue.rafraichirCanevas()
-            if self.actions:
+                #print("executer action a faire")
+            self.modele.prochaineAction(self.cadre)
+            self.vue.rafraichirCanevas()
+            if self.actions: ##actions a envoyer au server
+                #print("Envoi d'une action au server")
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
                 rep=self.serveur.faitAction([self.nom,self.cadre,0])
+                #print("Pas d'action au server")
             # print(self.actions)
             self.actions=[]
             if rep[0]:
@@ -116,10 +118,9 @@ class Controleur(object):
                         self.modele.actionsAFaire[i]=[]
                     for k in rep[2][i]:
                         self.modele.actionsAFaire[i].append(k)
-            self.attend == False
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
-                self.attend = True
+                print("Received attend: ", self.cadre)
             #print("Cadre",self.cadre)     
             self.vue.root.after(50,self.timerJeu)
         else:

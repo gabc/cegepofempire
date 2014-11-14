@@ -31,13 +31,16 @@ class Vue(object):
 		self.parent = parent
 		self.modele = self.parent.modele
 		self.root = Tk()
+		self.root.title("Cegep of empire")
 		self.root.protocol('WM_DELETE_WINDOW', self.intercepteFermeture)
 		self.cadreActif = 0
 		self.creeCadres()
 		self.placeCadre(self.cadreConnection)
 		self.currentX = 0
 		self.currentY = 0
-
+		self.actionSelectionnee=0#1=SpawnUnit##
+		self.longeurLigne = 20
+		
 		self.food_ress = Image.open("./img/food_ress.png")
 		self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
 		self.wood_ress = Image.open("./img/wood_ress.png")
@@ -50,6 +53,9 @@ class Vue(object):
 		self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
 		self.rock_ress = Image.open("./img/rock_ress.png")
 		self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+		
+		self.tower_build = Image.open("./img/tower_build.png")##
+		self.photo_tower_build = ImageTk.PhotoImage(self.tower_build)##
 
 	def creeCadres(self):
 		self.creeCadreConnection()
@@ -173,7 +179,7 @@ class Vue(object):
 		
 		self.canevasMilieu.grid(column=0, row=1, columnspan=3)
 		
-		self.canevasMilieu.bind("<Button-1>", self.selectUnit)  # add
+		self.canevasMilieu.bind("<Button-1>", self.selectObject)  # add
 		self.canevasMilieu.bind("<Motion>", self.motion)
 		self.canevasMilieu.bind("<Key>", self.spawnUnit)
 		self.canevasMilieu.bind("<Button-3>", self.setArrive)
@@ -186,17 +192,30 @@ class Vue(object):
 		self.placeBuilding()
 	
 
-	def selectUnit(self, event):  # add
-		print("-------------------------")
-		print("click X: ", self.currentX, " - Y: ", self.currentY)
-		for u in self.parent.myPlayer.units:
-			u.isSelected = False
-		for u in self.parent.myPlayer.units:
-			print("units X: ", u.posX, " - Y: ", u.posY)
-			if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
-				u.isSelected = True
-				print("selected: ", u.posX)
-				break
+	def selectObject(self, event):  # add
+		if self.actionSelectionnee==0 :##
+			print("-------------------------")
+			print("click X: ", self.currentX, " - Y: ", self.currentY)
+			if len(self.parent.myPlayer.objectsSelectionne) > 0:
+				self.parent.myPlayer.objectsSelectionne.pop()
+			for u in self.parent.myPlayer.units:
+				if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
+					self.parent.myPlayer.objectsSelectionne.append(u)
+					print("selected object: ", u.type)
+					break
+			
+			if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
+				for b in self.parent.myPlayer.buildings:
+					if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
+						self.parent.myPlayer.objectsSelectionne.append(b)
+						print("selected object: ", b.type)
+						break
+			#print (self.parent.myPlayer.objectsSelectionne[0])	
+			self.optionUnite()
+		elif self.actionSelectionnee==1:##
+			self.actionSelectionnee=0##
+			print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+			self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])##
 
 	def motion(self, event):
 		self.canevasMilieu.focus_set()
@@ -206,10 +225,6 @@ class Vue(object):
 	def spawnUnit(self, event):
 		print("creating vil with owner id: ", self.parent.myPlayer.ID)
 		self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
-		# vil = Villageois(self.parent.myPlayer.ID,self.currentX,self.currentY)
-		# self.modele.creerUnite(vil)
-		# self.parent.j.units.append(vil)
-	
 		
 	def initCadre(self):
 		
@@ -223,11 +238,46 @@ class Vue(object):
 		self.cadreDiplomatie = Frame(self.cadrePartie)
 		self.cadreDiplomatie.grid(column=2, row=0)
 		# Bas
-		self.cadreOptionUnite = Frame(self.cadrePartie)
-		self.cadreOptionUnite.grid(column=0, row=2)
+
+		self.cadreOptionVillageois = Frame(self.cadrePartie)
+		buttonConstruire = Button(self.cadreOptionVillageois, text="Construire",command=self.optionConstruire, width=8)#alloa
+		buttonConstruire.grid(column=0, row=1)
+			
+		self.cadreOptionTownCenter = Frame(self.cadrePartie)
+		buttonCree = Button(self.cadreOptionTownCenter, text="Cree", width=8)  # text="Cree",command=,
+		buttonCree.grid(column=0, row=1)
+		buttonUpgrade = Button(self.cadreOptionTownCenter, text="Upgrade1", width=8)##
+		buttonUpgrade.grid(column=1,row=1)##
+		buttonUpgrade2 = Button(self.cadreOptionTownCenter, text="Upgrade2", width=8)##
+		buttonUpgrade2.grid(column=1,row=1)##
+		#mettre anchor
+		self.cadreOptionConstruire = Frame(self.cadrePartie)##
+		buttonBatiment1 = Button(self.cadreOptionConstruire,text="Tour", width=8)##
+		buttonBatiment1.grid(column=0,row=1)##
+		buttonBatiment2 = Button(self.cadreOptionConstruire,text="Batiment2", width=8)##
+		buttonBatiment2.grid(column=1,row=1)##
+		buttonBatiment3 = Button(self.cadreOptionConstruire,text="Batiment3", width=8)##
+		buttonBatiment3.grid(column=2,row=1)##
+		buttonBatiment4 = Button(self.cadreOptionConstruire,text="Batiment4", width=8)##
+		buttonBatiment4.grid(column=0,row=2)##
+		buttonBatiment5 = Button(self.cadreOptionConstruire,text="Batiment5", width=8)##
+		buttonBatiment5.grid(column=1,row=2)##
+		buttonRetour = Button(self.cadreOptionConstruire,text="Retour",command=self.optionRetour, width=8)##
+		buttonRetour.grid(column=2,row=2)##
+		   
+		self.cadreInfoVillageois = Frame(self.cadrePartie)##
+		self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : ",width=10)##
+		self.labelVillageoisProprio = Label (self.cadreInfoVillageois, text="Proprietaire : ",width=10)##
+		self.labelVillageoisNom = Label(self.cadreInfoVillageois, text="Nom : ",width=10)##
+		self.labelVillageoisTransport = Label(self.cadreInfoVillageois,text="Transport : ",width=10)##
 		
-		self.cadreInfoSelection = Frame(self.cadrePartie)
-		self.cadreInfoSelection.grid(column=1, row=2)
+		self.cadreInfoAttaquant = Frame(self.cadrePartie)##
+		self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : ",width=10)##
+		self.labelAttaquantProprio = Label(self.cadreInfoAttaquant,text="Proprietaire : ",width=10)##
+		self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Nom : ",width=10)##
+		self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : ",width=10)##
+		self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : ",width=10)##
+		
 		
 		self.cadreMiniMap = Frame(self.cadrePartie)
 		self.cadreMiniMap.grid(column=2, row=2)
@@ -235,7 +285,16 @@ class Vue(object):
 	# def initLabelHaut(self):
 		
 	# Pour le cadre de Ressource
+	def optionConstruire(self):##
+		self.cadreOptionVillageois.grid_forget()##
+		self.cadreOptionConstruire.grid(column=0, row=2)##
 		
+	def optionRetour(self):##
+		self.cadreOptionConstruire.grid_forget()##
+		self.cadreOptionVillageois.grid(column=0, row=2)##
+	
+	def creeUnite(self):
+		self.actionSelectionnee=1
 	
 	####Pour les images	
 		
@@ -297,55 +356,56 @@ class Vue(object):
 			if j.name != self.parent.nom:
 				self.autreJoueur.append(j.name)
 		
-		self.var = StringVar(self.toplevel)
-		self.var.set(self.autreJoueur[0])
+		if len(self.autreJoueur) > 0:
+			self.var = StringVar(self.toplevel)
+			self.var.set(self.autreJoueur[0])
 		# titres
-		labelAllie = Label(self.cadreAlliance, text="Alliance", width=15)
-		labelAllie.grid(column=0, row=0, columnspan=2)
-		
-		labelEchange = Label(self.cadreEchange, text="Echange", width=15)
-		labelEchange.grid(column=0, row=0, columnspan=2)
-		
-		# dropdown menu
-		self.listeEchange = OptionMenu(self.cadreEchange, self.var, self.autreJoueur)  # tranfere a modele_client
-		self.listeEchange.grid(column=0, row=1, columnspan=2)
-		
-		# labels
-		
-		labelDiplomatieNourriture = Label(self.cadreEchange, text="Nourriture", relief=SOLID, width=15)
-		labelDiplomatieNourriture.grid(column=0, row=2)
-		
-		labelDiplomatieBois = Label(self.cadreEchange, text="Bois", relief=SOLID, width=15)
-		labelDiplomatieBois.grid(column=0, row=3)
-		
-		labelDiplomatieOr = Label(self.cadreEchange, text="Or", relief=SOLID, width=15)
-		labelDiplomatieOr.grid(column=0, row=4)
-		
-		labelDiplomatiePierre = Label(self.cadreEchange, text="Pierre", relief=SOLID, width=15)
-		labelDiplomatiePierre.grid(column=0, row=5)
-		
-		labelDiplomatieEnergie = Label(self.cadreEchange, text="Energie", relief=SOLID, width=15)
-		labelDiplomatieEnergie.grid(column=0, row=6)
-		
-		# Sliders
-		
-		self.sliderNourriture = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-		self.sliderNourriture.grid(column=1, row=2)
-		
-		self.sliderBois = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-		self.sliderBois.grid(column=1, row=3)
-		
-		self.sliderOr = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-		self.sliderOr.grid(column=1, row=4)
-		
-		self.sliderPierre = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-		self.sliderPierre.grid(column=1, row=5)
-		
-		self.sliderEnergie = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
-		self.sliderEnergie.grid(column=1, row=6)
-
-		buttonEnvoyer = Button(self.cadreEchange, text="Envoyer", command=self.envoyerRessource)
-		buttonEnvoyer.grid(column=0, row=7, columnspan=2)
+			labelAllie = Label(self.cadreAlliance, text="Alliance", width=15)
+			labelAllie.grid(column=0, row=0, columnspan=2)
+			
+			labelEchange = Label(self.cadreEchange, text="Echange", width=15)
+			labelEchange.grid(column=0, row=0, columnspan=2)
+			
+			# dropdown menu
+			self.listeEchange = OptionMenu(self.cadreEchange, self.var, self.autreJoueur)  # tranfere a modele_client
+			self.listeEchange.grid(column=0, row=1, columnspan=2)
+			
+			# labels
+			
+			labelDiplomatieNourriture = Label(self.cadreEchange, text="Nourriture", relief=SOLID, width=15)
+			labelDiplomatieNourriture.grid(column=0, row=2)
+			
+			labelDiplomatieBois = Label(self.cadreEchange, text="Bois", relief=SOLID, width=15)
+			labelDiplomatieBois.grid(column=0, row=3)
+			
+			labelDiplomatieOr = Label(self.cadreEchange, text="Or", relief=SOLID, width=15)
+			labelDiplomatieOr.grid(column=0, row=4)
+			
+			labelDiplomatiePierre = Label(self.cadreEchange, text="Pierre", relief=SOLID, width=15)
+			labelDiplomatiePierre.grid(column=0, row=5)
+			
+			labelDiplomatieEnergie = Label(self.cadreEchange, text="Energie", relief=SOLID, width=15)
+			labelDiplomatieEnergie.grid(column=0, row=6)
+			
+			# Sliders
+			
+			self.sliderNourriture = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+			self.sliderNourriture.grid(column=1, row=2)
+			
+			self.sliderBois = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+			self.sliderBois.grid(column=1, row=3)
+			
+			self.sliderOr = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+			self.sliderOr.grid(column=1, row=4)
+			
+			self.sliderPierre = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+			self.sliderPierre.grid(column=1, row=5)
+			
+			self.sliderEnergie = Scale(self.cadreEchange, orient=HORIZONTAL, length=200, width=20, sliderlength=10, from_=0, to=500)
+			self.sliderEnergie.grid(column=1, row=6)
+	
+			buttonEnvoyer = Button(self.cadreEchange, text="Envoyer", command=self.envoyerRessource)
+			buttonEnvoyer.grid(column=0, row=7, columnspan=2)
 		
 	def envoyerRessource(self):
 		# Nom,Nourriture,Bois,Or,Pierre,Energie
@@ -364,48 +424,102 @@ class Vue(object):
 		labelDiplomatie.pack()
 		labelDiplomatie.bind("<Button-1>", self.diplomatieFenetre)
 		
+	def optionUnite(self):
+		#labelOptionUnite = Label(self.cadreOptionUnite, text="Option d'unite")
+		#labelOptionUnite.grid(column=0, row=0, columnspan=2)
+
+		if len(self.parent.myPlayer.objectsSelectionne) == 0:
+			print("No object selected: grid forget")
+			self.cadreOptionVillageois.grid_forget()
+			self.cadreOptionTownCenter.grid_forget()
+			self.cadreOptionConstruire.grid_forget()##
+			self.cadreInfoVillageois.grid_forget()##
+			self.cadreInfoAttaquant.grid_forget()##
+		
+		# TownCenter
+		elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
+			self.cadreOptionTownCenter.grid(column=0, row=2)
+		
+		# Barracks
+		elif self.parent.myPlayer.objectsSelectionne[0].type == "Building":
+			buttonCree = Button(self.cadreOptionUnite, text="Cree", width=8)  # text="Cree",command=,
+			buttonCree.grid(column=0, row=1)
+		
+		# Villageois
+		elif self.parent.myPlayer.objectsSelectionne[0].type == "Villageois":
+			print("ici")
+			self.cadreOptionVillageois.grid(column=0, row=2)
+			self.cadreInfoVillageois.grid(column=1, row=2)##
+			self.labelVillageoisHp.grid(column=0,row=1)##
+			self.labelVillageoisProprio.grid(column=0,row=2)##
+			self.labelVillageoisNom.grid(column=0,row=3)##
+			self.labelVillageoisTransport.grid(column=0,row=4)##
+			
+		
+		# Attaquant
+		elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
+			self.cadreInfoAttaquant.grid(column=1,row=2)##
+			self.labelAttaquantHp.grid(column=0,row=1)##
+			self.labelAttaquantProprio.grid(column=0,row=2)##
+			self.labelAttaquantNom.grid(column=0,row=3)##
+			self.labelAttaquantAttaque.grid(column=0,row=4)##
+			self.labelAttaquantDefense.grid(column=0,row=5)##
+
+			buttonAttaquer = Button(self.cadreOptionUnite, text="Attaquer", width=8)
+			buttonAttaquer.grid(column=0, row=1)
+		
+			buttonArreter = Button(self.cadreOptionUnite, text="Arreter", width=8)
+			buttonArreter.grid(column=1, row=1)
+
+
+	# #	
 	def initLabelBas(self):
-		# Pour le cadre Option Unite
-		
-		labelOptionUnite = Label(self.cadreOptionUnite, text="Option d'unite")
-		labelOptionUnite.pack()
-		
 		# Pour le cadre Info Selection
 		
-		labelInfoSelection = Label(self.cadreInfoSelection, text="Info sur Selection")
-		labelInfoSelection.pack()
+		#labelInfoSelection = Label(self.cadreInfoSelection, text="Info sur Selection")##
+		#labelInfoSelection.pack()##
 		
 		# Pour le cadre Mini-Map
 		
 		labelMiniMap = Label(self.cadreMiniMap, text="Mini-Map")
 		labelMiniMap.grid(column=0, row=0)
-		
+	
+	
+	
 	#===========================================================================
 	# def rafraichirTemps(self,temps):
-	#	 labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
-	#	 labelTemps.grid(column=0,row=1)
-	# 	
+	#	  labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
+	#	  labelTemps.grid(column=0,row=1)
+	#	 
 	#===========================================================================
 	
 	def setArrive(self, event):
-		print("setarr", event.x, event.x / self.longeurLigne)
-		for u in self.parent.myPlayer.units:
-			if u.isSelected == True:
-                                self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
-             		
+		print("setarr", event.x, event.x / self.longeurLigne)##
+		if len(self.parent.myPlayer.objectsSelectionne) > 0:
+			u = self.parent.myPlayer.objectsSelectionne[0]
+			self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
+			#self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
+		
 	def rafraichirCanevas(self):
 		self.canevasMilieu.delete("unit")
 		for j in self.parent.modele.joueurs.values():
 			for u in j.units:
-				if u.isSelected == True:
-					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
-				else:
-					self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+				self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+				if len(self.parent.myPlayer.objectsSelectionne) > 0:
+					if u == self.parent.myPlayer.objectsSelectionne[0]:
+						self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+						
+			for i in j.buildings:
+				self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
+				if len(self.parent.myPlayer.objectsSelectionne) > 0:
+					if i == self.parent.myPlayer.objectsSelectionne[0]:
+						self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="unit")
 
-	
-	
+			"""for c in self.parent.m.toDelete:
+				self.canevasMilieu.create_rectangle(c.posX * self.longeurLigne + self.longeurLigne/ 2 - 9, c.posY * self.longeurLigne + self.longeurLigne/ 2 - 9,c.posX * self.longeurLigne + self.longeurLigne/ 2 + 9,c.posY * self.longeurLigne + self.longeurLigne/ 2 + 9,fill="#006633", tags="vide")"""
+			
+                        
 	def creerLigne(self):
-		self.longeurLigne = 20
 		for i in range (self.parent.l):
 			self.canevasMilieu.create_line(i * self.longeurLigne, 0, i * self.longeurLigne, self.parent.h * self.longeurLigne, fill="white")
 				
@@ -413,63 +527,47 @@ class Vue(object):
 			self.canevasMilieu.create_line(0, j * self.longeurLigne, self.parent.l * self.longeurLigne, j * self.longeurLigne, fill="white")
 	
 	def placeBuilding(self):
-                self.canevasMilieu.delete("building")
-                for j in self.parent.modele.joueurs.values():
-                        for i in j.buildings:
-                                print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
-                                self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="building")
+		print("placeBuilding")
+		for j in self.parent.modele.joueurs.values():
+			for i in j.buildings:
+				print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
+				self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
 	
 	
 	def placeRessource(self):
-                self.canevasMilieu.delete("img")
-                for i in range(self.parent.h):
-                        for j in range(self.parent.l):
+		for i in range(self.parent.h):
+			for j in range(self.parent.l):
 				# print(self.parent.m.mat[j][i].ressource)
-                                if self.parent.m.mat[i][j].ressource == FOOD_CHAR:  # nourriture
+				if self.parent.m.mat[i][j].ressource == FOOD_CHAR:  # nourriture
 					# print("nourr")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
-					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="food")
-                                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:  # bois
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="food")
+				elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:  # bois
 					# print("bois")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
-					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="brown", tags="wood")
-                                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:  # pierre
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="brown", tags="wood")
+				elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:  # pierre
 					# print("pierre")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
-                                        
-                                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:  # energie
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gray", tags="rock")
+				# elif self.parent.m.mat[j][i].ressource == EMPTY_CHAR:#vide
+				#	  print("vide")
+				#	  self.canevasMilieu.create_rectangle(i*self.longeurLigne+self.longeurLigne/2-9,j*self.longeurLigne+self.longeurLigne/2-9,i*self.longeurLigne+self.longeurLigne/2+9,j*self.longeurLigne+self.longeurLigne/2+9,fill="grey",tags="food")
+				elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:  # energie
 					# print("energie")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
-					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="blue", tags="artefact")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="blue", tags="artefact")
 
-                                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:  # energie
+				elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:  # energie
 					# print("energie")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
-					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="green2", tags="energie")
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="green2", tags="energie")
 					
-                                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:  # energie
+				elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:  # energie
 					# print("energie")
-                                        self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
-					#self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gold", tags="or")
-					
+					self.canevasMilieu.create_image(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+					# self.canevasMilieu.create_rectangle(j * self.longeurLigne + self.longeurLigne / 2 - 9, i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 + 9, i * self.longeurLigne + self.longeurLigne / 2 + 9, fill="gold", tags="or")
 
-				
-	def imgLabel(self):
-		print("")
-		# labelNourritureImg=Label(self.cadreRessource,text="Nourriture: 200",relief=SOLID,width=15)
-		# labelNourritureImg.grid(column=0,row=0)
-		
-		# labelBoisImg=Label(self.cadreRessource,text="Bois: 150",relief=SOLID,width=15)
-		# labelBoisImg.grid(column=2,row=0)
-		
-		# labelPierreImg=Label(self.cadreRessource,text="Pierre: 100",relief=SOLID,width=15)
-		# labelPierreImg.grid(column=0,row=1)
-		
-		# labelOrImg=Label(self.cadreRessource,text="Or: 150",relief=SOLID,width=15)
-		# labelOrImg.grid(column=2,row=1)
-
-		# labelEnergieImg=Label(self.cadreRessource,text="Energie: 0",relief=SOLID,width=15)
-		# labelEnergieImg.grid(column=0,row=2,columnspan=2)
 		
 	def imgLabelPopulation(self):
 		labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
