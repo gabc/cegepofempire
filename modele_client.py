@@ -227,15 +227,9 @@ class Villageois(Unit):
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if self.compteur_deplacement > 10:
-                print("Lol")
-                print(self.posX,math.trunc(self.posX / 20), self.chemin[0].x)
-                print(self.posY,math.trunc(self.posY / 20), self.chemin[0].y)
             if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
-                self.compteur_deplacement = 0
                 del self.chemin[0]
             if self.chemin:
-                self.compteur_deplacement +=1
                 self.effectueDeplacement(self.chemin[0])
 
 class Guerrier(Unit):
