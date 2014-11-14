@@ -1,10 +1,7 @@
 import deplacement
 import math
 import timeit
-
-def roundtenth(x):
-    """arrondi a la dizaine vers le bas 9 -> 0, 15 -> 10"""
-    return x if x % 10 == 0 else x - x % 10
+from utils import *
 
 class Joueur():
     def __init__(self, parent, ID, name):
@@ -147,14 +144,15 @@ class Unit():
             self.hpActuel -= degatsRecus
 
     def effectueDeplacement(self, arrive):
-        if self.posX > int(arrive.x*20):
+        ax, ay = trouvePixel(arrive.x, arrive.y)
+        if self.posX > ax:
             self.posX -= self.vitesseX
-        elif self.posX < int(arrive.x*20):
+        elif self.posX < ax:
             self.posX += self.vitesseX
 
-        if self.posY > int(arrive.y*20):
+        if self.posY > ay:
             self.posY -= self.vitesseY
-        elif self.posY < int(arrive.y*20):
+        elif self.posY < ay:
             self.posY += self.vitesseY
 
 class Villageois(Unit):
@@ -223,27 +221,22 @@ class Villageois(Unit):
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posY][arrive.posX]=arrive
 
-    def finishDeplacement(self):
-        self.posX = math.trunc(self.posX / 20) * 20 + 7
-        self.posY = math.trunc(self.posY / 20) * 20 + 7
-        print("done deplacement")
-
     def deplacer(self, deplaceur, arrive):
+        cx, cy = trouveCase(self.posX, self.posY)
         if self.chemin is None or self.chemin == []:
             self.deplaceur = deplaceur
             self.chemin = deplaceur.chemin(self, arrive)
         else:
-            if (math.trunc(self.posX / 20) == math.trunc(self.chemin[0].x)) and (math.trunc(self.posY / 20) == math.trunc(self.chemin[0].y)) or self.compteur_deplacement > 10:
+            if self.compteur_deplacement > 10:
+                print("Lol")
+                print(self.posX,math.trunc(self.posX / 20), self.chemin[0].x)
+                print(self.posY,math.trunc(self.posY / 20), self.chemin[0].y)
+            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
                 self.compteur_deplacement = 0
-                self.posX += 1
-                self.posY += 2
-                print("Del chemin")
                 del self.chemin[0]
             if self.chemin:
                 self.compteur_deplacement +=1
                 self.effectueDeplacement(self.chemin[0])
-            else:
-                self.finishDeplacement()
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY):
