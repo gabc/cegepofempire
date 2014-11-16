@@ -212,8 +212,7 @@ class Villageois(Unit):
         else:
             arrive=game_map.mat[target[1]][target[0]]
 
-        x = math.trunc(self.posX / 20)
-        y = math.trunc(self.posY / 20)
+        x, y = trouveCase(self.posX, self.posY)
         
         #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):

@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 # C:\\Python33\python.exe
 import time
+from utils import *
 
 class Noeud:
     def __init__(self, x, y, f, gc, parent):
@@ -37,7 +38,8 @@ class Deplacement:
         return arrive
 
     def chemin(self, unite, arrivee):
-        depart = Noeud(int(unite.posX/20), int(unite.posY/20), 0, 0, None)
+        x, y = trouveCase(unite.posX, unite.posY)
+        depart = Noeud(int(x), int(y), 0, 0, None)
         arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
 
         arrive = self.assurePassable(depart, arrive)
