@@ -210,11 +210,16 @@ class Vue(object):
             
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
-                    print("Nom de building: " + b.type)
-                    if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
-                        self.parent.myPlayer.objectsSelectionne.append(b)
-                        print("selected object: ", b.type)
-                        break
+                    if b.type == "TownCenter":
+                        if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
+                            self.parent.myPlayer.objectsSelectionne.append(b)
+                            print("selected object: ", b.type)
+                            break
+                    else:
+                        if self.currentX >= (b.posX) and self.currentX <= (b.posX + 18) and self.currentY >= (b.posY) and self.currentY <= ((b.posY + 18)):
+                            self.parent.myPlayer.objectsSelectionne.append(b)
+                            print("selected object: ", b.type)
+                            break
             #print (self.parent.myPlayer.objectsSelectionne[0])    
             self.optionUnite()
         elif self.actionSelectionnee==1:##
@@ -546,6 +551,10 @@ class Vue(object):
             for i in j.buildings:
                 if i.type == "Barrack":
                     self.canevasMilieu.create_rectangle(i.posX-2, i.posY-2, i.posX + 19, i.posY + 19, fill=j.playerColor, tags="unit")
+
+                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                        if i == self.parent.myPlayer.objectsSelectionne[0]:
+                            self.canevasMilieu.create_rectangle(i.posX-3, i.posY-3, i.posX + 20, i.posY + 20, fill="red", tags="unit")
                     self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_barrack_build, anchor='nw', tags="unit")
                 if i.type == "Tower":
                     self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_tower_build, anchor='nw', tags="unit")
