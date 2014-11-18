@@ -293,6 +293,12 @@ class Vue(object):
         self.cadreOptionBarrack = Frame(self.cadrePartie)
         buttonCree = Button(self.cadreOptionBarrack, text="Cree", width=8)  # text="Cree",command=,
         buttonCree.grid(column=0, row=1)
+        
+        self.cadreOptionGuerrier = Frame(self.cadrePartie)
+        buttonAttaquer = Button(self.cadreOptionGuerrier, text="Attaquer", width=8)
+        buttonAttaquer.grid(column=0, row=1)
+        buttonArreter = Button(self.cadreOptionGuerrier, text="Arreter", width=8)
+        buttonArreter.grid(column=1, row=1)
            
         self.cadreInfoVillageois = Frame(self.cadrePartie)##
         self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : 0/0",width=10)##
@@ -464,34 +470,49 @@ class Vue(object):
         labelDiplomatie.pack()
         labelDiplomatie.bind("<Button-1>", self.diplomatieFenetre)
         
+    def forgetAllCadre(self):
+        self.cadreOptionVillageois.grid_forget()
+        self.cadreOptionTownCenter.grid_forget()
+        self.cadreOptionConstruire.grid_forget()##
+        self.cadreOptionBarrack.grid_forget()
+        self.cadreOptionGuerrier.grid_forget()
+        self.cadreInfoTownCenter.grid_forget()
+        self.cadreInfoVillageois.grid_forget()##
+        self.cadreInfoAttaquant.grid_forget()##
+        
+        
     def optionUnite(self):
         #labelOptionUnite = Label(self.cadreOptionUnite, text="Option d'unite")
         #labelOptionUnite.grid(column=0, row=0, columnspan=2)
 
         if len(self.parent.myPlayer.objectsSelectionne) == 0:
             print("No object selected: grid forget")
-            self.cadreOptionVillageois.grid_forget()
-            self.cadreOptionTownCenter.grid_forget()
-            self.cadreOptionConstruire.grid_forget()##
-            self.cadreInfoVillageois.grid_forget()##
-            self.cadreInfoAttaquant.grid_forget()##
-            self.cadreOptionBarrack.grid_forget()##
+            self.forgetAllCadre()
+
         
         # TownCenter
         elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
+            self.forgetAllCadre()
+            self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##,width=10)
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : "+j.name,width=19)
+            self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Type : "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
             self.cadreOptionTownCenter.grid(column=0, row=2)
-            self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : 0/0",width=10)
-            self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : ",width=10)
-            self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Nom : ",width=10)
+            self.cadreInfoTownCenter.grid(column=1, row=2)##
+            self.labelTownCenterHp.grid(column=0,row=1)##
+            self.labelTownCenterProprio.grid(column=0,row=2)##
+            self.labelTownCenterNom.grid(column=0,row=3)##
         
         # Barracks
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Barrack":
+            self.forgetAllCadre()
             self.cadreOptionBarrack.grid(column=0, row=2)
 
         
         # Villageois
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Villageois":
-            self.cadreOptionTownCenter.grid_forget()
+            self.forgetAllCadre()
             self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##
             for j in self.parent.modele.joueurs.values():
                 if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
@@ -509,6 +530,7 @@ class Vue(object):
         
         # Attaquant
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
+            self.forgetAllCadre()
             self.cadreInfoAttaquant.grid(column=1,row=2)##
             self.labelAttaquantHp.grid(column=0,row=1)##
             self.labelAttaquantProprio.grid(column=0,row=2)##
@@ -516,11 +538,6 @@ class Vue(object):
             self.labelAttaquantAttaque.grid(column=0,row=4)##
             self.labelAttaquantDefense.grid(column=0,row=5)##
 
-            buttonAttaquer = Button(self.cadreOptionUnite, text="Attaquer", width=8)
-            buttonAttaquer.grid(column=0, row=1)
-        
-            buttonArreter = Button(self.cadreOptionUnite, text="Arreter", width=8)
-            buttonArreter.grid(column=1, row=1)
     # #    
     def initLabelBas(self):
         # Pour le cadre Info Selection
