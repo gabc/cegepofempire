@@ -182,7 +182,7 @@ class Villageois(Unit):
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
         self.collectionMax = 25
-        self.collectionActuel = self.collectionMax
+        self.collectionActuel = 0
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -208,7 +208,12 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if case.nbRessource > 0:
             case.nbRessource-=1
+            self.collectionActuel+=1
+            print(self.collectionActuel)
             print(self.id, "resource left: ", case.nbRessource)
+            if self.collectionActuel ==self.collectionMax:
+                self.status="return"
+                print("retourne")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'

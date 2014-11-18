@@ -520,9 +520,6 @@ class Vue(object):
         
         
     def optionUnite(self):
-        #labelOptionUnite = Label(self.cadreOptionUnite, text="Option d'unite")
-        #labelOptionUnite.grid(column=0, row=0, columnspan=2)
-
         if len(self.parent.myPlayer.objectsSelectionne) == 0:
             print("No object selected: grid forget")
             self.forgetAllCadre()
@@ -535,6 +532,7 @@ class Vue(object):
                 if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
                     self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : "+j.name,width=19)
             self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Type : "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+            
             self.cadreOptionTownCenter.grid(column=0, row=2)
             self.cadreInfoTownCenter.grid(column=1, row=2)##
             self.labelTownCenterHp.grid(column=0,row=1)##
@@ -549,6 +547,7 @@ class Vue(object):
                 if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
                     self.labelBarrackProprio = Label(self.cadreInfoBarrack,text="Proprietaire : "+j.name,width=19)
             self.labelBarrackNom = Label(self.cadreInfoBarrack,text="Type : "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+            
             self.cadreOptionBarrack.grid(column=0, row=2)
             self.cadreInfoBarrack.grid(column=1, row=2)##
             self.labelBarrackHp.grid(column=0,row=1)##
@@ -573,7 +572,6 @@ class Vue(object):
             self.labelVillageoisProprio.grid(column=0,row=2)##
             self.labelVillageoisNom.grid(column=0,row=3)##
             self.labelVillageoisTransport.grid(column=0,row=4)##
-            
         
         # Attaquant
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
@@ -585,6 +583,7 @@ class Vue(object):
             self.labelAttaquantNom = Label(self.cadreInfoAttaquant, text="Type: "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
             self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : "+str(self.parent.myPlayer.objectsSelectionne[0].degat),width=10)##
             self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : "+str(self.parent.myPlayer.objectsSelectionne[0].defense),width=10)##
+            
             self.cadreOptionGuerrier.grid(column=0,row=2)
             self.cadreInfoAttaquant.grid(column=1,row=2)##
             self.labelAttaquantHp.grid(column=0,row=1)##
@@ -595,11 +594,6 @@ class Vue(object):
 
     # #    
     def initLabelBas(self):
-        # Pour le cadre Info Selection
-        
-        #labelInfoSelection = Label(self.cadreInfoSelection, text="Info sur Selection")##
-        #labelInfoSelection.pack()##
-        
         # Pour le cadre Mini-Map
         
         labelMiniMap = Label(self.cadreMiniMap, text="Mini-Map")
