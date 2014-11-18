@@ -53,25 +53,31 @@ class Joueur():
 
 
     def changerEreVerif(self):
-        for i in range(self.nbTypeDeRessources):
-            if self.ressources[i] > 10:
-                self.changerErePossible = True
-                print("peut changer d'ere ! ")
+        if self.ageCourrante != self.ageFutur:
+            for i in range(self.nbTypeDeRessources):
+                if self.ressources[i] > 10:
+                    self.changerErePossible = True
+                    print("peut changer d'ere ! ")
 
     def Ere2(self):
         self.ageCourrante = self.ageContemporain
         self.nbTypeDeRessources = 4
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
 
 
     def Ere3(self):
         self.ageCourrante = self.ageModerne
         self.nbTypeDeRessources = 5
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
 
     def Ere4(self):
         self.ageCourrante = self.ageFutur
-
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
@@ -90,7 +96,7 @@ class Joueur():
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
         for u in self.units:
-            if u.id == idunit:               
+            if u.id == idunit:
                 #print(arrive)
                 u.status="deplace"
                 u.deplacer(self.parent.deplaceur, arrive)
@@ -202,9 +208,9 @@ class Villageois(Unit):
                 case.ressource='-'
                 case.passable=True;
                 self.status="return"
-                
+
         return case
-            
+
     def checkArrive(self, target, game_map):
         #check si le target est en pixels ou en cases de jeu
         if target[0] > game_map.largeur and target[1] > game_map.hauteur:
@@ -213,7 +219,7 @@ class Villageois(Unit):
             arrive=game_map.mat[target[1]][target[0]]
 
         x, y = trouveCase(self.posX, self.posY)
-        
+
         #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
             if arrive.ressource is not "-":
@@ -484,7 +490,7 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
