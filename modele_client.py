@@ -83,6 +83,8 @@ class Joueur():
     def creerJoueurBuilding(self, type, x, y):
         if type == "tower":
             self.buildings.append(Tower(self.ID, x, y,self))
+        if type == "barrack":
+            self.buildings.append(Barrack(self.ID, x, y,self))
 
     def changerAllies():
         pass
@@ -176,6 +178,8 @@ class Villageois(Unit):
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
+        self.collectionMax = 25
+        self.collectionActuel = self.collectionMax
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -462,8 +466,8 @@ class Maison(Building):
         self.delaiDeConstruction = 10000
 
 class Barrack(Building):
-    def __init__(self, ownerID, posX, posY):
-        Building.__init__(ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY, parent)
         self.type="Barrack"
 
         self.hpActuel = 1000
@@ -619,7 +623,7 @@ class Modele(object):
 
     def initPartie(self,listeNomsJoueurs):
         n=0
-        self.playerColors = ["pink", "blue", "green", "yellow", "purple", "brown", "black", "white", "orange"]
+        self.playerColors = ["blue", "green", "yellow", "purple", "brown", "black", "white", "orange", "pink"]
         #init tous les joueur avec leur unite, batiments, etc...
         print("Nombre total de joueurs: ", len(listeNomsJoueurs))
         for j in listeNomsJoueurs:
