@@ -274,7 +274,9 @@ class Guerrier(Unit):
             self.marcheVersEnemy()
         elif self.actionEnCours == "attaqueCible":
             self.attaqueCible()
-
+        elif self.chemin:
+            self.deplacer(self.deplaceur, self.chemin)
+           
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -282,6 +284,8 @@ class Guerrier(Unit):
             print ("je  suis mort")
 
     def scanEnemy(self):
+            if self.chemin:
+                self.deplacer(self.deplaceur, self.chemin)
             if self.targetedBy and target is None:
                 self.target = self.targetedBy
                 self.attaqueCible(targetedBy)
@@ -333,9 +337,8 @@ class Guerrier(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-                self.chemin[0].x = self.target.posX
-                self.chemin[0].y = self.target.posY
-
+#                self.chemin[0].x = self.target[0]
+#                self.chemin[0].y = self.target[1]
 
 
 class Building():
