@@ -57,6 +57,7 @@ class Vue(object):
         self.tower_build = Image.open("./img/tower_build.png")##
         self.photo_tower_build = ImageTk.PhotoImage(self.tower_build)##
 
+
     def creeCadres(self):
         self.creeCadreConnection()
         self.creeCadreAttente()
@@ -173,16 +174,22 @@ class Vue(object):
         self.imgLabelPopulation()
         self.initLabelBas()
         
+        hbar=Scrollbar(self.cadrePartie)
+        vbar=Scrollbar(self.cadrePartie)
         # Milieu
-        self.canevasMilieu = Canvas(self.cadrePartie, width=800, height=600, bg="#006633")
-        
-        
+        self.hauteur = 1000
+        self.largeur = 1000
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,5000,5000),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+
+        self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
+
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
-        
+        # self.canevasMilieu.config(scrollregion=self.canevasMilieu.bbox(ALL))
         self.canevasMilieu.bind("<Button-1>", self.selectObject)  # add
         self.canevasMilieu.bind("<Motion>", self.motion)
-        self.canevasMilieu.bind("<Key>", self.spawnUnit)
+        self.canevasMilieu.bind("u", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
+        # self.canevasMilieu.bind("a", self.bougeCanevas)
         
         self.cadrePartie.pack()
         # self.cadreMenu.pack_forget()
@@ -191,6 +198,13 @@ class Vue(object):
         self.placeRessource()
         self.placeBuilding()
     
+        
+    def bougeCanevas(self,event):
+        canvas = event.widget
+        x = canvas.canvasx(event.x)
+        y = canvas.canvasy(event.y)
+        print(canvas.find_closest(x, y))
+        self.canevasMilieu.scan_dragto(int(x), int(y))
 
     def selectObject(self, event):  # add
         if self.actionSelectionnee==0 :##
