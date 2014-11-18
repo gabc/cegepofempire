@@ -79,6 +79,8 @@ class Joueur():
     def creerUnit(self, type, x, y):
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y,self))
+        elif type == "guerrier":
+            self.units.append(Guerrier(self.ID, x, y,self))
 
     def creerJoueurBuilding(self, type, x, y):
         if type == "tower":
@@ -241,8 +243,8 @@ class Villageois(Unit):
                 self.effectueDeplacement(self.chemin[0])
 
 class Guerrier(Unit):
-    def __init__(self, ownerID, posX, posY):
-        Unit.__init__(self, ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Guerrier"
 
 
