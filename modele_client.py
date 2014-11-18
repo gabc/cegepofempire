@@ -261,17 +261,19 @@ class Guerrier(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
         self.champDaggro = 30
+        self.actionEnCours = None
+        self.targetedBy = None
 
 
     def faitAction(self):
         if self.actionEnCours == None:
             self.actionEnCours = "scanEnemy"
         elif self.actionEnCours == "scanEnemy":
-            scanEnemy(self)
+            self.scanEnemy()
         elif self.actionEnCours == "marcheVersEnemy":
-            marcheVersEnemy(self)
+            self.marcheVersEnemy()
         elif self.actionEnCours == "attaqueCible":
-            attaqueCible(self)
+            self.attaqueCible()
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -284,8 +286,8 @@ class Guerrier(Unit):
                 self.target = self.targetedBy
                 self.attaqueCible(targetedBy)
             else:
-                for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã‚Â©s
-                    for n in i:
+                for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                  for n in i.units:
                         if n.ownerID is not self.ownerID:
                             if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                                 self.target = n
@@ -565,7 +567,7 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã‚Â©s
+            for i in self.parent.parent.modele.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©s
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
@@ -573,7 +575,7 @@ class Tower(Building):
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible(n)
                             break
-            for i in self.parent.parent.joueurs.values().buildings:
+            for i in self.parent.parent.modele.joueurs.values().buildings:
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
