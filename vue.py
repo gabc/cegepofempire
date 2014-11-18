@@ -180,11 +180,11 @@ class Vue(object):
         hbar=Scrollbar(self.cadrePartie)
         vbar=Scrollbar(self.cadrePartie)
         # Milieu
-        self.hauteur = 1000
-        self.largeur = 1000
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,5000,5000),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.hauteur = 600
+        self.largeur = 800
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,800,600),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
-        self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
+        #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
 
