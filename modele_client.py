@@ -80,6 +80,10 @@ class Joueur():
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y,self))
 
+    def creerJoueurBuilding(self, type, x, y):
+        if type == "tower":
+            self.buildings.append(Tower(self.ID, x, y,self))
+
     def changerAllies():
         pass
 
@@ -138,8 +142,9 @@ class Unit():
 
 
     def recevoirDegats(self, degatsRecus):
-        if degatsRecus > self.hpActuel:
+        if degatsRecus >= self.hpActuel:
             self.hpActuel = 0
+            print("Unite mort")
         else :
             self.hpActuel -= degatsRecus
 
@@ -259,7 +264,8 @@ class Guerrier(Unit):
 
 class Building():
 
-    def __init__(self, ownerID, posX, posY):
+    def __init__(self, ownerID, posX, posY, parent):
+        self.parent = parent
         global id_objet
         id_objet += 1
         self.id = id_objet
@@ -319,7 +325,7 @@ class TownCenter(Building):
 
 
     def __init__(self, ownerID, posX, posY):
-        Building.__init__(self, ownerID, posX, posY)
+        Building.__init__(self, ownerID, posX, posY, self)
         self.type ="TownCenter"
         #valeurs arbitraires
         self.hpActuel = 1000
@@ -445,11 +451,11 @@ class Barrack(Building):
 # modifier le 11/11/2014
 class Tower(Building):
     def __init__(self, ownerID, posX, posY, parent):
-        Building.__init__(self, ownerID, posX, posY)
+        Building.__init__(self, ownerID, posX, posY, parent)
         self.type = "Tower"
         self.hpActuel = 400
-        self.hpMax = hpActuel
-        self.longueur =20
+        self.hpMax = self.hpActuel
+        self.longueur = 20
         self.largeur = 20
         self.delaiDeConstruction = -1
         self.champDeVision = -1
@@ -458,20 +464,20 @@ class Tower(Building):
         self.targetedBy = None
         self.actionEnCours = None
         self.degat = 50
-        self.cooldown = 100
+        self.cooldown = 30
 
 
     def attaqueCible(self):
         if self.target.isAlive():
-            if helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= champDaggro:
-                if self.cooldown == 100:
+            if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
+                if self.cooldown == 30:
                     self.target.recevoirDegats(self.degat)
                     self.cooldown = 0
 
 
 
             else:
-                self.actionEncours ="scanEnemy"
+                self.actionEnCours ="scanEnemy"
         else:
             self.actionEnCours="scanEnemy"
 
@@ -484,32 +490,31 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
-                for n in i:
-                    if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+            for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unités
+                for n in i.units:
+                    if n.ownerID != self.ownerID:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
                             self.actionEnCours = "attaqueCible"
-                            self.attaqueCible(n)
+                            self.attaqueCible()
                             break
 
 
     def faitAction(self):
         if self.actionEnCours == None:
-            self.actionEncours ="scanEnemy"
+            self.actionEnCours ="scanEnemy"
         if self.actionEnCours == "scanEnemy":
             self.scanEnemy()
         if self.actionEnCours == "attaqueCible":
             self.attaqueCible()
-
-
-    def   metToiAJour(self):
-        if self.cooldown != 100:
+            
+        if self.cooldown != 30:
             self.cooldown += 1
-            print("cooldown de la tour ", self.cooldown)
         if self.hpActuel  ==0:
             del self
-            print (" je  suis mort")
+            print ("je  suis mort")
+
+
 
 
 
@@ -531,7 +536,8 @@ class Modele(object):
         self.actionsAFaire={}
         self.joueurs = {} # = Joueur(0, "test")
         self.actions = {"creerUnite" : self.creerUnite,
-                        "deplace" : self.deplaceUnite,}
+                        "deplace" : self.deplaceUnite,
+                        "creerBuilding": self.creerBuilding,}
 
     def initPartie(self,listeNomsJoueurs):
         n=0
@@ -554,6 +560,9 @@ class Modele(object):
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
 
+    def creerBuilding(self, args):
+        self.joueurs[args[0]].creerJoueurBuilding(args[2][0], args[2][1], args[2][2])
+        
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
