@@ -475,6 +475,7 @@ class Vue(object):
             self.cadreOptionConstruire.grid_forget()##
             self.cadreInfoVillageois.grid_forget()##
             self.cadreInfoAttaquant.grid_forget()##
+            self.cadreOptionBarrack.grid_forget()##
         
         # TownCenter
         elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
