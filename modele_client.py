@@ -249,35 +249,84 @@ class Guerrier(Unit):
         self.hpActuel = self.hpMax
         self.range = 10 #melee
         self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
         self.defense = 1
+        self.vitesseX = 5
+        self.vitesseY = 5
+        self.champDaggro = 30
 
-    def attaque(self):
-        pass
+
     def faitAction(self):
         if self.actionEnCours == None:
             self.actionEnCours = "scanEnemy"
-        if self.actionEnCours == "scanEnemy":
+        elif self.actionEnCours == "scanEnemy":
             scanEnemy(self)
+        elif self.actionEnCours == "marcheVersEnemy":
+            marcheVersEnemy(self)
+        elif self.actionEnCours == "attaqueCible":
+            attaqueCible(self)
+
+        if self.cooldown != self.maxCooldown:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
+            print ("je  suis mort")
 
     def scanEnemy(self):
             if self.targetedBy and target is None:
                 self.target = self.targetedBy
                 self.attaqueCible(targetedBy)
             else:
-                for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
+                for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã‚Â©s
                     for n in i:
                         if n.ownerID is not self.ownerID:
                             if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                                 self.target = n
-                                self.actionEnCours = "attaqueCible"
-                                self.attaqueCible(n)
+                                self.actionEnCours = "marcheVersEnemy"
+                                self.chemin[0].x = n.posX
+                                self.chemin[0].y = n.posY
                                 break
+
+    def attaqueCible(self):
+        if self.target.isAlive():
+            if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.range:
+                if self.cooldown == self.maxCooldown:
+                    self.target.recevoirDegats(self.degat)
+                    self.cooldown = 0
+            elif Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) >= self.range:
+                self.actionEnCours = "marcheVersEnemy"
+            else:
+                self.actionEnCours ="scanEnemy"
+        else:
+            self.actionEnCours="scanEnemy"
+
+    def marcheVersEnemy(self):
+        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+            self.deplacer(self.deplaceur, self.chemin)
+        elif self.target.isAlive() and self.chemin is None:
+            self.actionEnCours = "attaqueCible"
+
+
 
     def recevoirDegats(self, degatsRecus):
         if degatsRecus -self.defense > self.hpActuel:
             self.hpActuel = 0
         else :
             self.hpActuel -= degatsRecus -self.defense
+
+    def deplacer(self, deplaceur, arrive):
+        cx, cy = trouveCase(self.posX, self.posY)
+        if self.chemin is None or self.chemin == []:
+            self.deplaceur = deplaceur
+            self.chemin = deplaceur.chemin(self, arrive)
+        else:
+            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
+                del self.chemin[0]
+            if self.chemin:
+                self.effectueDeplacement(self.chemin[0])
+                self.chemin[0].x = self.target.posX
+                self.chemin[0].y = self.target.posY
 
 
 
@@ -510,8 +559,7 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-<<<<<<< HEAD
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã‚Â©s
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
@@ -523,12 +571,7 @@ class Tower(Building):
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
-=======
-            for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unités
-                for n in i.units:
-                    if n.ownerID != self.ownerID:
-                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
->>>>>>> 14ad93dd5c8ab7906acb1daf745ad50b3f05b780
+
                             self.target = n
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible()
@@ -542,7 +585,7 @@ class Tower(Building):
             self.scanEnemy()
         if self.actionEnCours == "attaqueCible":
             self.attaqueCible()
-            
+
         if self.cooldown != 30:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -597,7 +640,7 @@ class Modele(object):
 
     def creerBuilding(self, args):
         self.joueurs[args[0]].creerJoueurBuilding(args[2][0], args[2][1], args[2][2])
-        
+
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():
             for action in self.actionsAFaire[cadre]:
