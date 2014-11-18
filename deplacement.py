@@ -89,13 +89,13 @@ class Deplacement:
             for j in (0,1,-1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[y+i][x+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
+                    if self.map[y+j][x+i].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
                         np = Noeud(x+i, y+j, 0, 0, n)
                         rep.append(np)
                         if i == 0 or j == 0:
                             n.cout = 10 # ligne droite
                         else:
-                            n.cout = 14 # diagonale
+                            n.cout = 14 # diagonale                    
                 except IndexError:
                     pass
         return rep
