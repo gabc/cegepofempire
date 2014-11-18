@@ -90,7 +90,7 @@ class Joueur():
     def deplaceUnit(self, unit, arrive):
         idunit = unit[1]
         for u in self.units:
-            if u.id == idunit:               
+            if u.id == idunit:
                 #print(arrive)
                 u.status="deplace"
                 u.deplacer(self.parent.deplaceur, arrive)
@@ -202,9 +202,9 @@ class Villageois(Unit):
                 case.ressource='-'
                 case.passable=True;
                 self.status="return"
-                
+
         return case
-            
+
     def checkArrive(self, target, game_map):
         #check si le target est en pixels ou en cases de jeu
         if target[0] > game_map.largeur and target[1] > game_map.hauteur:
@@ -213,7 +213,7 @@ class Villageois(Unit):
             arrive=game_map.mat[target[1]][target[0]]
 
         x, y = trouveCase(self.posX, self.posY)
-        
+
         #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
             if arrive.ressource is not "-":
@@ -242,12 +242,31 @@ class Guerrier(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 0 #melee
-        self.atkSpeed = 600 #en millisecondes
+        self.range = 10 #melee
+        self.atkSpeed = 50 #en millisecondes
         self.defense = 1
 
     def attaque(self):
         pass
+    def faitAction(self):
+        if self.actionEnCours == None:
+            self.actionEnCours = "scanEnemy"
+        if self.actionEnCours == "scanEnemy":
+            scanEnemy(self)
+
+    def scanEnemy(self):
+            if self.targetedBy and target is None:
+                self.target = self.targetedBy
+                self.attaqueCible(targetedBy)
+            else:
+                for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
+                    for n in i:
+                        if n.ownerID is not self.ownerID:
+                            if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                                self.target = n
+                                self.actionEnCours = "attaqueCible"
+                                self.attaqueCible(n)
+                                break
 
     def recevoirDegats(self, degatsRecus):
         if degatsRecus -self.defense > self.hpActuel:
@@ -290,6 +309,7 @@ class Building():
     def recevoirDegats(self, degatsRecus):
         if degatsRecus > self.hpActuel:
             self.hpActuel = 0
+            print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
         else :
             self.hpActuel -= degatsRecus
 
@@ -484,7 +504,15 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unités
+            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
+                for n in i:
+                    if n.ownerID is not self.ownerID:
+                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.actionEnCours = "attaqueCible"
+                            self.attaqueCible(n)
+                            break
+            for i in self.parent.parent.joueurs.values().buildings:
                 for n in i:
                     if n.ownerID is not self.ownerID:
                         if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
