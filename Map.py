@@ -76,6 +76,7 @@ class Map:
         self.hauteur=hauteur
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(j,i,EMPTY_CHAR, True) for j in range(largeur)] for i in range(hauteur)]        
+        self.toDelete=[]
         
     def setSeed(self, seed):
         random.seed(seed)

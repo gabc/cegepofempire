@@ -482,8 +482,6 @@ class Vue(object):
         
             buttonArreter = Button(self.cadreOptionUnite, text="Arreter", width=8)
             buttonArreter.grid(column=1, row=1)
-
-
     # #    
     def initLabelBas(self):
         # Pour le cadre Info Selection
