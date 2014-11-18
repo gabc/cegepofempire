@@ -176,6 +176,8 @@ class Villageois(Unit):
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
+        self.collectionMax = 25
+        self.collectionActuel = self.collectionMax
 
         self.vitesseX = 5
         self.vitesseY = 5

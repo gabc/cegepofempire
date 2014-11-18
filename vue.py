@@ -273,19 +273,28 @@ class Vue(object):
         buttonBatiment5.grid(column=1,row=2)##
         buttonRetour = Button(self.cadreOptionConstruire,text="Retour",command=self.optionRetour, width=8)##
         buttonRetour.grid(column=2,row=2)##
+        
+        self.cadreOptionBarrack = Frame(self.cadrePartie)
+        buttonCree = Button(self.cadreOptionBarrack, text="Cree", width=8)  # text="Cree",command=,
+        buttonCree.grid(column=0, row=1)
            
         self.cadreInfoVillageois = Frame(self.cadrePartie)##
-        self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : ",width=10)##
+        self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : 0/0",width=10)##
         self.labelVillageoisProprio = Label (self.cadreInfoVillageois, text="Proprietaire : ",width=10)##
-        self.labelVillageoisNom = Label(self.cadreInfoVillageois, text="Nom : ",width=10)##
+        self.labelVillageoisNom = Label(self.cadreInfoVillageois, text="Type : ",width=10)##
         self.labelVillageoisTransport = Label(self.cadreInfoVillageois,text="Transport : ",width=10)##
         
         self.cadreInfoAttaquant = Frame(self.cadrePartie)##
-        self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : ",width=10)##
+        self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : 0/0",width=10)##
         self.labelAttaquantProprio = Label(self.cadreInfoAttaquant,text="Proprietaire : ",width=10)##
         self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Nom : ",width=10)##
         self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : ",width=10)##
         self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : ",width=10)##
+        
+        self.cadreInfoTownCenter = Frame(self.cadrePartie)
+        self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : 0/0",width=10)
+        self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : ",width=10)
+        self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Nom : ",width=10)
         
         
         self.cadreMiniMap = Frame(self.cadrePartie)
@@ -451,15 +460,25 @@ class Vue(object):
         # TownCenter
         elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
             self.cadreOptionTownCenter.grid(column=0, row=2)
+            self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : 0/0",width=10)
+            self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : ",width=10)
+            self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Nom : ",width=10)
         
         # Barracks
-        elif self.parent.myPlayer.objectsSelectionne[0].type == "Building":
-            buttonCree = Button(self.cadreOptionUnite, text="Cree", width=8)  # text="Cree",command=,
-            buttonCree.grid(column=0, row=1)
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Barrack":
+            self.cadreOptionBarrack.grid(column=0, row=2)
+
         
         # Villageois
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Villageois":
-            print("ici")
+            self.cadreOptionTownCenter.grid_forget()
+            self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelVillageoisProprio = Label (self.cadreInfoVillageois, text="Proprietaire : "+j.name,width=19)##
+            self.labelVillageoisNom = Label(self.cadreInfoVillageois, text="Type: "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+            self.labelVillageoisTransport = Label(self.cadreInfoVillageois,text="Transport : "+str(self.parent.myPlayer.objectsSelectionne[0].collectionActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].collectionMax),width=19)##
+            
             self.cadreOptionVillageois.grid(column=0, row=2)
             self.cadreInfoVillageois.grid(column=1, row=2)##
             self.labelVillageoisHp.grid(column=0,row=1)##
