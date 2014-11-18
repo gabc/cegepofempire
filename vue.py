@@ -56,6 +56,9 @@ class Vue(object):
         
         self.tower_build = Image.open("./img/tower_build.png")##
         self.photo_tower_build = ImageTk.PhotoImage(self.tower_build)##
+        
+        self.barrack_build = Image.open("./img/barrack_build.png")##
+        self.photo_barrack_build = ImageTk.PhotoImage(self.barrack_build)##
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -204,8 +207,10 @@ class Vue(object):
                     print("selected object: ", u.type)
                     break
             
+            
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
+                    print("Nom de building: " + b.type)
                     if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                         self.parent.myPlayer.objectsSelectionne.append(b)
                         print("selected object: ", b.type)
@@ -220,6 +225,10 @@ class Vue(object):
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", self.currentX, self.currentY]])##
+        elif self.actionSelectionnee == 3:
+            self.actionSelectionnee = 0
+            print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", self.currentX, self.currentY]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -230,6 +239,8 @@ class Vue(object):
             self.canevasMilieu.create_rectangle(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2: 
             self.canevasMilieu.create_image(event.x, event.y, image=self.photo_tower_build, anchor='nw', tags="test")
+        elif self.actionSelectionnee == 3: 
+            self.canevasMilieu.create_image(event.x, event.y, image=self.photo_barrack_build, anchor='nw', tags="test")
 
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
@@ -263,7 +274,7 @@ class Vue(object):
         self.cadreOptionConstruire = Frame(self.cadrePartie)##
         buttonBatiment1 = Button(self.cadreOptionConstruire,text="Tour", command=self.creeTour, width=8)##
         buttonBatiment1.grid(column=0,row=1)##
-        buttonBatiment2 = Button(self.cadreOptionConstruire,text="Batiment2", width=8)##
+        buttonBatiment2 = Button(self.cadreOptionConstruire,text="Barrack", command=self.creeBarrack, width=8)##
         buttonBatiment2.grid(column=1,row=1)##
         buttonBatiment3 = Button(self.cadreOptionConstruire,text="Batiment3", width=8)##
         buttonBatiment3.grid(column=2,row=1)##
@@ -307,6 +318,9 @@ class Vue(object):
     
     def creeTour(self):
         self.actionSelectionnee=2
+        
+    def creeBarrack(self):
+    	self.actionSelectionnee=3
     
     ####Pour les images    
         
@@ -506,6 +520,7 @@ class Vue(object):
     def setArrive(self, event):
         if self.actionSelectionnee > 0:
             self.actionSelectionnee = 0
+            return
         print("setarr", event.x, event.x / self.longeurLigne)##
         if len(self.parent.myPlayer.objectsSelectionne) > 0:
             u = self.parent.myPlayer.objectsSelectionne[0]
@@ -529,6 +544,9 @@ class Vue(object):
                 
                         
             for i in j.buildings:
+                if i.type == "Barrack":
+                    self.canevasMilieu.create_rectangle(i.posX-2, i.posY-2, i.posX + 19, i.posY + 19, fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_barrack_build, anchor='nw', tags="unit")
                 if i.type == "Tower":
                     self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_tower_build, anchor='nw', tags="unit")
                 else: ##town center
