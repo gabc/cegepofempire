@@ -403,8 +403,8 @@ class TownCenter(Building):
         Building.__init__(self, ownerID, posX, posY, self)
         self.type ="TownCenter"
         #valeurs arbitraires
-        self.hpActuel = 1000
-        self.hpMax = self.hpActuel
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 20000
