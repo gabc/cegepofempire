@@ -3,10 +3,19 @@ import client
 from Map import *
 import random
 """
-1- besoin de variable de selection estSelectionner sur les units
-    ainsi on peut leur donner un ordre a eux simplement par la vÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©rification dans la liste
-    en ne verifiant que CETTE variable
-2- besoin de verifier mes methodes a transferer vers le fichier ModuleObject
+A LIRE:
+    TEST POSSIBLE:
+        1- VERIFICATION A CHAQUE nb X de tic A PRENDRE UNE DECISION
+        2- ENGAGE UN VILLAGEOIS  J USQU A UN NOMBRE DE 5 x NOMBRE DE RESSOURCES NECESSAIRE SELON L AGE COURRANT
+        3- CONSTRUCTION DE MAISON LORQUE LE NOMBRE DE VILLAGEOIS ATTEINT 75/100 DU MAX UNITS COURRANT
+        4- LA CONSTRUCTION DES BATIMENTS SE FONT TOUS SUR DES CASES PASSABLE- ET METTE CES CASE IMPASSABLE
+
+tout cela fonctionne theoriquement. je n ai pas fait de tests ultime mais tout semble fonctionnel
+ps- les print sont deja present alors faite le rouler.
+
+pour une plus ample comprehension: verifier ce que le controleur fait.
+ctrl-f : balancementCaptif
+ctrl-f : Decision
 """
 class Cpu(modele_client.Joueur): ###, self.parent):
     def __init__(self, ID, posX, posY,parent):
@@ -32,6 +41,7 @@ class Cpu(modele_client.Joueur): ###, self.parent):
         self.mode = self.balanced
         self.cherchePosX = 0
         self.cherchePosY = 0
+        self.positionVerifBool = False
         #ageDePierre = 1
         #ageContemporain = 2
         #ageModerne = 3
@@ -67,35 +77,39 @@ class Cpu(modele_client.Joueur): ###, self.parent):
             if i.type=="Maison":
                 self.maxUnitsCourrant += 10
 
+    def printBatimentsPositions(self):
+        print("Position de tout les buildings :")
+        for i in self.buildings:
+            print( str(i.type) + " - : ( " + str(i.posX) + ", " + str(i.posY) + " )")
 
     def balancementCaptif(self):
         # will be in a loop
-        print("Balancement:")
+        #print("Balancement:")
         # Do you have enought villagers?Do you have enough houses? Create more*/
         self.calculVillageois()
         self.calculMaxUnit()
+        self.incrementationRessourcesTest()
         if self.nbVillageois < self.maxUnitsCourrant:
-            if self.nbVillageois <= (5*self.nbTypeDeRessources) and self.mode != self.offensive:
-                print("cree 1 Villageois!") #// ( select town center / build villager unit /  add unit to queu)
+            if self.nbVillageois <= (10*self.nbTypeDeRessources) and self.mode != self.offensive:
+                #print("cree 1 Villageois!")
                 u1 = modele_client.Villageois(self.ID,0,0,0)
                 self.units.append(u1)
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
-                print("cree 1 Villageois!") #// ( select town center / build villager unit /  add unit to queu)
+                #print("cree 1 Villageois!") #// ( select town center / build villager unit /  add unit to queu)
                 u1 = modele_client.Villageois(self.ID,0,0)
                 self.units.append(u1)
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
-            print("Cherche Villageoi non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
+            #print("Cherche Villageois non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
             self.verificationPosition(self.m.mat)
             m1 = modele_client.Maison(self.ID, self.cherchePosX, self.cherchePosY)
+            #print("maison construite a la position : ( " + str(m1.posX) + ", " + str(m1.posY) + " )")
             self.buildings.append(m1)
+            self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
         for i in range(self.nbTypeDeRessources):
             if self.villageoisParRessources[i] < self.nbCollecteurParRessourcesAuBesoin[i] :
-                print("chercher un villageois non occuper")
-                print("Villageoi-> cherche cette ressource") #self.selectedVillager.Find( RessourceTypesNeeded(i))
+                #print("chercher un villageois non occuper")
+                #print("Villageoi-> cherche cette ressource") #self.selectedVillager.Find( RessourceTypesNeeded(i))
                 self.villageoisParRessources[i] += 1
-                #// function Find will take an int and search the needed resource to start //harvesting this resource (in case they cant see any of it yet
-                #// Function FindUnoccupiedVillager will look up the list of villagers; which will need a
-                #// Bool Occupied; if find ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“select / if villagernotfound ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¾Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Â¦Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬ÃƒÂ¢Ã¢â‚¬Å¾Ã‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¡ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¦ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â¢ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã‚Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â¬ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã‚Â¦ÃƒÆ’Ã‚Â¢ÃƒÂ¢Ã¢â‚¬Å¡Ã‚Â¬Ãƒâ€¦Ã¢â‚¬Å“ create villager
 
     def calculVillageois(self):
         self.nbVillageois = 0
@@ -104,57 +118,48 @@ class Cpu(modele_client.Joueur): ###, self.parent):
                 self.nbVillageois += 1
 
 
-    #considerant que les batiments sont positionner sur une case
-    #et que les cases sont separer par une ou deux pixels, laissant
-    #les units se deplacer -- important --
     def verificationPosition(self, matrice): # m.mat
         self.iteratorNumber = 1
-        while self.iteratorNumber < 10 and False:
+        self.positionVerifBool = False
+        while self.iteratorNumber < 10 and self.positionVerifBool == False:
             for i in self.buildings:
-                if matrice[i.posY + self.iteratorNumber][i.posX].isPassable == True :
-                    print("fait le batiment en haut de : " + i.type)
+                #print("building",i.posX,i.posY, matrice[i.posY + self.iteratorNumber][i.posX].isPassable)
+                if matrice[i.posY + self.iteratorNumber][i.posX].isPassable() == True :
+                    #input("fait le batiment en haut de : " + i.type)
                     self.cherchePosY = i.posY + self.iteratorNumber
                     self.cherchePosX = i.posX
-                    return True
-                    break
-                elif matrice[i.posY - self.iteratorNumber][i.posX].isPassable == True :
+                    self.positionVerifBool = True
+
+                elif matrice[i.posY - self.iteratorNumber][i.posX].isPassable() == True :
                     print("fait le batiment en bas de : " + i.type)
                     self.cherchePosY = i.posY - self.iteratorNumber
                     self.cherchePosX = i.posX
-                    return True
-                    break
-                elif matrice[i.posY][i.posX + self.iteratorNumber].isPassable == True :
+                    self.positionVerifBool = True
+
+                elif matrice[i.posY][i.posX + self.iteratorNumber].isPassable() == True :
                     print("fait le batiment a droite de : " + i.type)
                     self.cherchePosY = i.posY
                     self.cherchePosX = i.posX + self.iteratorNumber
-                    return True
-                    break
-                elif matrice[i.posY][i.posX - self.iteratorNumber].isPassable == True :
+                    self.positionVerifBool = True
+
+                elif matrice[i.posY][i.posX - self.iteratorNumber].isPassable() == True :
                     print("fait le batiment a gauche de : " + i.type)
                     self.cherchePosY = i.posY
                     self.cherchePosX = i.posX - self.iteratorNumber
-                    return True
-                    break
+                    self.positionVerifBool = True
 
-    def changerEre(self):
-        self.changerEreVerif()
-        if self.changerErePossible == True:
-            if self.ageCourrante == self.ageDePierre:
-                self.Ere2()
-            elif self.ageCourrante == self.ageContemporain:
-                self.Ere3()
-            elif self.ageCourrante == self.ageModerne:
-                self.Ere4()
-            print(" changement d'ere reussi ")
-        print("age courante est " + str(self.ageCourrante))
+            if self.positionVerifBool == True:
 
-    # a transferer vers moduleObject...
-    def changerEreVerif(self):
+                break
+
+
+
+
+
+    def incrementationRessourcesTest(self):
         for i in range(self.nbTypeDeRessources):
-            if self.ressources[i] > 10:
-                self.changerErePossible = True
-                print("peut changer d'ere ! ")
-
+            if self.ressources[i] < 100 :
+                self.ressources[i] += 1
 
     def changerAllies(self):
         pass
@@ -172,46 +177,54 @@ class Cpu(modele_client.Joueur): ###, self.parent):
         self.ageCourrante = self.ageContemporain
         self.nbTypeDeRessources = 4
         self.nbCollecteurParRessourcesAuBesoin[3] = 5
-
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
     def Ere3(self):
         self.ageCourrante = self.ageModerne
         self.nbTypeDeRessources = 5
         self.nbCollecteurParRessourcesAuBesoin[4] = 5
-
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
     def Ere4(self):
         self.ageCourrante = self.ageFutur
-
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
 
     def Decision(self):
-        print("in decision")
+
+        #print("in decision")
         if self.valeurRandom > 0:
             self.valeurRandom -= 1
         else:
             #ajouter decision a cette endroit
-            print("Decision d action prise!")
+            #print("Decision d action prise!")
             self.balancementCaptif()
+            if self.ageCourrante != self.ageFutur:
+                self.changerEre()
+                print("food" + str(self.ressources[0]) + "wood" + str(self.ressources[1]) + "rock" + str(self.ressources[2]) + "gold" + str(self.ressources[3]) + "energy" + str(self.ressources[4]))
             self.valeurRandom = random.randrange(2,6)*20
-        print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
-
+        #print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
 
 
 
 class Controleur():
     def __init__(self):
-        self.cpu = Cpu(0, 0, 0, 0)
-        self.townCenter = modele_client.TownCenter(self.cpu.ID,0,0)
+        self.cpu = Cpu(0, 15, 15, 0)
+        self.townCenter = modele_client.TownCenter(self.cpu.ID,15,15)
+        self.cpu.m.mat[15][15].passable = False
         self.cpu.buildings.append(self.townCenter)
 if __name__ == '__main__':
     c = Controleur()
     count = 0
-    while (count < 10000):
+    while (count < 20000):
         c.cpu.Decision()
         count += 1
     c.cpu.calculVillageois()
     print("le nombre de villageois est : " + str(c.cpu.nbVillageois))
     c.cpu.calculMaxUnit()
     print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
+    c.cpu.printBatimentsPositions()
     print("fin",c.cpu)
 
 
