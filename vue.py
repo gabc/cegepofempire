@@ -187,12 +187,16 @@ class Vue(object):
         self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
-        # self.canevasMilieu.config(scrollregion=self.canevasMilieu.bbox(ALL))
+
         self.canevasMilieu.bind("<Button-1>", self.selectObject)  # add
         self.canevasMilieu.bind("<Motion>", self.motion)
         self.canevasMilieu.bind("u", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
-        # self.canevasMilieu.bind("a", self.bougeCanevas)
+
+        self.canevasMilieu.bind("a", self.bougeVersGauche)
+        self.canevasMilieu.bind("w", self.bougeVersHaut)
+        self.canevasMilieu.bind("s", self.bougeVersBas)
+        self.canevasMilieu.bind("d", self.bougeVersDroite)
         
         self.cadrePartie.pack()
         # self.cadreMenu.pack_forget()
@@ -202,12 +206,17 @@ class Vue(object):
         self.placeBuilding()
     
         
-    def bougeCanevas(self,event):
-        canvas = event.widget
-        x = canvas.canvasx(event.x)
-        y = canvas.canvasy(event.y)
-        print(canvas.find_closest(x, y))
-        self.canevasMilieu.scan_dragto(int(x), int(y))
+    def bougeVersGauche(self, event):
+        self.canevasMilieu.xview(SCROLL, -1, "units")
+
+    def bougeVersHaut(self, event):
+        self.canevasMilieu.yview(SCROLL, -1, "units")
+
+    def bougeVersBas(self, event):
+        self.canevasMilieu.yview(SCROLL, 1, "units")
+
+    def bougeVersDroite(self, event):
+        self.canevasMilieu.xview(SCROLL, 1, "units")
 
     def selectObject(self, event):  # add
         if self.actionSelectionnee==0 :##
