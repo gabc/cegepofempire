@@ -578,11 +578,13 @@ class Vue(object):
         # Attaquant
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
             self.forgetAllCadre()
-            self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : 0/0",width=10)##
-            self.labelAttaquantProprio = Label(self.cadreInfoAttaquant,text="Proprietaire : ",width=10)##
-            self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Type : ",width=10)##
-            self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : ",width=10)##
-            self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : ",width=10)##
+            self.labelAttaquantHp= Label(self.cadreInfoAttaquant, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelAttaquantProprio = Label (self.cadreInfoAttaquant, text="Proprietaire : "+j.name,width=19)##
+            self.labelAttaquantNom = Label(self.cadreInfoAttaquant, text="Type: "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+            self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : "+str(self.parent.myPlayer.objectsSelectionne[0].degat),width=10)##
+            self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : "+str(self.parent.myPlayer.objectsSelectionne[0].defense),width=10)##
             self.cadreOptionGuerrier.grid(column=0,row=2)
             self.cadreInfoAttaquant.grid(column=1,row=2)##
             self.labelAttaquantHp.grid(column=0,row=1)##
