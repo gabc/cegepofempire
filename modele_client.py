@@ -261,6 +261,7 @@ class Guerrier(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
         self.champDaggro = 30
+        self.degat = 10
         self.actionEnCours = None
         self.targetedBy = None
 
