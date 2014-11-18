@@ -154,12 +154,12 @@ class Unit():
         ax, ay = trouvePixel(arrive.x, arrive.y)
         if self.posX > ax:
             self.posX -= self.vitesseX
-        elif self.posX < ax:
+        if self.posX < ax:
             self.posX += self.vitesseX
 
         if self.posY > ay:
             self.posY -= self.vitesseY
-        elif self.posY < ay:
+        if self.posY < ay:
             self.posY += self.vitesseY
 
 class Villageois(Unit):
