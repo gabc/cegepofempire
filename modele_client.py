@@ -2,6 +2,7 @@ import deplacement
 import math
 import timeit
 from utils import *
+from helper import *
 
 class Joueur():
     def __init__(self, parent, ID, name):
@@ -295,11 +296,11 @@ class Guerrier(Unit):
                 for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                   for n in i.units:
                         if n.ownerID is not self.ownerID:
-                            if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                                 self.unitCible = n
                                 self.actionEnCours = "marcheVersEnemy"
-                                self.chemin[0].x = n.posX
-                                self.chemin[0].y = n.posY
+                                #self.chemin[0].x = n.posX a modifier asap 18/11/2014
+                                #self.chemin[0].y = n.posY
                                 break
 
     def attaqueCible(self):
@@ -576,7 +577,7 @@ class Tower(Building):
             for i in self.parent.parent.modele.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©s
                 for n in i:
                     if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible(n)
@@ -584,7 +585,7 @@ class Tower(Building):
             for i in self.parent.parent.modele.joueurs.values().buildings:
                 for n in i:
                     if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
 
                             self.target = n
                             self.actionEnCours = "attaqueCible"
