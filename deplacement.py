@@ -89,7 +89,7 @@ class Deplacement:
             for j in (0,1,-1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[y+i][x+j].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
+                    if self.map[y+j][x+i].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
                         np = Noeud(x+i, y+j, 0, 0, n)
                         rep.append(np)
                         if i == 0 or j == 0:
