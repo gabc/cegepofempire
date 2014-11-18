@@ -208,7 +208,7 @@ class Villageois(Unit):
     def checkArrive(self, target, game_map):
         #check si le target est en pixels ou en cases de jeu
         if target[0] > game_map.largeur and target[1] > game_map.hauteur:
-            arrive=game_map.mat[math.trunc(target[1]/20)][math.trunc(target[0]/20)]
+            arrive=game_map.mat[math.trunc(target[1]/self.parent.parent.vue.longeurLigne)][math.trunc(target[0]/self.parent.parent.vue.longeurLigne)]
         else:
             arrive=game_map.mat[target[1]][target[0]]
 
