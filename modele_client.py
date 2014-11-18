@@ -2,6 +2,7 @@ import deplacement
 import math
 import timeit
 from utils import *
+from helper import *
 
 class Joueur():
     def __init__(self, parent, ID, name):
@@ -181,7 +182,7 @@ class Villageois(Unit):
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
         self.collectionMax = 25
-        self.collectionActuel = self.collectionMax
+        self.collectionActuel = 0
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -207,7 +208,12 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if case.nbRessource > 0:
             case.nbRessource-=1
+            self.collectionActuel+=1
+            print(self.collectionActuel)
             print(self.id, "resource left: ", case.nbRessource)
+            if self.collectionActuel ==self.collectionMax:
+                self.status="return"
+                print("retourne")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
@@ -264,6 +270,7 @@ class Guerrier(Unit):
         self.degat = 10
         self.actionEnCours = None
         self.targetedBy = None
+        self.unitCible = None
 
 
     def faitAction(self):
@@ -277,7 +284,7 @@ class Guerrier(Unit):
             self.attaqueCible()
         elif self.chemin:
             self.deplacer(self.deplaceur, self.chemin)
-           
+
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -287,27 +294,27 @@ class Guerrier(Unit):
     def scanEnemy(self):
             if self.chemin:
                 self.deplacer(self.deplaceur, self.chemin)
-            if self.targetedBy and target is None:
-                self.target = self.targetedBy
-                self.attaqueCible(targetedBy)
+            if self.targetedBy and self.unitCible is None:
+                self.unitCible = self.targetedBy
+                self.attaqueCible(self.targetedBy)
             else:
                 for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                   for n in i.units:
                         if n.ownerID is not self.ownerID:
-                            if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
-                                self.target = n
+                            if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                                self.unitCible = n
                                 self.actionEnCours = "marcheVersEnemy"
-                                self.chemin[0].x = n.posX
-                                self.chemin[0].y = n.posY
+                                #self.chemin[0].x = n.posX a modifier asap 18/11/2014
+                                #self.chemin[0].y = n.posY
                                 break
 
     def attaqueCible(self):
-        if self.target.isAlive():
-            if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.range:
+        if self.unitCible.isAlive():
+            if Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.range:
                 if self.cooldown == self.maxCooldown:
-                    self.target.recevoirDegats(self.degat)
+                    self.unitCible.recevoirDegats(self.degat)
                     self.cooldown = 0
-            elif Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) >= self.range:
+            elif Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) >= self.range:
                 self.actionEnCours = "marcheVersEnemy"
             else:
                 self.actionEnCours ="scanEnemy"
@@ -317,7 +324,7 @@ class Guerrier(Unit):
     def marcheVersEnemy(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
-        elif self.target.isAlive() and self.chemin is None:
+        elif self.unitCible.isAlive() and self.chemin is None:
             self.actionEnCours = "attaqueCible"
 
 
@@ -480,7 +487,7 @@ class Barrack(Building):
 
         self.hpMax = 1000
         self.hpActuel = self.hpMax
-        
+
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 20000
@@ -572,10 +579,10 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.modele.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©s
+            for i in self.parent.parent.modele.joueurs.values().units:# il faut reussir a avoir la liste des unitÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Â ÃƒÂ¢Ã¢â€šÂ¬Ã¢â€žÂ¢ÃƒÆ’Ã†â€™ÃƒÂ¢Ã¢â€šÂ¬Ã…Â¡ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©s
                 for n in i:
                     if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible(n)
@@ -583,7 +590,7 @@ class Tower(Building):
             for i in self.parent.parent.modele.joueurs.values().buildings:
                 for n in i:
                     if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
 
                             self.target = n
                             self.actionEnCours = "attaqueCible"
