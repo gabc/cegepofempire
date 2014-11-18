@@ -207,7 +207,7 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if case.nbRessource > 0:
             case.nbRessource-=1
-            print(self.id, "IS COLLECTING", case.nbRessource)
+            print(self.id, "resource left: ", case.nbRessource)
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
