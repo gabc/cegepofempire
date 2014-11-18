@@ -6,6 +6,7 @@ import random
 import math
 from helper import *
 from PIL import Image, ImageTk 
+from utils import *
 # from modele_client import *
 from Map import *
 
@@ -233,7 +234,7 @@ class Vue(object):
             
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
-                    if b.type == "TownCenter":
+                    if b.type == "TownCenter" or b.type == "Barrack":
                         if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
@@ -253,10 +254,11 @@ class Vue(object):
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", self.currentX, self.currentY]])##
-        elif self.actionSelectionnee == 3:
+        elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
             print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", self.currentX, self.currentY]])##
+            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
@@ -647,20 +649,23 @@ class Vue(object):
                 
                         
             for i in j.buildings:
+                caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
+                caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
                 if i.type == "Barrack":
-                    self.canevasMilieu.create_rectangle(i.posX-2, i.posY-2, i.posX + 19, i.posY + 19, fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
+                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
 
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(i.posX-3, i.posY-3, i.posX + 20, i.posY + 20, fill="red", tags="unit")
-                    self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_barrack_build, anchor='nw', tags="unit")
-                if i.type == "Tower":
+                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.photo_barrack_build, anchor='nw', tags="unit")
+                elif i.type == "Tower":
                     self.canevasMilieu.create_image(i.posX, i.posY, image=self.photo_tower_build, anchor='nw', tags="unit")
                 else: ##town center
-                    self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill="red", tags="unit")
+                            self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill="red", tags="unit")
     
     def creerLigne(self):
         for i in range (self.parent.l):
