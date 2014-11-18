@@ -463,8 +463,8 @@ class Maison(Building):
         Building.__init__(self, ownerID,posX,posY)
         self.type="Maison"
 
-        self.hpActuel = 700
-        self.hpMax = self.hpActuel
+        self.hpMax = 700
+        self.hpActuel = self.hpMax
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 10000
@@ -474,8 +474,9 @@ class Barrack(Building):
         Building.__init__(self, ownerID, posX, posY, parent)
         self.type="Barrack"
 
-        self.hpActuel = 1000
-        self.hpMax = self.hpActuel
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
+        
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 20000
@@ -530,8 +531,8 @@ class Tower(Building):
     def __init__(self, ownerID, posX, posY, parent):
         Building.__init__(self, ownerID, posX, posY, parent)
         self.type = "Tower"
-        self.hpActuel = 400
-        self.hpMax = self.hpActuel
+        self.hpMax = 400
+        self.hpActuel = self.hpMax
         self.longueur = 20
         self.largeur = 20
         self.delaiDeConstruction = -1

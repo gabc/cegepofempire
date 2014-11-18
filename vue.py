@@ -180,11 +180,11 @@ class Vue(object):
         hbar=Scrollbar(self.cadrePartie)
         vbar=Scrollbar(self.cadrePartie)
         # Milieu
-        self.hauteur = 1000
-        self.largeur = 1000
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,5000,5000),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.hauteur = 600
+        self.largeur = 800
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,800,600),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
-        self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
+        #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
 
@@ -330,22 +330,27 @@ class Vue(object):
         buttonArreter.grid(column=1, row=1)
            
         self.cadreInfoVillageois = Frame(self.cadrePartie)##
-        self.labelVillageoisHp= Label(self.cadreInfoVillageois, text="Points de vie : 0/0",width=10)##
-        self.labelVillageoisProprio = Label (self.cadreInfoVillageois, text="Proprietaire : ",width=10)##
-        self.labelVillageoisNom = Label(self.cadreInfoVillageois, text="Type : ",width=10)##
-        self.labelVillageoisTransport = Label(self.cadreInfoVillageois,text="Transport : ",width=10)##
+        self.labelVillageoisHp= Label(self.cadreInfoVillageois)##
+        self.labelVillageoisProprio = Label (self.cadreInfoVillageois)##
+        self.labelVillageoisNom = Label(self.cadreInfoVillageois)##
+        self.labelVillageoisTransport = Label(self.cadreInfoVillageois)##
         
         self.cadreInfoAttaquant = Frame(self.cadrePartie)##
         self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : 0/0",width=10)##
         self.labelAttaquantProprio = Label(self.cadreInfoAttaquant,text="Proprietaire : ",width=10)##
-        self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Nom : ",width=10)##
+        self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Type : ",width=10)##
         self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : ",width=10)##
         self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : ",width=10)##
         
         self.cadreInfoTownCenter = Frame(self.cadrePartie)
-        self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : 0/0",width=10)
-        self.labelTownCenterProprio = Label(self.cadreInfoTownCenter,text="Proprietaire : ",width=10)
-        self.labelTownCenterNom = Label(self.cadreInfoTownCenter,text="Nom : ",width=10)
+        self.labelTownCenterHp = Label(self.cadreInfoTownCenter)
+        self.labelTownCenterProprio = Label(self.cadreInfoTownCenter)
+        self.labelTownCenterNom = Label(self.cadreInfoTownCenter)
+        
+        self.cadreInfoBarrack = Frame(self.cadrePartie)
+        self.labelBarrackHp = Label(self.cadreInfoBarrack)
+        self.labelBarrackProprio = Label(self.cadreInfoBarrack)
+        self.labelBarrackNom = Label(self.cadreInfoBarrack)
         
         
         self.cadreMiniMap = Frame(self.cadrePartie)
@@ -511,6 +516,7 @@ class Vue(object):
         self.cadreInfoTownCenter.grid_forget()
         self.cadreInfoVillageois.grid_forget()##
         self.cadreInfoAttaquant.grid_forget()##
+        self.cadreInfoBarrack.grid_forget()
         
         
     def optionUnite(self):
@@ -538,7 +544,17 @@ class Vue(object):
         # Barracks
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Barrack":
             self.forgetAllCadre()
+            self.labelBarrackHp = Label(self.cadreInfoBarrack, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##,width=10)
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelBarrackProprio = Label(self.cadreInfoBarrack,text="Proprietaire : "+j.name,width=19)
+            self.labelBarrackNom = Label(self.cadreInfoBarrack,text="Type : "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
             self.cadreOptionBarrack.grid(column=0, row=2)
+            self.cadreInfoBarrack.grid(column=1, row=2)##
+            self.labelBarrackHp.grid(column=0,row=1)##
+            self.labelBarrackProprio.grid(column=0,row=2)##
+            self.labelBarrackNom.grid(column=0,row=3)##
+            
 
         
         # Villageois
@@ -562,6 +578,12 @@ class Vue(object):
         # Attaquant
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Guerrier":
             self.forgetAllCadre()
+            self.labelAttaquantHp = Label(self.cadreInfoAttaquant,text="Points de vie : 0/0",width=10)##
+            self.labelAttaquantProprio = Label(self.cadreInfoAttaquant,text="Proprietaire : ",width=10)##
+            self.labelAttaquantNom = Label(self.cadreInfoAttaquant,text="Type : ",width=10)##
+            self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : ",width=10)##
+            self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : ",width=10)##
+            self.cadreOptionGuerrier.grid(column=0,row=2)
             self.cadreInfoAttaquant.grid(column=1,row=2)##
             self.labelAttaquantHp.grid(column=0,row=1)##
             self.labelAttaquantProprio.grid(column=0,row=2)##
