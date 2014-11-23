@@ -219,7 +219,6 @@ class Map:
         pass
        
     def placeBuilding(self, posX, posY, buildingType):
-        print("placebuilding dans memoire")
         if self.mat[posX][posY].isPassable():
             self.mat[posX][posY].building = buildingType
             self.mat[posX][posY].passable=False
