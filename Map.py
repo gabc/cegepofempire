@@ -10,7 +10,7 @@ from modele_client import *
 #TODO:
 #Precise ressources (bois, pierre, etc)
 
-#Ratio des ressources ( sur 100)
+#Ratio des ressources (sur 100)
 
 WOOD_RATIO=10
 FOOD_RATIO=5
@@ -80,15 +80,15 @@ class Map:
         self.largeur=largeur
         self.hauteur=hauteur
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
-        self.mat=[[Case(j,i,True) for j in range(largeur)] for i in range(hauteur)]
+        self.mat=[[Case(i,j,True) for j in range(hauteur)] for i in range(largeur)]
         self.toDelete=[]
                               
     def setSeed(self, seed):
         random.seed(seed)
         
     def placeRessource(self, ratio, char):
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 nb = random.randrange(100)
                 if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j].passable=False
@@ -96,8 +96,8 @@ class Map:
                     self.mat[i][j].nbRessource=50
 
     def placeRessourceUnder(self, ratio, char):
-         for i in range(self.hauteur):
-            for j in range(self.largeur):
+         for i in range(self.largeur):
+            for j in range(self.hauteur):
                 nb = random.randrange(100)
                 if nb <= ratio:
                     self.mat[i][j].underRes=char
@@ -168,7 +168,7 @@ class Map:
                 x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
                 #print("x =", x,"y =", y,"a =",angle)
-                self.mat[y][x]=Case(x,y,PLAYER_CHAR,False)
+                self.mat[x][y]=Case(x,y,PLAYER_CHAR,False)
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
 
@@ -190,7 +190,7 @@ class Map:
                     x = self.largeur -1
                 #print("x =", x,"y =", y,"a =",angle)
                 self.placeBuilding(x,y,"TownCenter")
-                self.mat[y][x].ressource=EMPTY_CHAR            
+                self.mat[x][y].ressource=EMPTY_CHAR            
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
 
@@ -198,7 +198,7 @@ class Map:
 
         listeRes=self.getListeRessources()
 
-        #Doesnt work + mettre dans une methode pls
+        #Doesnt work + mettre dans une methode pls --> clearSpawns()
         """for j in listeNomsJoueurs:
             x=listeJoueurs[j].buildings[0].posX
             y=listeJoueurs[j].buildings[0].posY
@@ -214,12 +214,15 @@ class Map:
                         self.mat[r.posY][r.posX]=r
                         print(r.posX, r.posY)
                         listeRes.remove(r)"""
-        
+    
+    def clearSpawns(self):
+        pass
+       
     def placeBuilding(self, posX, posY, buildingType):
         print("placebuilding dans memoire")
-        if self.mat[posY][posX].isPassable():
-            self.mat[posY][posX].building = buildingType
-            self.mat[posY][posX].passable=False
+        if self.mat[posX][posY].isPassable():
+            self.mat[posX][posY].building = buildingType
+            self.mat[posX][posY].passable=False
             return True
         else:
             return False
@@ -227,31 +230,31 @@ class Map:
     def getListeRessources(self):
         ressources=[]
         
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 if self.mat[i][j].ressource is not EMPTY_CHAR:
                     ressources.append(self.mat[i][j])
 
         return ressources
 
     def printMapCon(self):
-        for i in range(self.hauteur):
-            for j in range(self.largeur):                
+        for i in range(self.largeur):
+            for j in range(self.hauteur):                
                 print(self.mat[i][j].ressource, end="")
             print("")
 
     def printMapToFile(self):
         f = open('map.txt','w')
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 f.write(str(self.mat[i][j].ressource))
             f.write("\n")
         f.close()
 
     def printPassable(self):
         f = open('map.txt','w')
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 print(self.mat[i][j].isPassable())
 
     #I like stats
@@ -268,8 +271,8 @@ class Map:
         res5EtUnder=0
         resartEtUnder=0
         
-        for i in range(self.hauteur):
-            for j in range(self.largeur):
+        for i in range(self.largeur):
+            for j in range(self.hauteur):
                 if self.mat[i][j].ressource == WOOD_CHAR:
 
                     res1 += 1

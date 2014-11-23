@@ -25,7 +25,7 @@ class Deplacement:
         self.maxnode = 400
 
     def assurePassable(self, depart, arrive):
-        while not self.map[arrive.y][arrive.x].isPassable():
+        while not self.map[arrive.x][arrive.y].isPassable():
             if arrive.x > depart.x:
                 arrive.x -= 1
             elif arrive.x < depart.x:
@@ -89,8 +89,8 @@ class Deplacement:
             for j in (0,1,-1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[y+j][x+i].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
-                        np = Noeud(x+i, y+j, 0, 0, n)
+                    if self.map[x+j][y+i].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
+                        np = Noeud(x+j, y+i, 0, 0, n)
                         rep.append(np)
                         if i == 0 or j == 0:
                             n.cout = 10 # ligne droite
