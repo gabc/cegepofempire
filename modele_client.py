@@ -86,8 +86,10 @@ class Joueur():
     def creerJoueurBuilding(self, type, x, y):
         if type == "tower":
             self.buildings.append(Tower(self.ID, x, y,self))
+            self.parent.m.placeBuilding(x,y,"tower")
         if type == "barrack":
             self.buildings.append(Barrack(self.ID, x, y,self))
+            self.parent.m.placeBuilding(x,y,"barrack")
 
     def changerAllies():
         pass

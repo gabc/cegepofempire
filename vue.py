@@ -675,7 +675,6 @@ class Vue(object):
                 print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
                 self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
     
-    
     def placeRessource(self):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.h):
