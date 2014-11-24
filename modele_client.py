@@ -215,7 +215,7 @@ class Villageois(Unit):
             print(self.id, "resource left: ", case.nbRessource)
             if self.collectionActuel ==self.collectionMax:
                 self.status="return"
-                print("retourne")
+                print("retour d'un villageois")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'

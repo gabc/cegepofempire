@@ -71,7 +71,9 @@ class Map:
 
     countRessources(): Pour avoir les statistiques de la map
 
-    placeBuilding(posX, posY, buildingType): place un building a la position x,y, si la case n'est pas occupee. retourne true si la case ne l'etait pas, false si oui."""
+    placeBuilding(posX, posY, buildingType): place un building a la position x,y, si la case n'est pas occupee. retourne true si la case ne l'etait pas, false si oui.
+
+    clearSpace(self, building, listeRessources): enleve les ressource pres du building passe en parametre"""
         
     def __init__(self, largeur, hauteur):
         self.ressources=[]
@@ -195,28 +197,25 @@ class Map:
                 joueur+=1
 
         #vide les cases trop pres des spawns
-
         listeRes=self.getListeRessources()
 
-        #Doesnt work + mettre dans une methode pls --> clearSpawns()
-        """for j in listeNomsJoueurs:
-            x=listeJoueurs[j].buildings[0].posX
-            y=listeJoueurs[j].buildings[0].posY
+        for j in listeNomsJoueurs:
+            self.clearSpace(listeJoueurs[j].buildings[0],listeRes)
 
-            for r in listeRes:
-                #si pos x de la ressource est dans le range de 1 case du town center
-                if r.posX >= x - 1 and r.posX <= x + 1:
-                    #si pos y de la ressource est dans le range de 1 case du town center
-                    if r.posY >= y - 1 and r.posY <= y + 1:
-                        r.ressource=EMPTY_CHAR
-                        r.nbRessource=0
-                        r.passable=True
-                        self.mat[r.posY][r.posX]=r
-                        print(r.posX, r.posY)
-                        listeRes.remove(r)"""
-    
-    def clearSpawns(self):
-        pass
+    def clearSpace(self, building, listeRessources):
+        x=building.posX
+        y=building.posY
+
+        for r in listeRessources:
+            #si pos x de la ressource est dans le range de 1 case du town center
+            if r.posX >= x - 1 and r.posX <= x + 1:
+                #si pos y de la ressource est dans le range de 1 case du town center
+                if r.posY >= y - 1 and r.posY <= y + 1:
+                    r.ressource=EMPTY_CHAR
+                    r.nbRessource=0
+                    r.passable=True
+                    self.mat[r.posX][r.posY]=r
+                    print("delete case")
        
     def placeBuilding(self, posX, posY, buildingType):
         if self.mat[posX][posY].isPassable():
