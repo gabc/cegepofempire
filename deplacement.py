@@ -28,7 +28,7 @@ class Deplacement:
         self.maxnode = 400
 
     def assurePassable(self, depart, arrive):
-        while not self.map[arrive.y][arrive.x].isPassable():
+        while not self.map[arrive.x][arrive.y].isPassable():
             if arrive.x > depart.x:
                 arrive.x -= 1
             elif arrive.x < depart.x:
