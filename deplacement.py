@@ -96,7 +96,7 @@ class Deplacement:
             for j in (0, 1, -1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[y+j][x+i].isPassable() and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
+                    if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
                         node = Noeud(x+i, y+j, noeud)
                         rep.append(node)
                         if i == 0 or j == 0:
