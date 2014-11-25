@@ -50,6 +50,7 @@ class Joueur():
                 self.Ere4()
             print(" changement d'ere reussi ")
         print("age courante est " + str(self.ageCourrante))
+        self.changerErePossible = False
 
 
     def changerEreVerif(self):
@@ -677,7 +678,7 @@ class Modele(object):
     def creerUnite(self, args):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
         self.joueurs[args[0]].maxUnitsCourrant+=1
-        
+
 
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])

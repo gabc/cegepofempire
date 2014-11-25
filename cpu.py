@@ -62,12 +62,15 @@ class Cpu(Joueur):
         self.m = Map(40,30)
         self.m.placeRessourcesOverworld()
         self.m.placeRessourcesUnderworld()
+        self.verifVillageoisNonOccuper = False
 
-    def chercherVilagoisNonOccuper(self):
+    def chercherVillageoisNonOccuper(self):
+        self.verifVillageoisNonOccuper = False
         for i in self.units:
             if i.type == "Villageois":
-                if i.occuper == False:
+                if i.isMoving == False:
                     i.estSelectionner = True
+                    self.verifVillageoisNonOccuper = True
                     # ou peut importe la function de selection
 
     def calculMaxUnit(self):
@@ -81,7 +84,7 @@ class Cpu(Joueur):
     def printBatimentsPositions(self):
         print("Position de tout les buildings :")
         for i in self.buildings:
-            print( str(i.type) + " - : ( " + str(i.posX) + ", " + str(i.posY) + " )")
+            print(" " + str(i.type) + " - : ( " + str(i.posX) + ", " + str(i.posY) + " )")
 
     def balancementCaptif(self):
         # will be in a loop
@@ -93,27 +96,33 @@ class Cpu(Joueur):
         if self.nbVillageois < self.maxUnitsCourrant:
             if self.nbVillageois <= (10*self.nbTypeDeRessources) and self.mode != self.offensive:
                 #changer pour que le towncenter fait le villageois
-                villageois = Villageois(self.ID,0,0,0)
+                villageois = Villageois(self.ID,0,0,self.parent)
                 self.units.append(villageois)
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
                 #changer pour que le TownCenter fait le villageois
-                villageois = Villageois(self.ID,0,0)
+                villageois = Villageois(self.ID,0,0,self.parent)
                 self.units.append(villageois)
             else:
                 #changer cette ligne pour que la barrack fait le guerrier
-                guerrier = Guerrier(self.ID,0,0)
+                guerrier = Guerrier(self.ID,0,0,self.parent)
                 self.units.append(guerrier)
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
             #print("Cherche Villageois non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
             self.verificationPosition(self.m.mat)
-            maison = Maison(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
-            #changer pour que le villageois non occuper construit la maison a cette position
-            self.buildings.append(maison)
-            self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
+            self.chercherVillageoisNonOccuper()
+            if self.verifVillageoisNonOccuper == True:
+                maison = Maison(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
+                #changer pour que le villageois non occuper construit la maison a cette position
+                self.buildings.append(maison)
+                self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
+            else:
+                if len(self.units) < self.maxUnitsCourrant:
+                    villageois = Villageois(self.ID,0,0,self.parent)
+                self.units.append(villageois)
         for i in range(self.nbTypeDeRessources):
             if self.villageoisParRessources[i] < self.nbCollecteurParRessourcesAuBesoin[i] :
                 self.villageoisParRessources[i] += 1
-        if self.buildings.count %5 == 0:
+        if len(self.buildings) %5 == 0:
             self.verificationPosition(self.m.mat)
             tower = Tower(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
             self.buildings.append(tower)
@@ -131,25 +140,21 @@ class Cpu(Joueur):
         while self.iteratorNumber < 10 and self.positionVerifBool == False:
             for i in self.buildings:
                 if matrice[i.posY + self.iteratorNumber][i.posX].isPassable() == True :
-                    print("fait le batiment en haut de : " + i.type)
                     self.cherchePosY = i.posY + self.iteratorNumber
                     self.cherchePosX = i.posX
                     self.positionVerifBool = True
 
                 elif matrice[i.posY - self.iteratorNumber][i.posX].isPassable() == True :
-                    print("fait le batiment en bas de : " + i.type)
                     self.cherchePosY = i.posY - self.iteratorNumber
                     self.cherchePosX = i.posX
                     self.positionVerifBool = True
 
                 elif matrice[i.posY][i.posX + self.iteratorNumber].isPassable() == True :
-                    print("fait le batiment a droite de : " + i.type)
                     self.cherchePosY = i.posY
                     self.cherchePosX = i.posX + self.iteratorNumber
                     self.positionVerifBool = True
 
                 elif matrice[i.posY][i.posX - self.iteratorNumber].isPassable() == True :
-                    print("fait le batiment a gauche de : " + i.type)
                     self.cherchePosY = i.posY
                     self.cherchePosX = i.posX - self.iteratorNumber
                     self.positionVerifBool = True
@@ -177,17 +182,17 @@ class Cpu(Joueur):
         self.ageCourrante = self.ageContemporain
         self.nbTypeDeRessources = 4
         self.nbCollecteurParRessourcesAuBesoin[3] = 5
-        for i in range(self.nbTypeDeRessources):
+        for i in range(self.nbTypeDeRessources -1):
             self.ressources[i] -= 10
     def Ere3(self):
         self.ageCourrante = self.ageModerne
         self.nbTypeDeRessources = 5
         self.nbCollecteurParRessourcesAuBesoin[4] = 5
-        for i in range(self.nbTypeDeRessources):
+        for i in range(self.nbTypeDeRessources - 1):
             self.ressources[i] -= 10
     def Ere4(self):
         self.ageCourrante = self.ageFutur
-        for i in range(self.nbTypeDeRessources):
+        for i in range(self.nbTypeDeRessources - 1):
             self.ressources[i] -= 10
 
 
@@ -204,7 +209,17 @@ class Cpu(Joueur):
             self.valeurRandom = random.randrange(2,6)*200
         #print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
 
-
+    def printUnitsQte(self):
+        NbVillageois = 0
+        NbGuerrier = 0
+        for i in self.units:
+            if i.type == "Guerrier":
+                NbGuerrier += 1
+            if i.type == "Villageois":
+                NbVillageois += 1
+        print("Units:")
+        print(" Guerrier: " + str(NbGuerrier))
+        print(" Villageois: " + str(NbVillageois))
 
 class Controleur():
     def __init__(self):
@@ -218,11 +233,10 @@ if __name__ == '__main__':
     while (count < 50000):
         c.cpu.Decision()
         count += 1
-    c.cpu.calculVillageois()
-    print("le nombre de villageois est : " + str(c.cpu.nbVillageois))
     c.cpu.calculMaxUnit()
     print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
     c.cpu.printBatimentsPositions()
+    c.cpu.printUnitsQte()
     print("fin",c.cpu)
 
 
