@@ -645,18 +645,17 @@ class Vue(object):
 
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
-        self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             buildingMorts=[]
             for u in j.units: # Retire les units
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
             
             for u in j.buildings: # Retire les batiments... ish.
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     buildingMorts.append(u)
             for i in buildingMorts:
                 j.buildings.remove(i)   
