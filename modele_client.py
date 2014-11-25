@@ -267,7 +267,7 @@ class Guerrier(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 10 #melee
+        self.range = 1 #melee
         self.atkSpeed = 50 #en millisecondes
         self.cooldown= 20
         self.maxCooldown = 20
@@ -279,6 +279,7 @@ class Guerrier(Unit):
         self.actionEnCours = None
         self.targetedBy = None
         self.unitCible = None
+        self.unitCibleType = None
 
 
     def faitAction(self):
@@ -301,7 +302,7 @@ class Guerrier(Unit):
             self.cooldown += 1
         if self.hpActuel  ==0:
             del self
-            print ("je  suis mort")
+
 
     def scanEnemy(self):
             if self.chemin:
@@ -313,11 +314,11 @@ class Guerrier(Unit):
                 for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                   for n in i.units:
                         if n.ownerID is not self.ownerID:
-                            if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
+                            if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
                                 self.unitCible = n
                                 self.actionEnCours = "marcheVersEnemy"
-                                #self.chemin[0].x = n.posX a modifier asap 18/11/2014
-                                #self.chemin[0].y = n.posY
+                                self.unitCibleType = "Units"
                                 break
 
     def attaqueCible(self):
@@ -560,8 +561,9 @@ class Tower(Building):
         self.largeur = 20
         self.delaiDeConstruction = -1
         self.champDeVision = -1
-        self.champDaggro = 30
+        self.champDaggro = 5
         self.target=None
+        self.typeTarget =None
         self.targetedBy = None
         self.actionEnCours = None
         self.degat = 50
@@ -571,10 +573,17 @@ class Tower(Building):
 
     def attaqueCible(self):
         if self.target.isAlive():
-            if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
-                if self.cooldown == 30:
-                    self.target.recevoirDegats(self.degat)
-                    self.cooldown = 0
+            if self.typeTarget == "Building":
+                if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        self.cooldown = 0
+            elif self.typeTarget == "Unit":
+                caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
+                if Helper.calcDistance(caseNx, caseNy, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        self.cooldown = 0
 
 
 
@@ -595,19 +604,19 @@ class Tower(Building):
             for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                 for n in i.units:
                     if n.ownerID is not self.ownerID:
-                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        caseNx, caseNy = trouveCase(n.posX, n.posY)
+                        if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
                             self.target = n
+                            self.typeTarget = "Unit"
                             self.actionEnCours = "attaqueCible"
-                            self.attaqueCible(n)
                             break
             for i in self.parent.parent.modele.joueurs.values():
                 for n in i.buildings:
                     if n.ownerID is not self.ownerID:
                         if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
-
                             self.target = n
+                            self.typeTarget = "Building"
                             self.actionEnCours = "attaqueCible"
-                            self.attaqueCible()
                             break
 
 
@@ -616,6 +625,7 @@ class Tower(Building):
             self.actionEnCours ="scanEnemy"
         if self.actionEnCours == "scanEnemy":
             self.scanEnemy()
+            print(self.actionEnCours)
         if self.actionEnCours == "attaqueCible":
             self.attaqueCible()
 
@@ -623,7 +633,6 @@ class Tower(Building):
             self.cooldown += 1
         if self.hpActuel  ==0:
             del self
-            print ("je  suis mort")
 
 
 
