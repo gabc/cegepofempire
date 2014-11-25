@@ -407,7 +407,7 @@ class Vue(object):
         # Pour le cadre de population
     
     def changeLabelPopulation(self, n):  # population et population max
-        labelPopulationMax = Label(self.cadrePopulation, text=str(n) + "/200")
+        labelPopulationMax = Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
         labelPopulationMax.grid(column=1, row=0)
         
         # Pour le cadre Diplomatie/echange
@@ -599,7 +599,7 @@ class Vue(object):
     def initLabelBas(self):
         # Pour le cadre Mini-Map
         
-        labelMiniMap = Label(self.cadreMiniMap, text="Mini-Map")
+        labelMiniMap = Label(self.cadreMiniMap)
         labelMiniMap.grid(column=0, row=0)
     
     
@@ -623,6 +623,7 @@ class Vue(object):
         
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
+        self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             for u in j.units:##continue here
@@ -680,18 +681,20 @@ class Vue(object):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.l):
             for j in range(self.parent.h):
-                if self.parent.m.mat[i][j].ressource == FOOD_CHAR:  # nourriture
+                if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:  # bois
+                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:  # pierre
+                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+                #elif self.parent.m.mat[i][j].ressource == EMPTY_CHAR:
+                 #   self.canevasMilieu(i* self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, bg="#006633", anchor='nw', tags='img')
 
         
     def imgLabelPopulation(self):

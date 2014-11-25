@@ -198,6 +198,7 @@ class Villageois(Unit):
         if self.status=="return":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
             self.status="waiting"
+            self.collectionActuel=0
 
     def getTownCenterCoords(self):
         for b in self.parent.buildings:
