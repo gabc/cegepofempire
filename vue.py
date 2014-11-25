@@ -213,7 +213,6 @@ class Vue(object):
         self.placeRessource()
         self.placeBuilding()
 
-
     def bougeVersGauche(self, event):
         self.canevasMilieu.xview(SCROLL, -1, "units")
 
@@ -280,20 +279,6 @@ class Vue(object):
         xcan = self.canx(event.x)
         ycan = self.cany(event.y)
         if self.actionSelectionnee == 1:
-<<<<<<< HEAD
-            self.canevasMilieu.create_rectangle(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
-        elif self.actionSelectionnee == 2:
-            self.canevasMilieu.create_image(event.x, event.y, image=self.photo_tower_build, anchor='nw', tags="test")
-        elif self.actionSelectionnee == 3:
-            self.canevasMilieu.create_image(event.x, event.y, image=self.photo_barrack_build, anchor='nw', tags="test")
-        elif self.actionSelectionnee == 4:
-            self.canevasMilieu.create_oval(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
-
-    def spawnUnit(self, event):
-        print("creating vil with owner id: ", self.parent.myPlayer.ID)
-        self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
-
-=======
             self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2:
             self.canevasMilieu.create_image(xcan, ycan, image=self.photo_tower_build, anchor='nw', tags="test")
@@ -306,7 +291,6 @@ class Vue(object):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
 
->>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
     def initCadre(self):
 
         # Haut
@@ -622,13 +606,7 @@ class Vue(object):
     # #
     def initLabelBas(self):
         # Pour le cadre Mini-Map
-<<<<<<< HEAD
-
-        labelMiniMap = Label(self.cadreMiniMap, text="Mini-Map")
-=======
-
         labelMiniMap = Label(self.cadreMiniMap)
->>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
         labelMiniMap.grid(column=0, row=0)
 
 
@@ -653,11 +631,19 @@ class Vue(object):
         self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
-            for u in j.units:##continue here
+            buildingMorts=[]
+            for u in j.units: # Retire les units
                 if u.isAlive == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
+            
+            for u in j.buildings: # Retire les batiments... ish.
+                if u.isAlive == False:
+                    buildingMorts.append(u)
+            for i in buildingMorts:
+                j.buildings.remove(i)   
+            
             for u in j.units:
                 if u.type == "Guerrier":
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
@@ -669,8 +655,6 @@ class Vue(object):
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
-
-
             for i in j.buildings:
                 caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
                 caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
@@ -719,12 +703,7 @@ class Vue(object):
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
-<<<<<<< HEAD
 
-
-=======
-
->>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
         labelPopulation.grid(column=0, row=0)
