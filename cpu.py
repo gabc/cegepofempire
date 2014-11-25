@@ -82,10 +82,19 @@ class Cpu(Joueur):
                 self.maxUnitsCourrant += 10
 
     def printBatimentsPositions(self):
+        NbMaison = 0
+        NbTower = 0
+        NbBarrack = 0
         print("Position de tout les buildings :")
         for i in self.buildings:
             print(" " + str(i.type) + " - : ( " + str(i.posX) + ", " + str(i.posY) + " )")
-
+            if i.type == "Maison":
+                 NbMaison += 1
+            if i.type == "Tower":
+                NbTower += 1
+        print("Batiments:")
+        print(" Tower: " + str(NbTower))
+        print(" Maison: " + str(NbMaison))
     def balancementCaptif(self):
         # will be in a loop
         #print("Balancement:")
@@ -102,7 +111,7 @@ class Cpu(Joueur):
                 #changer pour que le TownCenter fait le villageois
                 villageois = Villageois(self.ID,0,0,self.parent)
                 self.units.append(villageois)
-            else:
+            elif len(self.units) < self.maxUnits:
                 #changer cette ligne pour que la barrack fait le guerrier
                 guerrier = Guerrier(self.ID,0,0,self.parent)
                 self.units.append(guerrier)
@@ -206,12 +215,14 @@ class Cpu(Joueur):
             if self.ageCourrante != self.ageFutur:
                 self.changerEre()
                 print("food" + str(self.ressources[0]) + "wood" + str(self.ressources[1]) + "rock" + str(self.ressources[2]) + "gold" + str(self.ressources[3]) + "energy" + str(self.ressources[4]))
-            self.valeurRandom = random.randrange(2,6)*200
+            self.valeurRandom = random.randrange(2,6)*20
         #print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
 
     def printUnitsQte(self):
         NbVillageois = 0
         NbGuerrier = 0
+        self.calculMaxUnit()
+        print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
         for i in self.units:
             if i.type == "Guerrier":
                 NbGuerrier += 1
@@ -230,11 +241,9 @@ class Controleur():
 if __name__ == '__main__':
     c = Controleur()
     count = 0
-    while (count < 50000):
+    while (count < 7000):
         c.cpu.Decision()
         count += 1
-    c.cpu.calculMaxUnit()
-    print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
     c.cpu.printBatimentsPositions()
     c.cpu.printUnitsQte()
     print("fin",c.cpu)
