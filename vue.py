@@ -168,12 +168,12 @@ class Vue(object):
         self.initCadre()
         # Variable bidon
         n = "100"
-        self.changeLabelBois(n)
-        self.changeLabelEnergie(n)
-        self.changeLabelNourriture(n)
-        self.changeLabelPierre(n)
-        self.changeLabelOr(n)
-        self.changeLabelPopulation(n)
+        self.changeLabelBois(self.parent.myPlayer.ressources[1])
+        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
+        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
+        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
+        self.changeLabelOr(self.parent.myPlayer.ressources[3])
+        self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -384,29 +384,29 @@ class Vue(object):
     ####Pour les images    
         
     def changeLabelNourriture(self, n):
-        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + n, bg="red", relief=SOLID, width=15)
+        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + str(n), bg="red", relief=SOLID, width=15)
         labelNourriture.grid(column=0, row=0)  # (column=1,row=0)
         
     def changeLabelBois(self, n):
-        labelBois = Label(self.cadreRessource, text="Bois: " + n, bg="brown", relief=SOLID, width=15)
+        labelBois = Label(self.cadreRessource, text="Bois: " + str(n), bg="brown", relief=SOLID, width=15)
         labelBois.grid(column=1, row=0)  # (column=3,row=0)
         
     def changeLabelPierre(self, n):
-        labelPierre = Label(self.cadreRessource, text="Pierre: " + n, bg="gray", relief=SOLID, width=15)
+        labelPierre = Label(self.cadreRessource, text="Pierre: " + str(n), bg="gray", relief=SOLID, width=15)
         labelPierre.grid(column=0, row=1)  # (column=1,row=1)
         
     def changeLabelOr(self, n):
-        labelOr = Label(self.cadreRessource, text="Or: " + n, bg="gold", relief=SOLID, width=15)
+        labelOr = Label(self.cadreRessource, text="Or: " + str(n), bg="gold", relief=SOLID, width=15)
         labelOr.grid(column=1, row=1)  # (column=3,row=1)
         
     def changeLabelEnergie(self, n):
-        labelEnergie = Label(self.cadreRessource, text="Energie: " + n, bg="green2", relief=SOLID, width=15)
+        labelEnergie = Label(self.cadreRessource, text="Energie: " + str(n), bg="green2", relief=SOLID, width=15)
         labelEnergie.grid(column=0, row=2, columnspan=2)  # (column=1,row=2,columnspan=2)
         
         # Pour le cadre de population
     
     def changeLabelPopulation(self, n):  # population et population max
-        labelPopulationMax = Label(self.cadrePopulation, text=n + "/200")
+        labelPopulationMax = Label(self.cadrePopulation, text=str(n) + "/200")
         labelPopulationMax.grid(column=1, row=0)
         
         # Pour le cadre Diplomatie/echange
