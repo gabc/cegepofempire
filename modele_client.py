@@ -586,13 +586,9 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-<<<<<<< HEAD
+
             for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                 for n in i.units:
-=======
-            for i in self.parent.parent.modele.joueurs.values().units:
-                for n in i:
->>>>>>> b29cad6f5984185d473e640cb535dee9269b32a2
                     if n.ownerID is not self.ownerID:
                         if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
