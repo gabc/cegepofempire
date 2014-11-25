@@ -190,7 +190,9 @@ class Vue(object):
         # Milieu
         self.hauteur = 600
         self.largeur = 800
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.parent.l*20, self.parent.h*20),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.rHauteur = self.parent.h*20
+        self.rLargeur = self.parent.l*20
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.rHauteur, self.rLargeur),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -213,6 +215,7 @@ class Vue(object):
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
+        #self.centrer()
 
     def rafraichir(self):
         """ Rafraichi la vue au complet """
@@ -447,7 +450,30 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
+    
+    def centrerTownCenter(self):#pour appeler la fonction centrer
+        self.centrer()
 
+    def centrer(self):#Pour centrer la fenetre sur le town center, ne fonctionne pas
+        for j in self.parent.modele.joueurs.values():
+            if j.name == self.parent.nom:
+                print("mon nom: "+ j.name)
+            for i in j.buildings:
+                if i.type == "TownCenter":
+                    x=i.posX
+                    y=i.posY
+                    sx = float(self.rLargeur)
+                    ecranx=float(self.canevasMilieu.winfo_width())/2.0
+                    positionX = (x-ecranx)/sx
+                    self.canevasMilieu.xview("moveto",positionX)
+                    
+                    sy = float(self.rHauteur)
+                    ecrany=float(self.canevasMilieu.winfo_height())/2.0
+                    positionY = (y-ecrany)/sy
+                    self.canevasMilieu.yview("moveto",positionY)
+                            
+        #def centrerPlanete(self):
+        #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
 
     def diplomatieFenetre(self, event):
         self.toplevel = Toplevel()
@@ -649,13 +675,13 @@ class Vue(object):
             uniteMorts=[]
             buildingMorts=[]
             for u in j.units: # Retire les units
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
 
             for u in j.buildings: # Retire les batiments... ish.
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     buildingMorts.append(u)
             for i in buildingMorts:
                 j.buildings.remove(i)

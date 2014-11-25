@@ -11,7 +11,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
-        self.maxUnitsCourrant = 10
+        self.maxUnitsCourrant = 0
         self.ressources = [10,20,30,40,50]
         self.playerColor = None
         # Index des ressources:
@@ -50,6 +50,7 @@ class Joueur():
                 self.Ere4()
             print(" changement d'ere reussi ")
         print("age courante est " + str(self.ageCourrante))
+        self.changerErePossible = False
 
 
     def changerEreVerif(self):
