@@ -1,7 +1,8 @@
-import modele_client
+
 import client
-from Map import *
 import random
+from Map import *
+from modele_client import *
 """
 A LIRE:
     TEST POSSIBLE:
@@ -17,9 +18,9 @@ pour une plus ample comprehension: verifier ce que le controleur fait.
 ctrl-f : balancementCaptif
 ctrl-f : Decision
 """
-class Cpu(modele_client.Joueur): ###, self.parent):
+class Cpu(Joueur):
     def __init__(self, ID, posX, posY,parent):
-        modele_client.Joueur.__init__(self, ID, posX, posY)
+        Joueur.__init__(self, ID, posX, posY)
         self.ressources = [0,0,0,0,0]
         self.villageoisParRessources = [0,0,0,0,0]
         self.nbCollecteurParRessourcesAuBesoin = [5,5,5,0,0]
@@ -92,16 +93,16 @@ class Cpu(modele_client.Joueur): ###, self.parent):
         if self.nbVillageois < self.maxUnitsCourrant:
             if self.nbVillageois <= (10*self.nbTypeDeRessources) and self.mode != self.offensive:
                 #print("cree 1 Villageois!")
-                u1 = modele_client.Villageois(self.ID,0,0,0)
+                u1 = Villageois(self.ID,0,0,0)
                 self.units.append(u1)
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
                 #print("cree 1 Villageois!") #// ( select town center / build villager unit /  add unit to queu)
-                u1 = modele_client.Villageois(self.ID,0,0)
+                u1 = Villageois(self.ID,0,0)
                 self.units.append(u1)
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
             #print("Cherche Villageois non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
             self.verificationPosition(self.m.mat)
-            m1 = modele_client.Maison(self.ID, self.cherchePosX, self.cherchePosY)
+            m1 = Maison(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
             #print("maison construite a la position : ( " + str(m1.posX) + ", " + str(m1.posY) + " )")
             self.buildings.append(m1)
             self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
@@ -211,7 +212,7 @@ class Cpu(modele_client.Joueur): ###, self.parent):
 class Controleur():
     def __init__(self):
         self.cpu = Cpu(0, 15, 15, 0)
-        self.townCenter = modele_client.TownCenter(self.cpu.ID,15,15)
+        self.townCenter = TownCenter(self.cpu.ID,15,15)
         self.cpu.m.mat[15][15].passable = False
         self.cpu.buildings.append(self.townCenter)
 if __name__ == '__main__':

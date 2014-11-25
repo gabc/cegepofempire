@@ -1,9 +1,8 @@
-import deplacement
 import math
 import timeit
 from utils import *
 from helper import *
-
+from deplacement import *
 class Joueur():
     def __init__(self, parent, ID, name):
         self.parent = parent
@@ -482,8 +481,8 @@ class TownCenter(Building):
             return False
 
 class Maison(Building):
-    def __init__(self, ownerID, posX, posY):
-        Building.__init__(self, ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID,posX,posY, parent)
         self.type="Maison"
 
         self.hpMax = 700

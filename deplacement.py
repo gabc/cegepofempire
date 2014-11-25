@@ -54,10 +54,6 @@ class Deplacement:
     def astar(self, depart, arrivee):
         open = [depart]
         closed = []
-<<<<<<< HEAD
-        temps = time.time()
-=======
->>>>>>> 7f338f8f515cdd2e8d0b1f68ebf1ef1a468e95b7
 
         while open:
             current = open[0]
@@ -126,7 +122,7 @@ class Deplacement:
         return acc
 
     def path(self, n):
-        """Retourne le chemin Ã  partir des parents de n"""
+        """Retourne le chemin ÃƒÂ  partir des parents de n"""
         path = [n]              # L'arrivee est dans la liste du path
         while n.parent is not None:
             path = [n.parent] + path
