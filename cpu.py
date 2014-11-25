@@ -92,25 +92,31 @@ class Cpu(Joueur):
         self.incrementationRessourcesTest()
         if self.nbVillageois < self.maxUnitsCourrant:
             if self.nbVillageois <= (10*self.nbTypeDeRessources) and self.mode != self.offensive:
-                #print("cree 1 Villageois!")
-                u1 = Villageois(self.ID,0,0,0)
-                self.units.append(u1)
+                #changer pour que le towncenter fait le villageois
+                villageois = Villageois(self.ID,0,0,0)
+                self.units.append(villageois)
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
-                #print("cree 1 Villageois!") #// ( select town center / build villager unit /  add unit to queu)
-                u1 = Villageois(self.ID,0,0)
-                self.units.append(u1)
+                #changer pour que le TownCenter fait le villageois
+                villageois = Villageois(self.ID,0,0)
+                self.units.append(villageois)
+            else:
+                #changer cette ligne pour que la barrack fait le guerrier
+                guerrier = Guerrier(self.ID,0,0)
+                self.units.append(guerrier)
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
             #print("Cherche Villageois non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
             self.verificationPosition(self.m.mat)
-            m1 = Maison(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
-            #print("maison construite a la position : ( " + str(m1.posX) + ", " + str(m1.posY) + " )")
-            self.buildings.append(m1)
+            maison = Maison(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
+            #changer pour que le villageois non occuper construit la maison a cette position
+            self.buildings.append(maison)
             self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
         for i in range(self.nbTypeDeRessources):
             if self.villageoisParRessources[i] < self.nbCollecteurParRessourcesAuBesoin[i] :
-                #print("chercher un villageois non occuper")
-                #print("Villageoi-> cherche cette ressource") #self.selectedVillager.Find( RessourceTypesNeeded(i))
                 self.villageoisParRessources[i] += 1
+        if self.buildings.count %5 == 0:
+            self.verificationPosition(self.m.mat)
+            tower = Tower(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
+            self.buildings.append(tower)
 
     def calculVillageois(self):
         self.nbVillageois = 0
@@ -124,9 +130,8 @@ class Cpu(Joueur):
         self.positionVerifBool = False
         while self.iteratorNumber < 10 and self.positionVerifBool == False:
             for i in self.buildings:
-                #print("building",i.posX,i.posY, matrice[i.posY + self.iteratorNumber][i.posX].isPassable)
                 if matrice[i.posY + self.iteratorNumber][i.posX].isPassable() == True :
-                    #input("fait le batiment en haut de : " + i.type)
+                    print("fait le batiment en haut de : " + i.type)
                     self.cherchePosY = i.posY + self.iteratorNumber
                     self.cherchePosX = i.posX
                     self.positionVerifBool = True
@@ -150,7 +155,6 @@ class Cpu(Joueur):
                     self.positionVerifBool = True
 
             if self.positionVerifBool == True:
-
                 break
 
 
@@ -162,16 +166,11 @@ class Cpu(Joueur):
             if self.ressources[i] < 100 :
                 self.ressources[i] += 1
 
-    def changerAllies(self):
-        pass
-# le cpu ne va que s'allier a d'autre cpu pour detruire un autre joueur
-# ou meme d'autre cpu, ceux ci ne vont se separer qu'en difficulter
-# sinon , ils travail en equipe et s'entraide en defensive/offensive
 
     def calculDistanceRessource(self):
         pass
-    #si la ressource est bien lointaine, faire une base
-    #de recuperation de ressource plus pres de celles-ci.
+    # cherche la ressource necessaire la plus proche dans la map
+    # et envoie son villageois en ramasser avec sa fonction
 
 
     def Ere2(self):
@@ -193,8 +192,6 @@ class Cpu(Joueur):
 
 
     def Decision(self):
-
-        #print("in decision")
         if self.valeurRandom > 0:
             self.valeurRandom -= 1
         else:
@@ -204,7 +201,7 @@ class Cpu(Joueur):
             if self.ageCourrante != self.ageFutur:
                 self.changerEre()
                 print("food" + str(self.ressources[0]) + "wood" + str(self.ressources[1]) + "rock" + str(self.ressources[2]) + "gold" + str(self.ressources[3]) + "energy" + str(self.ressources[4]))
-            self.valeurRandom = random.randrange(2,6)*20
+            self.valeurRandom = random.randrange(2,6)*200
         #print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
 
 
@@ -218,7 +215,7 @@ class Controleur():
 if __name__ == '__main__':
     c = Controleur()
     count = 0
-    while (count < 20000):
+    while (count < 50000):
         c.cpu.Decision()
         count += 1
     c.cpu.calculVillageois()
