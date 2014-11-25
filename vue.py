@@ -190,7 +190,7 @@ class Vue(object):
         # Milieu
         self.hauteur = 600
         self.largeur = 800
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,1000,1000),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.parent.l*20, self.parent.h*20),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -624,11 +624,9 @@ class Vue(object):
         if self.actionSelectionnee > 0:
             self.actionSelectionnee = 0
             return
-        print("setarr", event.x, event.x / self.longeurLigne)##
         if len(self.parent.myPlayer.objectsSelectionne) > 0:
             u = self.parent.myPlayer.objectsSelectionne[0]
             self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(self.canx(event.x) / self.longeurLigne), int(self.cany(event.y) / self.longeurLigne))]])
-            #self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
         
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
@@ -680,7 +678,6 @@ class Vue(object):
             self.canevasMilieu.create_line(0, j * self.longeurLigne, self.parent.l * self.longeurLigne, j * self.longeurLigne, fill="white")
     
     def placeBuilding(self):
-        print("placeBuilding")
         for j in self.parent.modele.joueurs.values():
             for i in j.buildings:
                 print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
@@ -702,9 +699,6 @@ class Vue(object):
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
-                #elif self.parent.m.mat[i][j].ressource == EMPTY_CHAR:
-                 #   self.canevasMilieu(i* self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, bg="#006633", anchor='nw', tags='img')
-
         
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
