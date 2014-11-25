@@ -632,11 +632,18 @@ class Vue(object):
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             buildingMorts=[]
-            for u in j.units:##continue here
+            for u in j.units: # Retire les units
                 if u.isAlive == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
+            
+            for u in j.buildings: # Retire les batiments... ish.
+                if u.isAlive == False:
+                    buildingMorts.append(u)
+            for i in buildingMorts:
+                j.buildings.remove(i)   
+            
             for u in j.units:
                 if u.type == "Guerrier":
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
