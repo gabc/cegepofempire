@@ -208,11 +208,27 @@ class Vue(object):
 
         self.cadrePartie.pack()
         # self.cadreMenu.pack_forget()
-        self.rafraichirCanevas()
+        #self.rafraichirCanevas()
+        self.rafraichir()
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
 
+    def rafraichir(self):
+        """ Rafraichi la vue au complet """
+        self.rafraichirInfo()
+        self.rafraichirCanevas()
+        
+    def rafraichirInfo(self):
+        """ Rafraichi les informations (labels, ressources, populations)"""
+        self.changeLabelBois(self.parent.myPlayer.ressources[1])
+        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
+        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
+        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
+        self.changeLabelOr(self.parent.myPlayer.ressources[3])
+        self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
+        
+        
     def bougeVersGauche(self, event):
         self.canevasMilieu.xview(SCROLL, -1, "units")
 
@@ -290,6 +306,7 @@ class Vue(object):
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
+        print("units "+ str(self.parent.myPlayer.maxUnitsCourrant))
 
     def initCadre(self):
 
@@ -628,18 +645,17 @@ class Vue(object):
 
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
-        self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             buildingMorts=[]
             for u in j.units: # Retire les units
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
             
             for u in j.buildings: # Retire les batiments... ish.
-                if u.isAlive == False:
+                if u.isAlive() == False:
                     buildingMorts.append(u)
             for i in buildingMorts:
                 j.buildings.remove(i)   

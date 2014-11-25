@@ -323,7 +323,7 @@ class Guerrier(Unit):
                                 break
 
     def attaqueCible(self):
-        if self.unitCible.isAlive():
+        if self.unitCible.isAlive() == True:
             if Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.range:
                 if self.cooldown == self.maxCooldown:
                     self.unitCible.recevoirDegats(self.degat)
@@ -573,7 +573,7 @@ class Tower(Building):
 
 
     def attaqueCible(self):
-        if self.target.isAlive():
+        if self.target.isAlive() == True:
             if self.typeTarget == "Building":
                 if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
                     if self.cooldown == self.cooldownMax:
@@ -584,6 +584,8 @@ class Tower(Building):
                 if Helper.calcDistance(caseNx, caseNy, self.posX, self.posY) <= self.champDaggro:
                     if self.cooldown == self.cooldownMax:
                         self.target.recevoirDegats(self.degat)
+                        print("Hp de la cible: ",self.target.hpActuel)
+                        print("la cible est morte ? : ", self.target.isAlive())
                         self.cooldown = 0
 
 
@@ -604,7 +606,7 @@ class Tower(Building):
         else:
             for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                 for n in i.units:
-                    if n.ownerID is not self.ownerID:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
                         caseNx, caseNy = trouveCase(n.posX, n.posY)
                         if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
                             self.target = n
@@ -613,7 +615,7 @@ class Tower(Building):
                             break
             for i in self.parent.parent.modele.joueurs.values():
                 for n in i.buildings:
-                    if n.ownerID is not self.ownerID:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
                         if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
                             self.typeTarget = "Building"
