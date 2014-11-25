@@ -318,6 +318,7 @@ class Guerrier(Unit):
                                 self.actionEnCours = "marcheVersEnemy"
                                 self.unitCibleType = "Unit"
                                 self.unitCiblePosCase = (caseNx, caseNy)
+                                self.unitCible.targetedBy = self
                                 break
 
     def attaqueCible(self):
