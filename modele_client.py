@@ -13,11 +13,11 @@ class Joueur():
         self.ere = 1
         self.maxUnits = 200
         self.maxUnitsCourrant = 10
-        self.ressources = [0,0,0,0,0]
+        self.ressources = [10,20,30,40,50]
         self.playerColor = None
         # Index des ressources:
         # Nourriture : 0
-        # BOis: 1
+        # Bois: 1
         # Pierre : 2
         # Or : 3
         # Energie : 4
