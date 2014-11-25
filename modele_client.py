@@ -2,6 +2,7 @@ import deplacement
 import math
 import timeit
 from utils import *
+from helper import *
 
 class Joueur():
     def __init__(self, parent, ID, name):
@@ -85,6 +86,14 @@ class Joueur():
     def creerUnit(self, type, x, y):
         if type == "villageois":
             self.units.append(Villageois(self.ID, x, y,self))
+        elif type == "guerrier":
+            self.units.append(Guerrier(self.ID, x, y,self))
+
+    def creerJoueurBuilding(self, type, x, y):
+        if type == "tower":
+            self.buildings.append(Tower(self.ID, x, y,self))
+        if type == "barrack":
+            self.buildings.append(Barrack(self.ID, x, y,self))
 
     def changerAllies():
         pass
@@ -144,8 +153,9 @@ class Unit():
 
 
     def recevoirDegats(self, degatsRecus):
-        if degatsRecus > self.hpActuel:
+        if degatsRecus >= self.hpActuel:
             self.hpActuel = 0
+            print("Unite mort")
         else :
             self.hpActuel -= degatsRecus
 
@@ -153,12 +163,12 @@ class Unit():
         ax, ay = trouvePixel(arrive.x, arrive.y)
         if self.posX > ax:
             self.posX -= self.vitesseX
-        elif self.posX < ax:
+        if self.posX < ax:
             self.posX += self.vitesseX
 
         if self.posY > ay:
             self.posY -= self.vitesseY
-        elif self.posY < ay:
+        if self.posY < ay:
             self.posY += self.vitesseY
 
 class Villageois(Unit):
@@ -177,6 +187,8 @@ class Villageois(Unit):
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 3000
+        self.collectionMax = 25
+        self.collectionActuel = 0
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -202,7 +214,12 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if case.nbRessource > 0:
             case.nbRessource-=1
-            print(self.id, "IS COLLECTING", case.nbRessource)
+            self.collectionActuel+=1
+            print(self.collectionActuel)
+            print(self.id, "resource left: ", case.nbRessource)
+            if self.collectionActuel ==self.collectionMax:
+                self.status="return"
+                print("retourne")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
@@ -238,8 +255,8 @@ class Villageois(Unit):
                 self.effectueDeplacement(self.chemin[0])
 
 class Guerrier(Unit):
-    def __init__(self, ownerID, posX, posY):
-        Unit.__init__(self, ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Guerrier"
 
 
@@ -248,12 +265,75 @@ class Guerrier(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 0 #melee
-        self.atkSpeed = 600 #en millisecondes
+        self.range = 10 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
         self.defense = 1
+        self.vitesseX = 5
+        self.vitesseY = 5
+        self.champDaggro = 30
+        self.degat = 10
+        self.actionEnCours = None
+        self.targetedBy = None
+        self.unitCible = None
 
-    def attaque(self):
-        pass
+
+    def faitAction(self):
+        if self.actionEnCours == None:
+            self.actionEnCours = "scanEnemy"
+        elif self.actionEnCours == "scanEnemy":
+            self.scanEnemy()
+        elif self.actionEnCours == "marcheVersEnemy":
+            self.marcheVersEnemy()
+        elif self.actionEnCours == "attaqueCible":
+            self.attaqueCible()
+        elif self.chemin:
+            self.deplacer(self.deplaceur, self.chemin)
+
+        if self.cooldown != self.maxCooldown:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
+            print ("je  suis mort")
+
+    def scanEnemy(self):
+            if self.chemin:
+                self.deplacer(self.deplaceur, self.chemin)
+            if self.targetedBy and self.unitCible is None:
+                self.unitCible = self.targetedBy
+                self.attaqueCible(self.targetedBy)
+            else:
+                for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                  for n in i.units:
+                        if n.ownerID is not self.ownerID:
+                            if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                                self.unitCible = n
+                                self.actionEnCours = "marcheVersEnemy"
+                                #self.chemin[0].x = n.posX a modifier asap 18/11/2014
+                                #self.chemin[0].y = n.posY
+                                break
+
+    def attaqueCible(self):
+        if self.unitCible.isAlive():
+            if Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.range:
+                if self.cooldown == self.maxCooldown:
+                    self.unitCible.recevoirDegats(self.degat)
+                    self.cooldown = 0
+            elif Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) >= self.range:
+                self.actionEnCours = "marcheVersEnemy"
+            else:
+                self.actionEnCours ="scanEnemy"
+        else:
+            self.actionEnCours="scanEnemy"
+
+    def marcheVersEnemy(self):
+        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+            self.deplacer(self.deplaceur, self.chemin)
+        elif self.unitCible.isAlive() and self.chemin is None:
+            self.actionEnCours = "attaqueCible"
+
+
 
     def recevoirDegats(self, degatsRecus):
         if degatsRecus -self.defense > self.hpActuel:
@@ -261,11 +341,24 @@ class Guerrier(Unit):
         else :
             self.hpActuel -= degatsRecus -self.defense
 
+    def deplacer(self, deplaceur, arrive):
+        cx, cy = trouveCase(self.posX, self.posY)
+        if self.chemin is None or self.chemin == []:
+            self.deplaceur = deplaceur
+            self.chemin = deplaceur.chemin(self, arrive)
+        else:
+            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
+                del self.chemin[0]
+            if self.chemin:
+                self.effectueDeplacement(self.chemin[0])
+#                self.chemin[0].x = self.target[0]
+#                self.chemin[0].y = self.target[1]
 
 
 class Building():
 
-    def __init__(self, ownerID, posX, posY):
+    def __init__(self, ownerID, posX, posY, parent):
+        self.parent = parent
         global id_objet
         id_objet += 1
         self.id = id_objet
@@ -296,6 +389,7 @@ class Building():
     def recevoirDegats(self, degatsRecus):
         if degatsRecus > self.hpActuel:
             self.hpActuel = 0
+            print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
         else :
             self.hpActuel -= degatsRecus
 
@@ -325,11 +419,11 @@ class TownCenter(Building):
 
 
     def __init__(self, ownerID, posX, posY):
-        Building.__init__(self, ownerID, posX, posY)
+        Building.__init__(self, ownerID, posX, posY, self)
         self.type ="TownCenter"
         #valeurs arbitraires
-        self.hpActuel = 1000
-        self.hpMax = self.hpActuel
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 20000
@@ -386,19 +480,20 @@ class Maison(Building):
         Building.__init__(self, ownerID,posX,posY)
         self.type="Maison"
 
-        self.hpActuel = 700
-        self.hpMax = self.hpActuel
+        self.hpMax = 700
+        self.hpActuel = self.hpMax
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 10000
 
 class Barrack(Building):
-    def __init__(self, ownerID, posX, posY):
-        Building.__init__(ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY, parent)
         self.type="Barrack"
 
-        self.hpActuel = 1000
-        self.hpMax = self.hpActuel
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
+
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 20000
@@ -451,11 +546,11 @@ class Barrack(Building):
 # modifier le 11/11/2014
 class Tower(Building):
     def __init__(self, ownerID, posX, posY, parent):
-        Building.__init__(self, ownerID, posX, posY)
+        Building.__init__(self, ownerID, posX, posY, parent)
         self.type = "Tower"
-        self.hpActuel = 400
-        self.hpMax = hpActuel
-        self.longueur =20
+        self.hpMax = 400
+        self.hpActuel = self.hpMax
+        self.longueur = 20
         self.largeur = 20
         self.delaiDeConstruction = -1
         self.champDeVision = -1
@@ -464,20 +559,20 @@ class Tower(Building):
         self.targetedBy = None
         self.actionEnCours = None
         self.degat = 50
-        self.cooldown = 100
+        self.cooldown = 30
 
 
     def attaqueCible(self):
         if self.target.isAlive():
-            if helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= champDaggro:
-                if self.cooldown == 100:
+            if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
+                if self.cooldown == 30:
                     self.target.recevoirDegats(self.degat)
                     self.cooldown = 0
 
 
 
             else:
-                self.actionEncours ="scanEnemy"
+                self.actionEnCours ="scanEnemy"
         else:
             self.actionEnCours="scanEnemy"
 
@@ -490,32 +585,40 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-            for i in self.parent.parent.joueurs.values().units:# il faut reussir a avoir la liste des unitÃ©s
+            for i in self.parent.parent.modele.joueurs.values().units:# il faut reussir a avoir la liste des units
                 for n in i:
                     if n.ownerID is not self.ownerID:
-                        if helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible(n)
+                            break
+            for i in self.parent.parent.modele.joueurs.values().buildings:
+                for n in i:
+                    if n.ownerID is not self.ownerID:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+
+                            self.target = n
+                            self.actionEnCours = "attaqueCible"
+                            self.attaqueCible()
                             break
 
 
     def faitAction(self):
         if self.actionEnCours == None:
-            self.actionEncours ="scanEnemy"
+            self.actionEnCours ="scanEnemy"
         if self.actionEnCours == "scanEnemy":
             self.scanEnemy()
         if self.actionEnCours == "attaqueCible":
             self.attaqueCible()
 
-
-    def   metToiAJour(self):
-        if self.cooldown != 100:
+        if self.cooldown != 30:
             self.cooldown += 1
-            print("cooldown de la tour ", self.cooldown)
         if self.hpActuel  ==0:
             del self
-            print (" je  suis mort")
+            print ("je  suis mort")
+
+
 
 
 
@@ -537,11 +640,12 @@ class Modele(object):
         self.actionsAFaire={}
         self.joueurs = {} # = Joueur(0, "test")
         self.actions = {"creerUnite" : self.creerUnite,
-                        "deplace" : self.deplaceUnite,}
+                        "deplace" : self.deplaceUnite,
+                        "creerBuilding": self.creerBuilding,}
 
     def initPartie(self,listeNomsJoueurs):
         n=0
-        self.playerColors = ["pink", "blue", "green", "yellow", "purple", "brown", "black", "white", "orange"]
+        self.playerColors = ["blue", "green", "yellow", "purple", "brown", "black", "white", "orange", "pink"]
         #init tous les joueur avec leur unite, batiments, etc...
         print("Nombre total de joueurs: ", len(listeNomsJoueurs))
         for j in listeNomsJoueurs:
@@ -559,6 +663,9 @@ class Modele(object):
 
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
+
+    def creerBuilding(self, args):
+        self.joueurs[args[0]].creerJoueurBuilding(args[2][0], args[2][1], args[2][2])
 
     def prochaineAction(self,cadre):
         if cadre in self.actionsAFaire.keys():

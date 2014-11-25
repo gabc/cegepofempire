@@ -50,12 +50,12 @@ class Deplacement:
         open = [depart]
         closed = []
         temps = time.time()
-        
+
         while open:
             current = open[0]
             del open[0]
             closed.append(current)
-                
+
             if self.h(current, arrivee) == 0:
                 return self.path(current)
 
@@ -63,8 +63,8 @@ class Deplacement:
                 v.parent = current
                 v.gc = self.g(v)
                 f = v.gc + self.h(v,arrivee)
-                v.f = f         
-                
+                v.f = f
+
                 if v.estDans(open):
                     vprime = self.find(v, open) # [noeud, pos dans la liste]
                     if v.gc < vprime[0].gc or v.f < vprime[0].f:
@@ -89,7 +89,7 @@ class Deplacement:
             for j in (0,1,-1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[y+i][x+j].isPassable() and (i != 0 or j != 0) : # Voir si le test est bon
+                    if self.map[x+i][y+j].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
                         np = Noeud(x+i, y+j, 0, 0, n)
                         rep.append(np)
                         if i == 0 or j == 0:
@@ -104,14 +104,14 @@ class Deplacement:
         x1, y1 = a.x, a.y
         x2, y2 = b.x, b.y
         return abs(x1 - x2) + abs(y1 - y2)
-        
+
     def g(self, n):
         acc = 0
         while n.parent is not None:
             acc += n.gc + n.cout
             n = n.parent
         return acc
-        
+
     def path(self, n):
         path = [n]              # L'arrivee est dans la liste du path
         while n.parent is not None:
