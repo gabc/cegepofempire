@@ -1,31 +1,34 @@
 #!/usr/bin/env python3
 # C:\\Python33\python.exe
-import time
-from utils import *
+"""Module qui permet de trouver un chemin entre 2 points."""
+from utils import trouveCase
 
 class Noeud:
-    def __init__(self, x, y, f, gc, parent):
+    """Classe representant un point (case,noeud) dans mon graphe de recherche"""
+    def __init__(self, x, y, parent):
         self.x = x
         self.y = y
-        self.f = f
-        self.gc = gc
+        self.f = 0
+        self.gc = 0
         self.parent = parent
         self.cout = 0
 
     def estDans(self, liste):
+        """Trouve si self est dans la liste"""
         for i in liste:
             if self.x == i.x and self.y == i.y:
                 return True
         return False
 
 class Deplacement:
+    """Classe encapsulant A*"""
     def __init__(self, parent, map):
         self.parent = parent
         self.map = map
         self.maxnode = 400
 
     def assurePassable(self, depart, arrive):
-        while not self.map[arrive.y][arrive.x].isPassable():
+        while not self.map[arrive.x][arrive.y].isPassable():
             if arrive.x > depart.x:
                 arrive.x -= 1
             elif arrive.x < depart.x:
@@ -38,9 +41,11 @@ class Deplacement:
         return arrive
 
     def chemin(self, unite, arrivee):
+        """Trouve le chemie entre la position de `unite' et
+        le tuple `arrivee' (x, y)"""
         x, y = trouveCase(unite.posX, unite.posY)
-        depart = Noeud(int(x), int(y), 0, 0, None)
-        arrive = Noeud(arrivee[0], arrivee[1], 0, 0, None)
+        depart = Noeud(int(x), int(y), None)
+        arrive = Noeud(arrivee[0], arrivee[1], None)
 
         arrive = self.assurePassable(depart, arrive)
 
@@ -49,7 +54,10 @@ class Deplacement:
     def astar(self, depart, arrivee):
         open = [depart]
         closed = []
+<<<<<<< HEAD
         temps = time.time()
+=======
+>>>>>>> 7f338f8f515cdd2e8d0b1f68ebf1ef1a468e95b7
 
         while open:
             current = open[0]
@@ -72,47 +80,53 @@ class Deplacement:
 
                 if not v.estDans(open) and not v.estDans(closed):
                     open.append(v)
-                    open.sort(key = lambda x: x.f)
+                    open.sort(key=lambda x: x.f)
 
-    def find(self, n, liste):
+    def find(self, noeud, liste):
+        """Trouve le noeud dans la liste
+        Retourne, le noeud et sa position dans la liste"""
         i = 0
-        for o in liste:
-            if o.x == n.x and o.y == n.y:
-                return (o, i)
+        for j in liste:
+            if j.x == noeud.x and j.y == noeud.y:
+                return (j, i)
             i += 1
 
-    def voisin(self, n):
-        x = n.x
-        y = n.y
+    def voisin(self, noeud):
+        """Trouve les voisins (passables) du noeud `n'"""
+        x = noeud.x
+        y = noeud.y
         rep = []
-        for i in (-1,1,0):
-            for j in (0,1,-1):
+        for i in (-1, 1, 0):
+            for j in (0, 1, -1):
                 try:
                     # Si c'est passable et que les deux i,j sont pas 0.
-                    if self.map[x+i][y+j].isPassable() == True and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
-                        np = Noeud(x+i, y+j, 0, 0, n)
-                        rep.append(np)
+                    if self.map[x+i][y+j].isPassable() and (i != 0 or j != 0) and x+i >= 0 and y+j >= 0:
+                        node = Noeud(x+i, y+j, noeud)
+                        rep.append(node)
                         if i == 0 or j == 0:
-                            n.cout = 10 # ligne droite
+                            noeud.cout = 10 # ligne droite
                         else:
-                            n.cout = 14 # diagonale
+                            noeud.cout = 14 # diagonale
                 except IndexError:
                     pass
         return rep
 
     def h(self, a, b):
+        """Heuristique retournant une distance entre 2 points"""
         x1, y1 = a.x, a.y
         x2, y2 = b.x, b.y
         return abs(x1 - x2) + abs(y1 - y2)
 
-    def g(self, n):
+    def g(self, noeud):
+        """Methode calculant la somme des couts de chaques noeuds"""
         acc = 0
-        while n.parent is not None:
-            acc += n.gc + n.cout
-            n = n.parent
+        while noeud.parent is not None:
+            acc += noeud.gc + noeud.cout
+            noeud = noeud.parent
         return acc
 
     def path(self, n):
+        """Retourne le chemin Ã  partir des parents de n"""
         path = [n]              # L'arrivee est dans la liste du path
         while n.parent is not None:
             path = [n.parent] + path

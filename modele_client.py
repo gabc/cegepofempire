@@ -92,8 +92,10 @@ class Joueur():
     def creerJoueurBuilding(self, type, x, y):
         if type == "tower":
             self.buildings.append(Tower(self.ID, x, y,self))
+            self.parent.m.placeBuilding(x,y,"tower")
         if type == "barrack":
             self.buildings.append(Barrack(self.ID, x, y,self))
+            self.parent.m.placeBuilding(x,y,"barrack")
 
     def changerAllies():
         pass
@@ -219,7 +221,7 @@ class Villageois(Unit):
             print(self.id, "resource left: ", case.nbRessource)
             if self.collectionActuel ==self.collectionMax:
                 self.status="return"
-                print("retourne")
+                print("retour d'un villageois")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
@@ -231,9 +233,9 @@ class Villageois(Unit):
     def checkArrive(self, target, game_map):
         #check si le target est en pixels ou en cases de jeu
         if target[0] > game_map.largeur and target[1] > game_map.hauteur:
-            arrive=game_map.mat[math.trunc(target[1]/self.parent.parent.vue.longeurLigne)][math.trunc(target[0]/self.parent.parent.vue.longeurLigne)]
+            arrive=game_map.mat[math.trunc(target[0]/self.parent.parent.vue.longeurLigne)][math.trunc(target[1]/self.parent.parent.vue.longeurLigne)]
         else:
-            arrive=game_map.mat[target[1]][target[0]]
+            arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
 
@@ -241,7 +243,7 @@ class Villageois(Unit):
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
             if arrive.ressource is not "-":
                 arrive=self.recolteRessource(arrive)
-                game_map.mat[arrive.posY][arrive.posX]=arrive
+                game_map.mat[arrive.posX][arrive.posY]=arrive
 
     def deplacer(self, deplaceur, arrive):
         cx, cy = trouveCase(self.posX, self.posY)
