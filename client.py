@@ -15,8 +15,8 @@ from helper import Helper
 
 class Controleur(object):
     def __init__(self):
-        self.l=40
-        self.h=30
+        self.l=100
+        self.h=100
         self.nom=""
         self.cadre=0
         self.actions=[]

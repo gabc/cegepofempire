@@ -61,6 +61,13 @@ class Vue(object):
         self.barrack_build = Image.open("./img/barrack_build.png")##
         self.photo_barrack_build = ImageTk.PhotoImage(self.barrack_build)##
 
+    def canx(self, x):
+        """Retourne le x par rapport au canevas"""
+        return self.canevasMilieu.canvasx(x)
+
+    def cany(self, y):
+        """Retourne le y par rapport au canevas"""
+        return self.canevasMilieu.canvasy(y)
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -111,8 +118,8 @@ class Vue(object):
         self.nomjoueur.grid(column=1, row=0)
 
 
-        lcree = Labeljm(cadreMenu, text="Pour crÃ©er un serveur Ã  l'adresse inscrite  | ")
-        lconnect = Labeljm(cadreMenu, text="Pour vous connecter Ã  un serveur")
+        lcree = Labeljm(cadreMenu, text="Pour crÃƒÂ©er un serveur ÃƒÂ  l'adresse inscrite  | ")
+        lconnect = Labeljm(cadreMenu, text="Pour vous connecter ÃƒÂ  un serveur")
         lcree.grid(column=0, row=1)
         lconnect.grid(column=1, row=1)
 
@@ -168,12 +175,12 @@ class Vue(object):
         self.initCadre()
         # Variable bidon
         n = "100"
-        self.changeLabelBois(n)
-        self.changeLabelEnergie(n)
-        self.changeLabelNourriture(n)
-        self.changeLabelPierre(n)
-        self.changeLabelOr(n)
-        self.changeLabelPopulation(n)
+        self.changeLabelBois(self.parent.myPlayer.ressources[1])
+        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
+        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
+        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
+        self.changeLabelOr(self.parent.myPlayer.ressources[3])
+        self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -183,7 +190,7 @@ class Vue(object):
         # Milieu
         self.hauteur = 600
         self.largeur = 800
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,800,600),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.parent.l*20, self.parent.h*20),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -222,11 +229,11 @@ class Vue(object):
     def selectObject(self, event):  # add
         if self.actionSelectionnee==0 :##
             print("-------------------------")
-            print("click X: ", self.currentX, " - Y: ", self.currentY)
+            print("click X: ", self.canx(self.currentX), " - Y: ", self.cany(self.currentY))
             if len(self.parent.myPlayer.objectsSelectionne) > 0:
                 self.parent.myPlayer.objectsSelectionne.pop()
             for u in self.parent.myPlayer.units:
-                if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
+                if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 5) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 5):
                     self.parent.myPlayer.objectsSelectionne.append(u)
                     print("selected object: ", u.type)
                     break
@@ -235,12 +242,12 @@ class Vue(object):
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
                     if b.type == "TownCenter" or b.type == "Barrack":
-                        if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
+                        if self.canx(self.currentX) >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.canx(self.currentX) <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.cany(self.currentY) >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.cany(self.currentY) <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
                             break
                     else:
-                        if self.currentX >= (b.posX) and self.currentX <= (b.posX + 18) and self.currentY >= (b.posY) and self.currentY <= ((b.posY + 18)):
+                        if self.canx(self.currentX) >= (b.posX) and self.canx(self.currentX) <= (b.posX + 18) and self.cany(self.currentY) >= (b.posY) and self.cany(self.currentY) <= ((b.posY + 18)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
                             break
@@ -249,28 +256,31 @@ class Vue(object):
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
-            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
             print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
-            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.currentX, self.currentY]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
         self.canevasMilieu.focus_set()
         self.currentX = event.x
         self.currentY = event.y
+        xcan = self.canx(event.x)
+        ycan = self.cany(event.y)
         if self.actionSelectionnee == 1:
+<<<<<<< HEAD
             self.canevasMilieu.create_rectangle(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2:
             self.canevasMilieu.create_image(event.x, event.y, image=self.photo_tower_build, anchor='nw', tags="test")
@@ -283,6 +293,20 @@ class Vue(object):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
 
+=======
+            self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+        elif self.actionSelectionnee == 2:
+            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_tower_build, anchor='nw', tags="test")
+        elif self.actionSelectionnee == 3:
+            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_barrack_build, anchor='nw', tags="test")
+        elif self.actionSelectionnee == 4:
+            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+
+    def spawnUnit(self, event):
+        print("creating vil with owner id: ", self.parent.myPlayer.ID)
+        self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
+
+>>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
     def initCadre(self):
 
         # Haut
@@ -385,29 +409,29 @@ class Vue(object):
     ####Pour les images
 
     def changeLabelNourriture(self, n):
-        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + n, bg="red", relief=SOLID, width=15)
+        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + str(n), bg="red", relief=SOLID, width=15)
         labelNourriture.grid(column=0, row=0)  # (column=1,row=0)
 
     def changeLabelBois(self, n):
-        labelBois = Label(self.cadreRessource, text="Bois: " + n, bg="brown", relief=SOLID, width=15)
+        labelBois = Label(self.cadreRessource, text="Bois: " + str(n), bg="brown", relief=SOLID, width=15)
         labelBois.grid(column=1, row=0)  # (column=3,row=0)
 
     def changeLabelPierre(self, n):
-        labelPierre = Label(self.cadreRessource, text="Pierre: " + n, bg="gray", relief=SOLID, width=15)
+        labelPierre = Label(self.cadreRessource, text="Pierre: " + str(n), bg="gray", relief=SOLID, width=15)
         labelPierre.grid(column=0, row=1)  # (column=1,row=1)
 
     def changeLabelOr(self, n):
-        labelOr = Label(self.cadreRessource, text="Or: " + n, bg="gold", relief=SOLID, width=15)
+        labelOr = Label(self.cadreRessource, text="Or: " + str(n), bg="gold", relief=SOLID, width=15)
         labelOr.grid(column=1, row=1)  # (column=3,row=1)
 
     def changeLabelEnergie(self, n):
-        labelEnergie = Label(self.cadreRessource, text="Energie: " + n, bg="green2", relief=SOLID, width=15)
+        labelEnergie = Label(self.cadreRessource, text="Energie: " + str(n), bg="green2", relief=SOLID, width=15)
         labelEnergie.grid(column=0, row=2, columnspan=2)  # (column=1,row=2,columnspan=2)
 
         # Pour le cadre de population
 
     def changeLabelPopulation(self, n):  # population et population max
-        labelPopulationMax = Label(self.cadrePopulation, text=n + "/200")
+        labelPopulationMax = Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
         labelPopulationMax.grid(column=1, row=0)
 
         # Pour le cadre Diplomatie/echange
@@ -598,8 +622,13 @@ class Vue(object):
     # #
     def initLabelBas(self):
         # Pour le cadre Mini-Map
+<<<<<<< HEAD
 
         labelMiniMap = Label(self.cadreMiniMap, text="Mini-Map")
+=======
+
+        labelMiniMap = Label(self.cadreMiniMap)
+>>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
         labelMiniMap.grid(column=0, row=0)
 
 
@@ -615,14 +644,13 @@ class Vue(object):
         if self.actionSelectionnee > 0:
             self.actionSelectionnee = 0
             return
-        print("setarr", event.x, event.x / self.longeurLigne)##
         if len(self.parent.myPlayer.objectsSelectionne) > 0:
             u = self.parent.myPlayer.objectsSelectionne[0]
-            self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
-            #self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
+            self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(self.canx(event.x) / self.longeurLigne), int(self.cany(event.y) / self.longeurLigne))]])
 
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
+        self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             for u in j.units:##continue here
@@ -670,7 +698,6 @@ class Vue(object):
             self.canevasMilieu.create_line(0, j * self.longeurLigne, self.parent.l * self.longeurLigne, j * self.longeurLigne, fill="white")
 
     def placeBuilding(self):
-        print("placeBuilding")
         for j in self.parent.modele.joueurs.values():
             for i in j.buildings:
                 print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
@@ -680,20 +707,24 @@ class Vue(object):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.l):
             for j in range(self.parent.h):
-                if self.parent.m.mat[i][j].ressource == FOOD_CHAR:  # nourriture
+                if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:  # bois
+                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:  # pierre
+                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:  # energie
+                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+<<<<<<< HEAD
 
 
+=======
+
+>>>>>>> cacd2bf6c1295281498655f4826e3917ec9578e7
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
         labelPopulation.grid(column=0, row=0)
