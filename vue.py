@@ -61,6 +61,13 @@ class Vue(object):
         self.barrack_build = Image.open("./img/barrack_build.png")##
         self.photo_barrack_build = ImageTk.PhotoImage(self.barrack_build)##
 
+    def canx(self, x):
+        """Retourne le x par rapport au canevas"""
+        return self.canevasMilieu.canvasx(x)
+
+    def cany(self, y):
+        """Retourne le y par rapport au canevas"""
+        return self.canevasMilieu.canvasy(y)
 
     def creeCadres(self):
         self.creeCadreConnection()
@@ -183,7 +190,7 @@ class Vue(object):
         # Milieu
         self.hauteur = 600
         self.largeur = 800
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,800,600),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,1000,1000),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -222,11 +229,11 @@ class Vue(object):
     def selectObject(self, event):  # add
         if self.actionSelectionnee==0 :##
             print("-------------------------")
-            print("click X: ", self.currentX, " - Y: ", self.currentY)
+            print("click X: ", self.canx(self.currentX), " - Y: ", self.cany(self.currentY))
             if len(self.parent.myPlayer.objectsSelectionne) > 0:
                 self.parent.myPlayer.objectsSelectionne.pop()
             for u in self.parent.myPlayer.units:
-                if self.currentX >= u.posX and self.currentX <= (u.posX + 5) and self.currentY >= u.posY and self.currentY <= (u.posY + 5):
+                if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 5) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 5):
                     self.parent.myPlayer.objectsSelectionne.append(u)
                     print("selected object: ", u.type)
                     break
@@ -235,12 +242,12 @@ class Vue(object):
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
                     if b.type == "TownCenter" or b.type == "Barrack":
-                        if self.currentX >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentX <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.currentY >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.currentY <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
+                        if self.canx(self.currentX) >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.canx(self.currentX) <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.cany(self.currentY) >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.cany(self.currentY) <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
                             break
                     else:
-                        if self.currentX >= (b.posX) and self.currentX <= (b.posX + 18) and self.currentY >= (b.posY) and self.currentY <= ((b.posY + 18)):
+                        if self.canx(self.currentX) >= (b.posX) and self.canx(self.currentX) <= (b.posX + 18) and self.cany(self.currentY) >= (b.posY) and self.cany(self.currentY) <= ((b.posY + 18)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
                             break
@@ -249,39 +256,41 @@ class Vue(object):
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
-            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
             print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
-            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.currentX, self.currentY]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
         self.canevasMilieu.focus_set()
         self.currentX = event.x
         self.currentY = event.y
+        xcan = self.canx(event.x)
+        ycan = self.cany(event.y)
         if self.actionSelectionnee == 1:
-            self.canevasMilieu.create_rectangle(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+            self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2: 
-            self.canevasMilieu.create_image(event.x, event.y, image=self.photo_tower_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_tower_build, anchor='nw', tags="test")
         elif self.actionSelectionnee == 3: 
-            self.canevasMilieu.create_image(event.x, event.y, image=self.photo_barrack_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_barrack_build, anchor='nw', tags="test")
         elif self.actionSelectionnee == 4: 
-            self.canevasMilieu.create_oval(event.x, event.y, event.x + 5, event.y + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
 
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
-        self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.currentX, self.currentY]])
+        self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
         
     def initCadre(self):
         
@@ -618,7 +627,7 @@ class Vue(object):
         print("setarr", event.x, event.x / self.longeurLigne)##
         if len(self.parent.myPlayer.objectsSelectionne) > 0:
             u = self.parent.myPlayer.objectsSelectionne[0]
-            self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne))]])
+            self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(self.canx(event.x) / self.longeurLigne), int(self.cany(event.y) / self.longeurLigne))]])
             #self.modele.deplaceUnite((0, u.id), (int(event.x / self.longeurLigne), int(event.y / self.longeurLigne)))
         
     def rafraichirCanevas(self):

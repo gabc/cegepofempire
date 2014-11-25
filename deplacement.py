@@ -66,9 +66,9 @@ class Deplacement:
             for v in self.voisin(current):
                 v.parent = current
                 v.gc = self.g(v)
-                f = v.gc + self.h(v, arrivee)
+                f = v.gc + self.h(v,arrivee)
                 v.f = f
-                
+
                 if v.estDans(open):
                     vprime = self.find(v, open) # [noeud, pos dans la liste]
                     if v.gc < vprime[0].gc or v.f < vprime[0].f:
@@ -122,7 +122,7 @@ class Deplacement:
         return acc
 
     def path(self, n):
-        """Retourne le chemin à partir des parents de n"""
+        """Retourne le chemin ÃƒÂ  partir des parents de n"""
         path = [n]              # L'arrivee est dans la liste du path
         while n.parent is not None:
             path = [n.parent] + path
