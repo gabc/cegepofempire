@@ -253,7 +253,8 @@ class Vue(object):
         elif self.actionSelectionnee == 2:
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", self.currentX, self.currentY]])##
+            caseX, caseY = trouveCase(self.currentX, self.currentY)
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
             print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
