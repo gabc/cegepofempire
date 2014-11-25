@@ -169,7 +169,7 @@ class Map:
                 x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
                 y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
                 #print("x =", x,"y =", y,"a =",angle)
-                self.mat[x][y]=Case(x,y,PLAYER_CHAR,False)
+                self.mat[x][y]=Case(x,y,False)
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
 
