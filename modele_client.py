@@ -208,14 +208,14 @@ class Villageois(Unit):
         return(x,y)
 
     def recolteRessource(self, case):
-        if case.nbRessource > 0:
+        if self.collectionActuel ==self.collectionMax:
+            self.status="return"
+            print("retour d'un villageois")
+        elif case.nbRessource > 0:
             case.nbRessource-=1
             self.collectionActuel+=1
             print(self.collectionActuel)
             print(self.id, "resource left: ", case.nbRessource)
-            if self.collectionActuel ==self.collectionMax:
-                self.status="return"
-                print("retour d'un villageois")
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
@@ -586,8 +586,13 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
+<<<<<<< HEAD
             for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                 for n in i.units:
+=======
+            for i in self.parent.parent.modele.joueurs.values().units:
+                for n in i:
+>>>>>>> b29cad6f5984185d473e640cb535dee9269b32a2
                     if n.ownerID is not self.ownerID:
                         if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
                             self.target = n
@@ -666,6 +671,7 @@ class Modele(object):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
 
     def creerBuilding(self, args):
+        print(args)
         self.joueurs[args[0]].creerJoueurBuilding(args[2][0], args[2][1], args[2][2])
 
     def prochaineAction(self,cadre):
