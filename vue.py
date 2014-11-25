@@ -118,8 +118,8 @@ class Vue(object):
         self.nomjoueur.grid(column=1, row=0)
 
 
-        lcree = Labeljm(cadreMenu, text="Pour crÃƒÂ©er un serveur ÃƒÂ  l'adresse inscrite  | ")
-        lconnect = Labeljm(cadreMenu, text="Pour vous connecter ÃƒÂ  un serveur")
+        lcree = Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ")
+        lconnect = Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur")
         lcree.grid(column=0, row=1)
         lconnect.grid(column=1, row=1)
 
@@ -218,7 +218,7 @@ class Vue(object):
         """ Rafraichi la vue au complet """
         self.rafraichirInfo()
         self.rafraichirCanevas()
-        
+
     def rafraichirInfo(self):
         """ Rafraichi les informations (labels, ressources, populations)"""
         self.changeLabelBois(self.parent.myPlayer.ressources[1])
@@ -227,8 +227,8 @@ class Vue(object):
         self.changeLabelPierre(self.parent.myPlayer.ressources[2])
         self.changeLabelOr(self.parent.myPlayer.ressources[3])
         self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
-        
-        
+
+
     def bougeVersGauche(self, event):
         self.canevasMilieu.xview(SCROLL, -1, "units")
 
@@ -645,7 +645,6 @@ class Vue(object):
 
     def rafraichirCanevas(self):
         self.canevasMilieu.delete("unit")
-        self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
             buildingMorts=[]
@@ -654,13 +653,13 @@ class Vue(object):
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
-            
+
             for u in j.buildings: # Retire les batiments... ish.
                 if u.isAlive == False:
                     buildingMorts.append(u)
             for i in buildingMorts:
-                j.buildings.remove(i)   
-            
+                j.buildings.remove(i)
+
             for u in j.units:
                 if u.type == "Guerrier":
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")

@@ -274,15 +274,18 @@ class Guerrier(Unit):
         self.defense = 1
         self.vitesseX = 5
         self.vitesseY = 5
-        self.champDaggro = 30
+        self.champDaggro = 5
         self.degat = 10
         self.actionEnCours = None
         self.targetedBy = None
         self.unitCible = None
         self.unitCibleType = None
+        self.unitCiblePosCase = None
 
 
     def faitAction(self):
+        if len(self.chemin) != 0:
+            self.deplacer(self.deplaceur, self.chemin)
         if self.actionEnCours == None:
             self.actionEnCours = "scanEnemy"
             print(self.actionEnCours)
@@ -295,8 +298,6 @@ class Guerrier(Unit):
         elif self.actionEnCours == "attaqueCible":
             self.attaqueCible()
             print(self.actionEnCours)
-        elif self.chemin:
-            self.deplacer(self.deplaceur, self.chemin)
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -305,40 +306,50 @@ class Guerrier(Unit):
 
 
     def scanEnemy(self):
-            if self.chemin:
-                self.deplacer(self.deplaceur, self.chemin)
-            if self.targetedBy and self.unitCible is None:
-                self.unitCible = self.targetedBy
-                self.attaqueCible(self.targetedBy)
-            else:
+            if len(self.chemin) ==0:
                 for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                   for n in i.units:
                         if n.ownerID is not self.ownerID:
-                            caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
-                            if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            caseNx, caseNy =trouveCase(n.posX, n.posY)
+                            if Helper.calcDistance(caseGx, caseGy , caseNx, caseNy) <= self.champDaggro:
                                 self.unitCible = n
                                 self.actionEnCours = "marcheVersEnemy"
-                                self.unitCibleType = "Units"
+                                self.unitCibleType = "Unit"
+                                self.unitCiblePosCase = (caseNx, caseNy)
                                 break
 
     def attaqueCible(self):
         if self.unitCible.isAlive() == True:
-            if Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.range:
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+            if Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range:
                 if self.cooldown == self.maxCooldown:
                     self.unitCible.recevoirDegats(self.degat)
                     self.cooldown = 0
-            elif Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) >= self.range:
+            elif Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:
                 self.actionEnCours = "marcheVersEnemy"
             else:
                 self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
         else:
             self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
 
     def marcheVersEnemy(self):
-        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
-            self.deplacer(self.deplaceur, self.chemin)
-        elif self.unitCible.isAlive() and self.chemin is None:
+        if self.unitCibleType == "Unit":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+        if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:         # S'il a un chemin. Qu'il se deplace.
+            print("il a un chemin")
+            #self.deplaceUnit(self, (caseNx, caseNy))
+            self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
+        elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range and self.unitCibleType == "Unit":
+            print("il n'a pas un chemin")
             self.actionEnCours = "attaqueCible"
+
 
 
 
@@ -358,8 +369,7 @@ class Guerrier(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-#                self.chemin[0].x = self.target[0]
-#                self.chemin[0].y = self.target[1]
+
 
 
 class Building():
@@ -591,8 +601,10 @@ class Tower(Building):
 
             else:
                 self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
         else:
             self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
 
 
 
