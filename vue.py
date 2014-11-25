@@ -212,6 +212,7 @@ class Vue(object):
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
+        
     
         
     def bougeVersGauche(self, event):
@@ -291,6 +292,7 @@ class Vue(object):
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
+        print("nombre de units" + str(self.parent.myPlayer.maxUnitsCourrant))
         
     def initCadre(self):
         
@@ -635,6 +637,7 @@ class Vue(object):
         self.placeRessource()
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
+            buildingMorts=[]
             for u in j.units:##continue here
                 if u.isAlive == False:
                     uniteMorts.append(u)
@@ -652,7 +655,11 @@ class Vue(object):
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 
-                        
+            for u in j.buildings:
+                if u.isAlive == False:
+                    buildingMorts.append(u)
+            for i in buildingMorts:
+                j.buildings.remove(i)            
             for i in j.buildings:
                 caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
                 caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
@@ -702,9 +709,7 @@ class Vue(object):
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
-                #elif self.parent.m.mat[i][j].ressource == EMPTY_CHAR:
-                 #   self.canevasMilieu(i* self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, bg="#006633", anchor='nw', tags='img')
-
+               
         
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
