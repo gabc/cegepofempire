@@ -1,9 +1,8 @@
-import deplacement
 import math
 import timeit
 from utils import *
 from helper import *
-
+from deplacement import *
 class Joueur():
     def __init__(self, parent, ID, name):
         self.parent = parent
@@ -54,25 +53,31 @@ class Joueur():
 
 
     def changerEreVerif(self):
-        for i in range(self.nbTypeDeRessources):
-            if self.ressources[i] > 10:
-                self.changerErePossible = True
-                print("peut changer d'ere ! ")
+        if self.ageCourrante != self.ageFutur:
+            for i in range(self.nbTypeDeRessources):
+                if self.ressources[i] > 10:
+                    self.changerErePossible = True
+                    print("peut changer d'ere ! ")
 
     def Ere2(self):
         self.ageCourrante = self.ageContemporain
         self.nbTypeDeRessources = 4
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
 
 
     def Ere3(self):
         self.ageCourrante = self.ageModerne
         self.nbTypeDeRessources = 5
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
 
     def Ere4(self):
         self.ageCourrante = self.ageFutur
-
+        for i in range(self.nbTypeDeRessources):
+            self.ressources[i] -= 10
 
     def construireBuilding(self, idBuilding, posX ,posY ):
         pass
@@ -476,8 +481,8 @@ class TownCenter(Building):
             return False
 
 class Maison(Building):
-    def __init__(self, ownerID, posX, posY):
-        Building.__init__(self, ownerID,posX,posY)
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID,posX,posY, parent)
         self.type="Maison"
 
         self.hpMax = 700
@@ -586,7 +591,6 @@ class Tower(Building):
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
-
             for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                 for n in i.units:
                     if n.ownerID is not self.ownerID:

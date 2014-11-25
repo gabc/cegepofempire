@@ -3,7 +3,7 @@ import math
 from modele_client import *
 
 #NOTE: pour l'instant, ceci n'est seulement que pour des hauteurs et largeurs impaires pour les spawns des joueurs
-#Ressources: Matériaux, nourriture, énergie, or. + artefacts
+#Ressources: MatÃƒÂ©riaux, nourriture, ÃƒÂ©nergie, or. + artefacts
 
 
 
@@ -21,7 +21,7 @@ GOLD_RATIO=3
 UNDER_RATIO=25
 
 #Caracteres qui representent les ressources, incluant les ressources souterraines
-        
+
 WOOD_CHAR='1'
 FOOD_CHAR='2'
 ROCK_CHAR='3'
@@ -48,7 +48,7 @@ class Case:
 
     def isPassable(self):
         return self.passable
-        
+
 
 class Map:
     """Methodes
@@ -65,16 +65,16 @@ class Map:
 
     placeJoueurs(listeJoueurs): place les spawns des joueurs inscrits selon un cercle ou une ellipse
 
-    printMapCon(): Print la map dans la console. Attention, ca peut être long avec une grosse map
+    printMapCon(): Print la map dans la console. Attention, ca peut ÃƒÂªtre long avec une grosse map
 
-    printMapToFile(): Créé un fichier "map.txt" et y envois la map
+    printMapToFile(): CrÃƒÂ©ÃƒÂ© un fichier "map.txt" et y envois la map
 
     countRessources(): Pour avoir les statistiques de la map
 
     placeBuilding(posX, posY, buildingType): place un building a la position x,y, si la case n'est pas occupee. retourne true si la case ne l'etait pas, false si oui.
 
     clearSpace(self, building, listeRessources): enleve les ressource pres du building passe en parametre"""
-        
+
     def __init__(self, largeur, hauteur):
         self.ressources=[]
         self.units=[]
@@ -84,17 +84,17 @@ class Map:
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(i,j,True) for j in range(hauteur)] for i in range(largeur)]
         self.toDelete=[]
-                              
+
     def setSeed(self, seed):
         random.seed(seed)
-        
+
     def placeRessource(self, ratio, char):
         for i in range(self.largeur):
             for j in range(self.hauteur):
                 nb = random.randrange(100)
                 if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j].passable=False
-                    self.mat[i][j].ressource = char 
+                    self.mat[i][j].ressource = char
                     self.mat[i][j].nbRessource=50
 
     def placeRessourceUnder(self, ratio, char):
@@ -104,7 +104,6 @@ class Map:
                 if nb <= ratio:
                     self.mat[i][j].underRes=char
                     self.mat[i][j].nbRessource=50
-                    
 
     def placeRessourcesOverworld(self):
         #OVERWORLD RESSOURCES
@@ -146,9 +145,9 @@ class Map:
 
         while i < nbJoueurs:
             angle = anglesPossibles[random.randrange(9)]
-            
+
             if listeAngles.count(angle) == 0:
-            
+
                 listeAngles.append(angle)
 
                 i += 1
@@ -192,7 +191,7 @@ class Map:
                     x = self.largeur -1
                 #print("x =", x,"y =", y,"a =",angle)
                 self.placeBuilding(x,y,"TownCenter")
-                self.mat[x][y].ressource=EMPTY_CHAR            
+                self.mat[x][y].ressource=EMPTY_CHAR
                 listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
                 joueur+=1
 
@@ -216,7 +215,7 @@ class Map:
                     r.passable=True
                     self.mat[r.posX][r.posY]=r
                     print("delete case")
-       
+
     def placeBuilding(self, posX, posY, buildingType):
         if self.mat[posX][posY].isPassable():
             self.mat[posX][posY].building = buildingType
@@ -224,10 +223,10 @@ class Map:
             return True
         else:
             return False
-            
+
     def getListeRessources(self):
         ressources=[]
-        
+
         for i in range(self.largeur):
             for j in range(self.hauteur):
                 if self.mat[i][j].ressource is not EMPTY_CHAR:
@@ -237,7 +236,7 @@ class Map:
 
     def printMapCon(self):
         for i in range(self.largeur):
-            for j in range(self.hauteur):                
+            for j in range(self.hauteur):
                 print(self.mat[i][j].ressource, end="")
             print("")
 
@@ -268,7 +267,7 @@ class Map:
         res4EtUnder=0
         res5EtUnder=0
         resartEtUnder=0
-        
+
         for i in range(self.largeur):
             for j in range(self.hauteur):
                 if self.mat[i][j].ressource == WOOD_CHAR:
@@ -299,7 +298,7 @@ class Map:
                 if self.mat[i][j].ressource == EMPTY_CHAR:
 
                     vide += 1
-                    
+
                 if self.mat[i][j].ressource == ROCK_UNDER_CHAR:
 
                     res3EtUnder += 1
@@ -311,7 +310,7 @@ class Map:
                 if self.mat[i][j].ressource == ENERGY_UNDER_CHAR:
 
                     res5EtUnder += 1
-                    
+
                 if self.mat[i][j].ressource == ARTE_UNDER_CHAR:
 
                     resartEtUnder += 1
@@ -327,8 +326,8 @@ class Map:
         print('Vide=',vide)
         print('Rare + under=',res3EtUnder)
         print('Artefact + under=',resartEtUnder)
-        
-  
+
+
 #For testing purposes
 """l=9
 h=9
