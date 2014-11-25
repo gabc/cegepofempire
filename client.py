@@ -105,7 +105,7 @@ class Controleur(object):
             self.cadre=self.cadre+1
                 #print("executer action a faire")
             self.modele.prochaineAction(self.cadre)
-            self.vue.rafraichirCanevas()
+            self.vue.rafraichir()
             if self.actions: ##actions a envoyer au server
                 #print("Envoi d'une action au server")
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
