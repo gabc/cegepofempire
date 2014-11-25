@@ -595,8 +595,8 @@ class Tower(Building):
                             self.actionEnCours = "attaqueCible"
                             self.attaqueCible(n)
                             break
-            for i in self.parent.parent.modele.joueurs.values().buildings:
-                for n in i:
+            for i in self.parent.parent.modele.joueurs.values():
+                for n in i.buildings:
                     if n.ownerID is not self.ownerID:
                         if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
 
