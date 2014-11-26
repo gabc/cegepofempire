@@ -43,8 +43,8 @@ class Controleur(object):
             pythonExe = "/usr/bin/python3"
         else:
             #IL EST IMPORTANT DE CHECKER LA VERSION DE PYTHON!!!
-            pythonExe = "C:\\Python33\\Python.exe"
-            #pythonExe = "C:\\Python34\\Python.exe"
+            #pythonExe = "C:\\Python33\\Python.exe"
+            pythonExe = "C:\\Python34\\Python.exe"
         pid = Popen([pythonExe, "serveur.py"]).pid
         
         print("APRES SERVEUR")
@@ -71,8 +71,9 @@ class Controleur(object):
             self.rnd=random.Random()
             self.modele.rdseed = rep[2]
             #mb.showerror(title="Seed!",message="Got seed from server.")
-            random.seed(frozenset(self.modele.rdseed))
-            self.m.setSeed(frozenset(self.modele.rdseed))
+            #random.seed(frozenset(self.modele.rdseed))
+            #self.m.setSeed(frozenset(self.modele.rdseed))
+            self.m.setSeed(self.modele.rdseed)
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
 

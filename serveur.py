@@ -3,6 +3,7 @@ import os
 from threading import Timer
 import sys
 import socket
+import random
 
 s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
 s.connect(("gmail.com",80))
@@ -91,7 +92,7 @@ class ModeleService(object):
                 
 class ControleurServeur(object):
     def __init__(self):
-        rand=os.urandom(8)
+        rand=random.randrange(1000)
         self.modele=ModeleService(self,rand)
         
     def inscritClient(self,nom):
