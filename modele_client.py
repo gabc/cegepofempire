@@ -140,7 +140,7 @@ class Unit():
         self.chemin = []
         self.parent=parent
         self.target=(self.posX, self.posY)
-        self.status="spawned"
+        self.status="waiting"
 
 
     def faitAction(self):
@@ -188,9 +188,10 @@ class Villageois(Unit):
         self.isSelected = False ##add
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
-        self.collectionRate = 3000
+        self.collectionRate = 1
         self.collectionMax = 25
         self.collectionActuel = 0
+        self.collectionType = 0
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -198,13 +199,15 @@ class Villageois(Unit):
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
-        elif self.status is not "spawned":    #Sinon check son target si il ne viens pas juste de spawn
+
+        elif self.status is not "waiting":    #Sinon check son target si il ne viens pas juste de spawn
             self.checkArrive(self.target, self.parent.parent.m)
 
-        if self.status=="return":
+        if self.status=="backToBase":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
-            self.status="waiting"
-            self.collectionActuel=0
+
+        elif self.status=="returned":          
+            self.deplacer(self.deplaceur, self.target)
 
     def getTownCenterCoords(self):
         for b in self.parent.buildings:
@@ -216,33 +219,40 @@ class Villageois(Unit):
 
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
-            self.status="return"
-            print("retour d'un villageois")
+            self.status="backToBase"
         elif case.nbRessource > 0:
-            case.nbRessource-=1
-            self.collectionActuel+=1
-            print(self.collectionActuel)
-            print(self.id, "resource left: ", case.nbRessource)
+            case.nbRessource-=self.collectionRate
+            self.collectionActuel+=self.collectionRate
+            self.collectionType=case.ressource
+            print("resource left: ", case.nbRessource)
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
                 case.passable=True;
-                self.status="return"
+                self.status="backToBase"
 
         return case
 
     def checkArrive(self, target, game_map):
-        #check si le target est en pixels ou en cases de jeu
-        if target[0] > game_map.largeur and target[1] > game_map.hauteur:
-            arrive=game_map.mat[math.trunc(target[0]/self.parent.parent.vue.longeurLigne)][math.trunc(target[1]/self.parent.parent.vue.longeurLigne)]
-        else:
-            arrive=game_map.mat[target[0]][target[1]]
+        arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
+        townXY=self.getTownCenterCoords()
 
         #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
-            if arrive.ressource is not "-":
+        #Si ya pas de ressources, wait, sinon recolte
+            if arrive.ressource=='-':
+                self.status="waiting"
+        #Si t'est arrive a un town center
+            print(townXY[0], townXY[1], arrive.posX, arrive.posY)
+            if arrive.posX==townXY[0] and arrive.posY==townXY[1]:
+                self.dumpRessources()
+                self.status="returned"
+                print("returned")
+                print(self.target)
+            else: 
+                self.status="collecting"
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posX][arrive.posY]=arrive
 
@@ -256,6 +266,38 @@ class Villageois(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
+
+    def dumpRessources(self):
+    #check s'il a vraiment des ressources a dump
+        if self.collectionActuel > 0:
+            #check quel genre de ressource il a
+            #doit faire des millions de if pcq les ressources du joueurs ne correspondent pas au ressources de la map ...
+            # Nourriture : 0
+            # Bois: 1
+            # Pierre : 2
+            # Or : 3
+            # Energie : 4
+            if self.collectionType == '1':
+                c=1
+                
+            elif self.collectionType == '2':
+                c=0
+                
+            elif self.collectionType == '3':
+                c=2
+                
+            #SUPPOSER ETRE ARTEFACT but no. TO FIX.
+            elif self.collectionType == '4':
+                c=4
+                
+            elif self.collectionType == '5':
+                c=4
+
+            elif self.collectionType == '6':
+                c=3                
+            
+            self.parent.ressources[c]+=self.collectionActuel
+            self.collectionActuel = 0
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
