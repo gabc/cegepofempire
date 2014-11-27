@@ -308,7 +308,7 @@ class Guerrier(Unit):
         self.vitesseY = 5
         self.champDaggro = 5
         self.degat = 10
-        self.actionEnCours = None
+        self.actionEnCours = "scanEnemy"
         self.targetedBy = None
         self.unitCible = None
         self.unitCibleType = None
@@ -318,19 +318,9 @@ class Guerrier(Unit):
     def faitAction(self):
         if len(self.chemin) != 0:
             self.deplacer(self.deplaceur, self.chemin)
-        if self.actionEnCours == None:
-            self.actionEnCours = "scanEnemy"
-            print(self.actionEnCours)
-        elif self.actionEnCours == "scanEnemy":
-            self.scanEnemy()
-            print(self.actionEnCours)
-        elif self.actionEnCours == "marcheVersEnemy":
-            self.marcheVersEnemy()
-            print(self.actionEnCours)
-        elif self.actionEnCours == "attaqueCible":
-            self.attaqueCible()
-            print(self.actionEnCours)
 
+        getattr(self, self.actionEnCours)()
+        
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
