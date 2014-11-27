@@ -608,7 +608,7 @@ class Tower(Building):
         self.target=None
         self.typeTarget =None
         self.targetedBy = None
-        self.actionEnCours = None
+        self.actionEnCours = "scanEnemy" # Comme ça. Pas besoin de if :D
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
@@ -668,13 +668,7 @@ class Tower(Building):
 
 
     def faitAction(self):
-        if self.actionEnCours == None:
-            self.actionEnCours ="scanEnemy"
-        if self.actionEnCours == "scanEnemy":
-            self.scanEnemy()
-            print(self.actionEnCours)
-        if self.actionEnCours == "attaqueCible":
-            self.attaqueCible()
+        getattr(self, self.actionEnCours)()
 
         if self.cooldown != self.cooldownMax:
             self.cooldown += 1
