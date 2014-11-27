@@ -111,26 +111,17 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-
-        lcree = Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ")
-        lconnect = Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur")
-        lcree.grid(column=0, row=1)
-        lconnect.grid(column=1, row=1)
-
-        lip = Labeljm(cadreMenu, text=self.parent.monip)
+        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur").grid(column=1, row=1)
+        
+        Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
         self.autreip.insert(0, self.parent.monip)
-        lip.grid(column=0, row=2)
         self.autreip.grid(column=1, row=2)
 
-        creerB = Buttonjm(cadreMenu, text="Creer un serveur", command=self.creerServeur)
-        connecterB = Buttonjm(cadreMenu, text="Connecter a un serveur", command=self.connecterServeur)
-        creerB.grid(column=0, row=3)
-        connecterB.grid(column=1, row=3)
+        Buttonjm(cadreMenu, text="Creer un serveur", command=self.creerServeur).grid(column=0, row=3)
+        Buttonjm(cadreMenu, text="Connecter a un serveur", command=self.connecterServeur).grid(column=1, row=3)
 
-        # self.galax=PhotoImage(file="galaxie.gif")
-        # galaxl=Labeljm(self.cadreConnection,image=self.galax)
-        # galaxl.pack()
         cadreMenu.pack()
 
     def creeCadreAttente(self):
@@ -141,9 +132,6 @@ class Vue(object):
         self.demarreB.grid(column=0, row=1)
         self.listeJoueurs.grid(column=0, row=0)
         cadreMenu.pack(side=LEFT)
-        # self.galax2=PhotoImage(file="galaxie.gif")
-        # galax=Labeljm(self.cadreAttente,image=self.galax2)
-        # galax.pack(side=RIGHT)
 
     def afficheListeJoueurs(self, liste):
         self.listeJoueurs.delete(0, END)
@@ -153,12 +141,8 @@ class Vue(object):
     def initPartie(self, modele):
         self.partie = modele
         self.moi = modele.parent.nom
-
         self.cadreMenuPartie.grid(column=0, row=0, sticky=W + E)
-
-
         self.initJeu()
-
         self.placeCadre(self.cadrePartie)
 
 
