@@ -12,14 +12,18 @@ class Joueur():
         self.ere = 1
         self.maxUnits = 200
         self.maxUnitsCourrant = 0
-        self.ressources = [10,20,30,40,50]
-        self.playerColor = None
         # Index des ressources:
         # Nourriture : 0
         # Bois: 1
         # Pierre : 2
         # Or : 3
         # Energie : 4
+        self.ressources = {0 : 10,
+                           1 : 20,
+                           2 : 30,
+                           3 : 40,
+                           4 : 50}
+        self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
         self.ageContemporain = 2
@@ -276,36 +280,10 @@ class Villageois(Unit):
                 self.effectueDeplacement(self.chemin[0])
 
     def dumpRessources(self):
-    #check s'il a vraiment des ressources a dump avant de dump
+        #check s'il a vraiment des ressources a dump avant de dump
         if self.collectionActuel > 0:
-            #check quel genre de ressource il a
-            #doit faire des millions de if pcq les ressources du joueurs ne correspondent pas au ressources de la map ...
-            # Nourriture : 0
-            # Bois: 1
-            # Pierre : 2
-            # Or : 3
-            # Energie : 4
-            if self.collectionType == '1':
-                c=1
-                
-            elif self.collectionType == '2':
-                c=0
-                
-            elif self.collectionType == '3':
-                c=2
-                
-            #SUPPOSER ETRE ARTEFACT but no. TO FIX.
-            elif self.collectionType == '4':
-                c=4
-                
-            elif self.collectionType == '5':
-                c=4
-
-            elif self.collectionType == '6':
-                c=3                
-
             print("Villager",self.id,"dumped",int(self.collectionActuel/10),"ressources at base" )
-
+            c = int(self.collectionType)
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             self.collectionActuel = 0
             
