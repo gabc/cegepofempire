@@ -44,7 +44,6 @@ class Vue(object):
 
         self.initImgs()
 
-
     def initImgs(self):
         """Initialise les images"""
         self.imgs = {"food": ImageTk.PhotoImage(Image.open("img/food_ress.png")),
