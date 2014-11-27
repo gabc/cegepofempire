@@ -42,24 +42,19 @@ class Vue(object):
         self.actionSelectionnee=0#1=SpawnUnit, 2=tour##
         self.longeurLigne = 20
 
-        self.food_ress = Image.open("./img/food_ress.png")
-        self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
-        self.wood_ress = Image.open("./img/wood_ress.png")
-        self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
-        self.gold_ress = Image.open("./img/gold_ress.png")
-        self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
-        self.energy_ress = Image.open("./img/energy_ress.png")
-        self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
-        self.art_ress = Image.open("./img/art_ress.png")
-        self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
-        self.rock_ress = Image.open("./img/rock_ress.png")
-        self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+        self.initImgs()
 
-        self.tower_build = Image.open("./img/tower_build.png")##
-        self.photo_tower_build = ImageTk.PhotoImage(self.tower_build)##
 
-        self.barrack_build = Image.open("./img/barrack_build.png")##
-        self.photo_barrack_build = ImageTk.PhotoImage(self.barrack_build)##
+    def initImgs(self):
+        """Initialise les images"""
+        self.imgs = {"food": ImageTk.PhotoImage(Image.open("img/food_ress.png")),
+                     "wood": ImageTk.PhotoImage(Image.open("img/wood_ress.png")),
+                     "gold": ImageTk.PhotoImage(Image.open("img/gold_ress.png")),
+                     "energy": ImageTk.PhotoImage(Image.open("img/energy_ress.png")),
+                     "art": ImageTk.PhotoImage(Image.open("img/art_ress.png")),
+                     "rock": ImageTk.PhotoImage(Image.open("img/rock_ress.png")),
+                     "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
+                     "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png"))}
 
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
@@ -300,9 +295,9 @@ class Vue(object):
         if self.actionSelectionnee == 1:
             self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_tower_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["tower"], anchor='nw', tags="test")
         elif self.actionSelectionnee == 3:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_barrack_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="test")
         elif self.actionSelectionnee == 4:
             self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
 
@@ -707,9 +702,9 @@ class Vue(object):
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
-                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.photo_barrack_build, anchor='nw', tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["barrack"], anchor='nw', tags="unit")
                 elif i.type == "Tower":
-                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.photo_tower_build, anchor='nw', tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["tower"], anchor='nw', tags="unit")
                 else: ##town center
                     self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
@@ -734,17 +729,17 @@ class Vue(object):
         for i in range(self.parent.l):
             for j in range(self.parent.h):
                 if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags='img')
 
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
