@@ -106,6 +106,7 @@ class Map:
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(i,j,True) for j in range(hauteur)] for i in range(largeur)]
         self.toDelete=[]
+        self.MAX_RESSOURCE=5000
 
     def setSeed(self, seed):
         random.seed(seed)
@@ -117,7 +118,7 @@ class Map:
                 if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j].passable=False
                     self.mat[i][j].ressource = char
-                    self.mat[i][j].nbRessource=50
+                    self.mat[i][j].nbRessource=self.MAX_RESSOURCE
 
     def placeRessourceUnder(self, ratio, char):
          for i in range(self.largeur):
@@ -125,7 +126,7 @@ class Map:
                 nb = random.randrange(100)
                 if nb <= ratio:
                     self.mat[i][j].underRes=char
-                    self.mat[i][j].nbRessource=50
+                    self.mat[i][j].nbRessource=self.MAX_RESSOURCE
 
     def placeRessourcesOverworld(self):
         #OVERWORLD RESSOURCES
