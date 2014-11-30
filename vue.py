@@ -55,6 +55,20 @@ class Vue(object):
                      "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
                      "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png"))}
 
+    def initLabel(self):
+        self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
+        self.labelNourriture.grid(column=0, row=0)
+        self.labelBois = Label(self.cadreRessource, text="Bois: ", bg="brown", relief=SOLID, width=15)
+        self.labelBois.grid(column=1, row=0)
+        self.labelPierre = Label(self.cadreRessource, text="Pierre: ", bg="gray", relief=SOLID, width=15)
+        self.labelPierre.grid(column=0, row=1)
+        self.labelOr = Label(self.cadreRessource, text="Or: ", bg="gold", relief=SOLID, width=15)
+        self.labelOr.grid(column=1, row=1)
+        self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
+        self.labelEnergie.grid(column=0, row=2, columnspan=2)
+        self.labelPopulationMax= Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax.grid(column=1, row=0)
+        
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
         return self.canevasMilieu.canvasx(x)
@@ -153,12 +167,8 @@ class Vue(object):
         self.initCadre()
         # Variable bidon
         n = "100"
-        self.changeLabelBois(self.parent.myPlayer.ressources[1])
-        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
-        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
-        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
-        self.changeLabelOr(self.parent.myPlayer.ressources[3])
-        self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
+        self.initLabel()
+        
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -391,30 +401,24 @@ class Vue(object):
     ####Pour les images
 
     def changeLabelNourriture(self, n):
-        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + str(n), bg="red", relief=SOLID, width=15)
-        labelNourriture.grid(column=0, row=0)  # (column=1,row=0)
+        self.labelNourriture.config(text="Nourriture: " + str(n))
 
     def changeLabelBois(self, n):
-        labelBois = Label(self.cadreRessource, text="Bois: " + str(n), bg="brown", relief=SOLID, width=15)
-        labelBois.grid(column=1, row=0)  # (column=3,row=0)
+        self.labelBois.config(text="Bois: " + str(n))
 
     def changeLabelPierre(self, n):
-        labelPierre = Label(self.cadreRessource, text="Pierre: " + str(n), bg="gray", relief=SOLID, width=15)
-        labelPierre.grid(column=0, row=1)  # (column=1,row=1)
+        self.labelPierre.config(text="Pierre: " + str(n))
 
     def changeLabelOr(self, n):
-        labelOr = Label(self.cadreRessource, text="Or: " + str(n), bg="gold", relief=SOLID, width=15)
-        labelOr.grid(column=1, row=1)  # (column=3,row=1)
+        self.labelOr.config(text="Or: " + str(n))
 
     def changeLabelEnergie(self, n):
-        labelEnergie = Label(self.cadreRessource, text="Energie: " + str(n), bg="green2", relief=SOLID, width=15)
-        labelEnergie.grid(column=0, row=2, columnspan=2)  # (column=1,row=2,columnspan=2)
+        self.labelEnergie.config(text="Energie: " + str(n))
 
         # Pour le cadre de population
 
     def changeLabelPopulation(self, n):  # population et population max
-        labelPopulationMax = Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
-        labelPopulationMax.grid(column=1, row=0)
+        self.labelPopulationMax.config(text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
 
         # Pour le cadre Diplomatie/echange
 
