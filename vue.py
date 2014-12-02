@@ -269,7 +269,7 @@ class Vue(object):
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
-        elif self.actionSelectionnee == 2:
+        elif self.actionSelectionnee == 2:#tower
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
@@ -281,7 +281,7 @@ class Vue(object):
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
-            print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+            print("creating guerrier with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==5:# maison
             self.actionSelectionnee = 0
@@ -290,6 +290,11 @@ class Vue(object):
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["maison", caseX, caseY]])
             if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
                 self.parent.myPlayer.maxUnitsDepart+=10
+        elif self.actionSelectionnee==6:#Mouton
+            self.actionSelectionnee=0##
+            print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
+        
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -356,11 +361,19 @@ class Vue(object):
         self.cadreOptionBarrack = Frame(self.cadrePartie)
         buttonCreeGuerrier = Button(self.cadreOptionBarrack, text="Cree", command=self.creeGuerrier, width=8)  # text="Cree",command=,
         buttonCreeGuerrier.grid(column=0, row=1)
+        buttonCreeMouton = Button(self.cadreOptionBarrack, text="Cree Mouton", command=self.creeMouton, width=8)
+        buttonCreeMouton.grid(column=1,row=1)
 
         self.cadreOptionGuerrier = Frame(self.cadrePartie)
         buttonAttaquer = Button(self.cadreOptionGuerrier, text="Attaquer", width=8)
         buttonAttaquer.grid(column=0, row=1)
         buttonArreter = Button(self.cadreOptionGuerrier, text="Arreter", width=8)
+        buttonArreter.grid(column=1, row=1)
+        
+        self.cadreOptionMouton = Frame(self.cadrePartie)
+        buttonAttaquer = Button(self.cadreOptionMouton, text="Attaquer", width=8)
+        buttonAttaquer.grid(column=0, row=1)
+        buttonArreter = Button(self.cadreOptionMouton, text="Arreter", width=8)
         buttonArreter.grid(column=1, row=1)
 
         self.cadreInfoVillageois = Frame(self.cadrePartie)##
@@ -420,6 +433,9 @@ class Vue(object):
         
     def creeMaison(self):
         self.actionSelectionnee=5
+    
+    def creeMouton(self):
+        self.actionSelectionnee=6
 
     ####Pour les images
 
@@ -569,6 +585,7 @@ class Vue(object):
         self.cadreOptionConstruire.grid_forget()##
         self.cadreOptionBarrack.grid_forget()
         self.cadreOptionGuerrier.grid_forget()
+        self.cadreOptionMouton.grid_forget()
         self.cadreInfoTownCenter.grid_forget()
         self.cadreInfoVillageois.grid_forget()##
         self.cadreInfoAttaquant.grid_forget()##
@@ -666,6 +683,24 @@ class Vue(object):
             self.labelAttaquantNom.grid(column=0,row=3)##
             self.labelAttaquantAttaque.grid(column=0,row=4)##
             self.labelAttaquantDefense.grid(column=0,row=5)##
+            
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Mouton":
+            self.forgetAllCadre()
+            self.labelAttaquantHp= Label(self.cadreInfoAttaquant, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelAttaquantProprio = Label (self.cadreInfoAttaquant, text="Proprietaire : "+j.name,width=19)##
+            self.labelAttaquantNom = Label(self.cadreInfoAttaquant, text="Type: "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+            self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : "+str(self.parent.myPlayer.objectsSelectionne[0].degat),width=10)##
+            self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : "+str(self.parent.myPlayer.objectsSelectionne[0].defense),width=10)##
+
+            self.cadreOptionMouton.grid(column=0,row=2)
+            self.cadreInfoAttaquant.grid(column=1,row=2)##
+            self.labelAttaquantHp.grid(column=0,row=1)##
+            self.labelAttaquantProprio.grid(column=0,row=2)##
+            self.labelAttaquantNom.grid(column=0,row=3)##
+            self.labelAttaquantAttaque.grid(column=0,row=4)##
+            self.labelAttaquantDefense.grid(column=0,row=5)##
 
     # #
     def initLabelBas(self):
@@ -723,6 +758,12 @@ class Vue(object):
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+                elif u.type == "Mouton":
+                    self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                        if u == self.parent.myPlayer.objectsSelectionne[0]:
+                            self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+                
             for i in j.buildings:
                 caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
                 caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
