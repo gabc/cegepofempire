@@ -112,7 +112,7 @@ class Map:
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(i,j,True) for j in range(hauteur)] for i in range(largeur)]
         self.toDelete=[]
-        self.MAX_RESSOURCE=2500
+        self.MAX_RESSOURCE=2000
 
     def setSeed(self, seed):
         random.seed(seed)

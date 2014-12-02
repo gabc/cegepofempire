@@ -19,7 +19,7 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-        self.ressources = {0 : 10,
+        self.ressources = {0 : 50,
                            1 : 20,
                            2 : 30,
                            3 : 40,
@@ -90,9 +90,15 @@ class Joueur():
 
     def creerUnit(self, type, x, y):
         if type == "villageois":
-            self.units.append(Villageois(self.ID, x, y,self))
+            v=Villageois(self.ID, x, y,self)
+            if self.compEtSousCout(v.coutRes):
+                self.units.append(v)
+                self.maxUnitsCourrant+=v.coutPop
         elif type == "guerrier":
-            self.units.append(Guerrier(self.ID, x, y,self))
+            g=Guerrier(self.ID, x, y,self)
+            if self.compEtSousCout(g.coutRes):
+                self.units.append(g)
+                self.maxUnitsCourrant+=g.coutPop
         elif type == "mouton":
             self.units.append(Mouton(self.ID, x, y,self))
         elif type == "archer":
@@ -112,8 +118,20 @@ class Joueur():
                 self.buildings.append(Maison(self.ID, x, y,self))
                 self.parent.m.placeBuilding(x,y,"maison")
 
-    def changerAllies():
+    def changerAllies(self):
         pass
+
+    def compEtSousCout(self, cout):      
+        for k in self.ressources:
+            self.ressources[k] -= cout[k]
+            
+            if self.ressources[k] < 0:
+                self.ressources[k] += cout[k]
+                print("Not enough ressources of type "+str(k))
+                return False
+
+        return True
+                
 
     #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
@@ -156,6 +174,16 @@ class Unit():
         self.parent=parent
         self.target=(self.posX, self.posY)
         self.status="waiting"
+        self.food=0
+        self.coutRes = {0 : 0,
+                        1 : 0,
+                        2 : 0,
+                        3 : 0,
+                        4 : 0}
+        self.coutPop=0
+
+    def setCoutRes(self, idRes, nbRes):
+        self.coutRes[idRes]=nbRes
 
 
     def faitAction(self):
@@ -212,8 +240,8 @@ class Villageois(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
 
-        #for testing purposes
-        self.i=0
+        self.setCoutRes(0,30)
+        self.coutPop=1
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
@@ -260,8 +288,6 @@ class Villageois(Unit):
         return case
 
     def checkArrive(self, target, game_map):
-        #self.i+=1
-        #print(self.i)
         arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
@@ -471,6 +497,10 @@ class Guerrier(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
+        self.coutPop=3
+        self.setCoutRes(0,50)
+        self.setCoutRes(1,25)
+        self.setCoutRes(2,15)
 
 
     def faitAction(self):
@@ -1035,9 +1065,14 @@ class Modele(object):
 
 
     def creerUnite(self, args):
+<<<<<<< HEAD
+        self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
+        #self.joueurs[args[0]].maxUnitsCourrant+=1
+=======
         if self.joueurs[args[0]].maxUnitsCourrant < self.joueurs[args[0]].maxUnitsDepart:
             self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
             self.joueurs[args[0]].maxUnitsCourrant+=1
+>>>>>>> e0a56a317e7e0a0e54688428c4b2119366334850
 
 
     def deplaceUnite(self, args):
