@@ -60,7 +60,7 @@ class Joueur():
     def changerEreVerif(self):
         if self.ageCourrante != self.ageFutur:
             for i in range(self.nbTypeDeRessources):
-                if self.ressources[i] > 10:
+                if self.ressources[i] > 10: # 10 etant le cout des ressource pour changer d ere
                     self.changerErePossible = True
                     print("peut changer d'ere ! ")
 
@@ -214,7 +214,7 @@ class Villageois(Unit):
         if self.status=="backToBase":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
 
-        elif self.status=="atBase" and self.currentRes is not (0,0):          
+        elif self.status=="atBase" and self.currentRes is not (0,0):
             self.deplacer(self.deplaceur, self.currentRes)
             self.status="backToRes"
 
@@ -254,8 +254,8 @@ class Villageois(Unit):
         townXY=self.getTownCenterCoords()
 
         #Si il est dans le range de 1 case de son arrivee
-        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):           
-        #Si t'est arrive a un town center, dump cque t'as       
+        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
+        #Si t'est arrive a un town center, dump cque t'as
             if arrive.posX==townXY[0] and arrive.posY==townXY[1]:
                 self.dumpRessources()
                 self.status="atBase"
@@ -263,7 +263,7 @@ class Villageois(Unit):
             elif arrive.ressource=='-':
                 print("This space has no ressources")
                 self.status="waiting"
-            else: 
+            else:
                 self.status="collecting"
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posX][arrive.posY]=arrive
@@ -286,7 +286,7 @@ class Villageois(Unit):
             c = int(self.collectionType)
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             self.collectionActuel = 0
-            
+
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -320,7 +320,7 @@ class Guerrier(Unit):
             self.deplacer(self.deplaceur, self.chemin)
 
         getattr(self, self.actionEnCours)()
-        
+
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -598,7 +598,7 @@ class Tower(Building):
         self.target=None
         self.typeTarget =None
         self.targetedBy = None
-        self.actionEnCours = "scanEnemy" # Comme ça. Pas besoin de if :D
+        self.actionEnCours = "scanEnemy" # Comme Ã§a. Pas besoin de if :D
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
