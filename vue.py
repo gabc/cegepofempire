@@ -65,9 +65,11 @@ class Vue(object):
         self.labelOr = Label(self.cadreRessource, text="Or: ", bg="gold", relief=SOLID, width=15)
         self.labelOr.grid(column=1, row=1)
         self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
-        self.labelEnergie.grid(column=0, row=2, columnspan=2)
-        self.labelPopulationMax= Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelEnergie.grid(column=0, row=2,columnspan=2)#columnspan=2
+        self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnits))
         self.labelPopulationMax.grid(column=1, row=0)
+        #boutonCentrer=Button(self.cadreRessource,text="Centrer",command=self.centrer)
+        #boutonCentrer.grid(column=1,row=2)
         
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
@@ -180,7 +182,9 @@ class Vue(object):
         self.largeur = 800
         self.rHauteur = self.parent.h*20
         self.rLargeur = self.parent.l*20
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.rHauteur, self.rLargeur),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",
+                                    scrollregion=(0,0,self.rHauteur, self.rLargeur),
+                                    xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -203,7 +207,7 @@ class Vue(object):
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
-        #self.centrer()
+        self.centrer()
 
     def rafraichir(self):
         """ Rafraichi la vue au complet """
@@ -440,19 +444,22 @@ class Vue(object):
         for j in self.parent.modele.joueurs.values():
             if j.name == self.parent.nom:
                 print("mon nom: "+ j.name)
-            for i in j.buildings:
-                if i.type == "TownCenter":
-                    x=i.posX
-                    y=i.posY
-                    sx = float(self.rLargeur)
-                    ecranx=float(self.canevasMilieu.winfo_width())/2.0
-                    positionX = (x-ecranx)/sx
-                    self.canevasMilieu.xview("moveto",positionX)
-                    
-                    sy = float(self.rHauteur)
-                    ecrany=float(self.canevasMilieu.winfo_height())/2.0
-                    positionY = (y-ecrany)/sy
-                    self.canevasMilieu.yview("moveto",positionY)
+                for i in j.buildings:
+                    if i.type == "TownCenter":
+                        print(i.posX,i.posY)
+                        x=i.posX*self.longeurLigne
+                        y=i.posY*self.longeurLigne
+                        sx = float(self.rLargeur)
+                        ecranx=float(self.canevasMilieu.winfo_width())/2.0
+                        positionX = (x-ecranx)/sx
+                        print("calc",x,ecranx,sx,positionX)
+                        self.canevasMilieu.xview("moveto",positionX)
+                        
+                        sy = float(self.rHauteur)
+                        ecrany=float(self.canevasMilieu.winfo_height())/2.0
+                        positionY = (y-ecrany)/sy
+                        self.canevasMilieu.yview("moveto",positionY)
+                        print("deplacement",positionX,positionY)
                             
         #def centrerPlanete(self):
         #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
