@@ -53,7 +53,8 @@ class Vue(object):
                      "art": ImageTk.PhotoImage(Image.open("img/art_ress.png")),
                      "rock": ImageTk.PhotoImage(Image.open("img/rock_ress.png")),
                      "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
-                     "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png"))}
+                     "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png")),
+                     "maison": ImageTk.PhotoImage(Image.open("img/maison_build.png"))}
 
     def initLabel(self):
         self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
@@ -66,7 +67,7 @@ class Vue(object):
         self.labelOr.grid(column=1, row=1)
         self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
         self.labelEnergie.grid(column=0, row=2,columnspan=2)#columnspan=2
-        self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnitsDepart))
         self.labelPopulationMax.grid(column=1, row=0)
         #boutonCentrer=Button(self.cadreRessource,text="Centrer",command=self.centrer)
         #boutonCentrer.grid(column=1,row=2)
@@ -127,8 +128,8 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
-        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur").grid(column=1, row=1)
+        Labeljm(cadreMenu, text="Pour creer un serveur a l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter a un serveur").grid(column=1, row=1)
         
         Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
@@ -251,7 +252,7 @@ class Vue(object):
 
             if len(self.parent.myPlayer.objectsSelectionne) == 0: #si pas d'unite selectionnes
                 for b in self.parent.myPlayer.buildings:
-                    if b.type == "TownCenter" or b.type == "Barrack":
+                    if b.type == "TownCenter" or b.type == "Barrack" or b.type == "Maison":
                         if self.canx(self.currentX) >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.canx(self.currentX) <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.cany(self.currentY) >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.cany(self.currentY) <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
                             print("selected object: ", b.type)
@@ -281,6 +282,12 @@ class Vue(object):
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
+        elif self.actionSelectionnee==5:# maison
+            self.actionSelectionnee = 0
+            print("creating house with owner id: ", self.parent.myPlayer.ID)##
+            caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["maison", caseX, caseY]])
+            self.parent.myPlayer.maxUnitsDepart+=10
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -297,6 +304,8 @@ class Vue(object):
             self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="test")
         elif self.actionSelectionnee == 4:
             self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+        elif self.actionSelectionnee == 5:
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["maison"], anchor='nw', tags="test")##MAISON
 
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
@@ -321,8 +330,8 @@ class Vue(object):
         buttonConstruire.grid(column=0, row=1)
 
         self.cadreOptionTownCenter = Frame(self.cadrePartie)
-        buttonCree = Button(self.cadreOptionTownCenter, text="Creer", command=self.creeUnite, width=8)  # text="Cree",command=,
-        buttonCree.grid(column=0, row=1)
+        self.buttonCreeVillageois = Button(self.cadreOptionTownCenter, text="Creer", command=self.creeUnite, width=8)  # text="Cree",command=,
+        self.buttonCreeVillageois.grid(column=0, row=1)
         buttonUpgrade = Button(self.cadreOptionTownCenter, text="Upgrade1", width=8)##
         buttonUpgrade.grid(column=1,row=1)##
         buttonUpgrade2 = Button(self.cadreOptionTownCenter, text="Upgrade2", width=8)##
@@ -333,7 +342,7 @@ class Vue(object):
         buttonBatiment1.grid(column=0,row=1)##
         buttonBatiment2 = Button(self.cadreOptionConstruire,text="Barrack", command=self.creeBarrack, width=8)##
         buttonBatiment2.grid(column=1,row=1)##
-        buttonBatiment3 = Button(self.cadreOptionConstruire,text="Batiment3", width=8)##
+        buttonBatiment3 = Button(self.cadreOptionConstruire,text="Maison", command=self.creeMaison, width=8)##
         buttonBatiment3.grid(column=2,row=1)##
         buttonBatiment4 = Button(self.cadreOptionConstruire,text="Batiment4", width=8)##
         buttonBatiment4.grid(column=0,row=2)##
@@ -343,8 +352,8 @@ class Vue(object):
         buttonRetour.grid(column=2,row=2)##
 
         self.cadreOptionBarrack = Frame(self.cadrePartie)
-        buttonCree = Button(self.cadreOptionBarrack, text="Cree", command=self.creeGuerrier, width=8)  # text="Cree",command=,
-        buttonCree.grid(column=0, row=1)
+        buttonCreeGuerrier = Button(self.cadreOptionBarrack, text="Cree", command=self.creeGuerrier, width=8)  # text="Cree",command=,
+        buttonCreeGuerrier.grid(column=0, row=1)
 
         self.cadreOptionGuerrier = Frame(self.cadrePartie)
         buttonAttaquer = Button(self.cadreOptionGuerrier, text="Attaquer", width=8)
@@ -374,6 +383,11 @@ class Vue(object):
         self.labelBarrackHp = Label(self.cadreInfoBarrack)
         self.labelBarrackProprio = Label(self.cadreInfoBarrack)
         self.labelBarrackNom = Label(self.cadreInfoBarrack)
+        
+        self.cadreInfoMaison = Frame(self.cadrePartie)
+        self.labelMaisonHp = Label(self.cadreInfoMaison)
+        self.labelMaisonProprio = Label(self.cadreInfoMaison)
+        self.labelMaisonNom = Label(self.cadreInfoMaison)
 
 
         self.cadreMiniMap = Frame(self.cadrePartie)
@@ -401,6 +415,9 @@ class Vue(object):
 
     def creeBarrack(self):
     	self.actionSelectionnee=3
+        
+    def creeMaison(self):
+        self.actionSelectionnee=5
 
     ####Pour les images
 
@@ -422,7 +439,7 @@ class Vue(object):
         # Pour le cadre de population
 
     def changeLabelPopulation(self, n):  # population et population max
-        self.labelPopulationMax.config(text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax.config(text=str(n) +" / " + str(self.parent.myPlayer.maxUnitsDepart))
 
         # Pour le cadre Diplomatie/echange
 
@@ -551,6 +568,7 @@ class Vue(object):
         self.cadreInfoVillageois.grid_forget()##
         self.cadreInfoAttaquant.grid_forget()##
         self.cadreInfoBarrack.grid_forget()
+        self.cadreInfoMaison.grid_forget()
 
 
     def optionUnite(self):
@@ -561,6 +579,10 @@ class Vue(object):
         # TownCenter
         elif self.parent.myPlayer.objectsSelectionne[0].type == "TownCenter":
             self.forgetAllCadre()
+            if self.parent.myPlayer.maxUnitsCourrant >= self.parent.myPlayer.maxUnitsDepart:
+                self.buttonCreeVillageois.config(state='disabled')
+            else:
+                self.buttonCreeVillageois.config(state='normal')
             self.labelTownCenterHp = Label(self.cadreInfoTownCenter, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##,width=10)
             for j in self.parent.modele.joueurs.values():
                 if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
@@ -587,6 +609,20 @@ class Vue(object):
             self.labelBarrackHp.grid(column=0,row=1)##
             self.labelBarrackProprio.grid(column=0,row=2)##
             self.labelBarrackNom.grid(column=0,row=3)##
+            
+        # Maison
+        elif self.parent.myPlayer.objectsSelectionne[0].type == "Maison":
+            self.forgetAllCadre()
+            self.labelMaisonHp = Label(self.cadreInfoMaison, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##,width=10)
+            for j in self.parent.modele.joueurs.values():
+                if j.ID == self.parent.myPlayer.objectsSelectionne[0].ownerID:
+                    self.labelMaisonProprio = Label(self.cadreInfoMaison,text="Proprietaire : "+j.name,width=19)
+            self.labelMaisonNom = Label(self.cadreInfoMaison,text="Type : "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
+
+            self.cadreInfoMaison.grid(column=1, row=2)##
+            self.labelMaisonHp.grid(column=0,row=1)##
+            self.labelMaisonProprio.grid(column=0,row=2)##
+            self.labelMaisonNom.grid(column=0,row=3)##
 
 
 
@@ -688,6 +724,14 @@ class Vue(object):
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["barrack"], anchor='nw', tags="unit")
+                elif i.type == "Maison":
+                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
+                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
+
+                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                        if i == self.parent.myPlayer.objectsSelectionne[0]:
+                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["maison"], anchor='nw', tags="unit")#MAISON
                 elif i.type == "Tower":
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["tower"], anchor='nw', tags="unit")
                 else: ##town center

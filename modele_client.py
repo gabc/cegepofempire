@@ -11,6 +11,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
+        self.maxUnitsDepart = 10
         self.maxUnitsCourrant = 0
         # Index des ressources:
         # Nourriture : 0
@@ -100,6 +101,10 @@ class Joueur():
         if type == "barrack":
             self.buildings.append(Barrack(self.ID, x, y,self))
             self.parent.m.placeBuilding(x,y,"barrack")
+        if type == "maison":
+            self.buildings.append(Maison(self.ID, x, y,self))
+            self.parent.m.placeBuilding(x,y,"maison")
+            #self.joueurs[].maxUnitsCourrant+=10
 
     def changerAllies():
         pass
@@ -706,8 +711,9 @@ class Modele(object):
 
 
     def creerUnite(self, args):
-        self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
-        self.joueurs[args[0]].maxUnitsCourrant+=1
+        if self.joueurs[args[0]].maxUnitsCourrant < self.joueurs[args[0]].maxUnitsDepart:
+            self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
+            self.joueurs[args[0]].maxUnitsCourrant+=1
 
 
     def deplaceUnite(self, args):
