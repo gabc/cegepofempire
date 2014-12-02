@@ -93,6 +93,10 @@ class Joueur():
             self.units.append(Villageois(self.ID, x, y,self))
         elif type == "guerrier":
             self.units.append(Guerrier(self.ID, x, y,self))
+        elif type == "mouton":
+            self.units.append(Mouton(self.ID, x, y,self))
+        elif type == "archer":
+            self.units.append(Archer(self.ID, x, y,self))
 
     def creerJoueurBuilding(self, type, x, y):
         if type == "tower":
@@ -305,7 +309,142 @@ class Villageois(Unit):
             self.target=self.currentRes
             self.status="backToRes"
 
+class Mouton(Unit):
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
+        self.type = "Mouton"
+        
+        #Arbitraire
+        self.champDeVision = 50
+        self.delaiDeConstruction = 20000
+        self.hpMax =100000 #50
+        self.hpActuel = self.hpMax
+        self.range = 1 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 1000#1
+        self.vitesseX = 500#5
+        self.vitesseY = 500#5
+        self.champDaggro = 5
+        self.degat = 10000000#10
+        self.actionEnCours = "scanEnemy"
+        self.targetedBy = None
+        self.unitCible = None
+        self.unitCibleType = None
+        self.unitCiblePosCase = None
 
+
+    def faitAction(self):
+        if len(self.chemin) != 0:
+            self.deplacer(self.deplaceur, self.chemin)
+
+        getattr(self, self.actionEnCours)()
+
+        print(self.actionEnCours)
+
+        if self.cooldown != self.maxCooldown:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
+
+
+    def scanEnemy(self):
+            if len(self.chemin) ==0:
+                for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                  for n in i.units:
+                        if n.ownerID is not self.ownerID:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            caseNx, caseNy =trouveCase(n.posX, n.posY)
+                            if Helper.calcDistance(caseGx, caseGy , caseNx, caseNy) <= self.champDaggro:
+                                self.unitCible = n
+                                self.actionEnCours = "marcheVersEnemy"
+                                self.unitCibleType = "Unit"
+                                self.unitCiblePosCase = (caseNx, caseNy)
+                                self.unitCible.targetedBy = self
+                                break
+                  for m in i.buildings:
+                        if m.ownerID is not self.ownerID:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            if Helper.calcDistance(caseGx, caseGy, m.posX, m.posY) <= self.champDaggro:
+                                self.unitCible = m
+                                self.actionEnCours = "marcheVersEnemy"
+                                self.unitCibleType = "Building"
+                                self.unitCiblePosCase = (m.posX,m.posY)
+                                self.unitCible.targetedBy = self
+                                break
+
+
+
+    def attaqueCible(self):
+        if self.unitCible.isAlive() == True and self.unitCibleType =="Unit":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+            if Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range:
+                if self.cooldown == self.maxCooldown:
+                    self.unitCible.recevoirDegats(self.degat)
+                    self.cooldown = 0
+            elif Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:
+                self.actionEnCours = "marcheVersEnemy"
+
+        elif self.unitCible.isAlive() == True and self.unitCibleType == "Building":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+
+            if Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.range or math.floor(Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY)) == 1:
+                if self.cooldown == self.maxCooldown:
+                    self.unitCible.recevoirDegats(self.degat)
+                    print(self.unitCible.hpActuel, " = la vie de ",self.unitCible.type)
+                    self.cooldown == 0
+            elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
+                self.actionEnCours = "marcheVersEnemy"
+                print(self.actionEnCours)
+
+
+        else:
+            self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
+
+    def marcheVersEnemy(self):
+        if self.unitCible.isAlive():
+            if self.unitCibleType == "Unit":
+                caseGx, caseGy = trouveCase(self.posX,self.posY)
+                caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+            elif self.unitCibleType == "Building":
+                caseGx, caseGy = trouveCase(self.posX,self.posY)
+                caseNx, caseNy =self.unitCible.posX,self.unitCible.posY
+
+
+
+
+            if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
+                #self.deplaceUnit(self, (caseNx, caseNy))
+                self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
+                print("on rester pogner dans le marche vers")
+            elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
+                self.actionEnCours = "attaqueCible"
+        else:
+            self.actionEnCours ="scanEnemy"
+
+
+
+
+    def recevoirDegats(self, degatsRecus):
+        if degatsRecus -self.defense > self.hpActuel:
+            self.hpActuel = 0
+        else :
+            self.hpActuel -= degatsRecus -self.defense
+
+    def deplacer(self, deplaceur, arrive):
+        cx, cy = trouveCase(self.posX, self.posY)
+        if self.chemin is None or self.chemin == []:
+            self.deplaceur = deplaceur
+            self.chemin = deplaceur.chemin(self, arrive)
+        else:
+            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
+                del self.chemin[0]
+            if self.chemin:
+                self.effectueDeplacement(self.chemin[0])
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -728,7 +867,7 @@ class Barrack(Building):
         self.delaiDeConstruction = 20000
         self.champDeVision = 50
 
-        self.uniteCreable = [Guerrier]
+        self.uniteCreable = [Guerrier,Mouton]
         self.creationQueue = []
         self.tempsRestant = 0
 
