@@ -214,11 +214,10 @@ class Villageois(Unit):
         if self.status=="backToBase":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
 
-        elif self.status=="atBase" and self.currentRes is not None:          
+        elif self.status=="backToRes":          
             self.deplacer(self.deplaceur, self.currentRes)
-            self.status="backToRes"
 
-        print(self.status)
+        #print(self.status)
 
     def getTownCenterCoords(self):
         for b in self.parent.buildings:
@@ -231,6 +230,7 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
             self.status="backToBase"
+            self.target=self.getTownCenterCoords()
             print("Villager", self.id, "has a full inventory")
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
@@ -256,15 +256,15 @@ class Villageois(Unit):
         townXY=self.getTownCenterCoords()
 
         #print(x, y, "arrive", arrive.posX, arrive.posY)
-
+        #print(arrive.building)
         #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):           
         #Si t'est arrive a un town center, dump cque t'as
             #print("arrive:", arrive.posX, arrive.posY, "Town:",townXY[0] ,townXY[1])
+
             if arrive.building=="TownCenter":
                 self.dumpRessources()
-                self.status="atBase"
-                print("BASE BASE BASE!!")
+                #print("BASE BASE BASE!!")
             #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
                 print("This space has no ressources")
@@ -293,6 +293,7 @@ class Villageois(Unit):
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             self.collectionActuel = 0
             self.target=self.currentRes
+            self.status="backToRes"
             
 
 class Guerrier(Unit):
