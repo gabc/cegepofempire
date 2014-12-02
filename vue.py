@@ -66,7 +66,7 @@ class Vue(object):
         self.labelOr.grid(column=1, row=1)
         self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
         self.labelEnergie.grid(column=0, row=2, columnspan=2)
-        self.labelPopulationMax= Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax= Label(self.cadrePopulation, text="Max de pop" +" / " + str(self.parent.myPlayer.maxUnits))
         self.labelPopulationMax.grid(column=1, row=0)
         
     def canx(self, x):
