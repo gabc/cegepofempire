@@ -52,8 +52,8 @@ class Joueur():
                 self.Ere3()
             elif self.ageCourrante == self.ageModerne:
                 self.Ere4()
-            print(" changement d'ere reussi ")
-        print("age courante est " + str(self.ageCourrante))
+            #print(" changement d'ere reussi ")
+            print("age courante est " + str(self.ageCourrante))
         self.changerErePossible = False
 
 
@@ -62,7 +62,7 @@ class Joueur():
             for i in range(self.nbTypeDeRessources):
                 if self.ressources[i] > 10: # 10 etant le cout des ressource pour changer d ere
                     self.changerErePossible = True
-                    print("peut changer d'ere ! ")
+                    #print("peut changer d'ere ! ")
 
     def Ere2(self):
         self.ageCourrante = self.ageContemporain
@@ -100,6 +100,10 @@ class Joueur():
         if type == "barrack":
             if self.parent.m.placeBuilding(x,y,"barrack"):
                 self.buildings.append(Barrack(self.ID, x, y,self))
+        if type == "maison":
+            if self.parent.m.placeBuilding(x,y,"maison"):
+                self.buildings.append(Maison(self.ID, x, y,self))
+
 
     def changerAllies():
         pass
@@ -563,7 +567,7 @@ class TownCenter(Building):
 class Maison(Building):
     def __init__(self, ownerID, posX, posY, parent):
         Building.__init__(self, ownerID,posX,posY, parent)
-        self.type="Maison"
+        self.type="maison"
 
         self.hpMax = 700
         self.hpActuel = self.hpMax
@@ -574,7 +578,7 @@ class Maison(Building):
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY, parent):
         Building.__init__(self, ownerID, posX, posY, parent)
-        self.type="Barrack"
+        self.type="barrack"
 
         self.hpMax = 1000
         self.hpActuel = self.hpMax
@@ -632,7 +636,7 @@ class Barrack(Building):
 class Tower(Building):
     def __init__(self, ownerID, posX, posY, parent):
         Building.__init__(self, ownerID, posX, posY, parent)
-        self.type = "Tower"
+        self.type = "tower"
         self.hpMax = 400
         self.hpActuel = self.hpMax
         self.longueur = 20
@@ -644,7 +648,7 @@ class Tower(Building):
         self.typeTarget =None
         self.targetedBy = None
 
-        self.actionEnCours = "scanEnemy" 
+        self.actionEnCours = "scanEnemy"
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
