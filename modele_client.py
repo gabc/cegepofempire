@@ -369,7 +369,7 @@ class Mouton(Unit):
 
         getattr(self, self.actionEnCours)()
 
-        print(self.actionEnCours)
+        #print(self.actionEnCours)
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -426,7 +426,7 @@ class Mouton(Unit):
                     self.cooldown == 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
-                print(self.actionEnCours)
+                #print(self.actionEnCours)
 
 
         else:
@@ -448,7 +448,7 @@ class Mouton(Unit):
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
                 #self.deplaceUnit(self, (caseNx, caseNy))
                 self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-                print("on rester pogner dans le marche vers")
+                #print("on rester pogner dans le marche vers")
             elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
                 self.actionEnCours = "attaqueCible"
         else:
@@ -511,7 +511,7 @@ class Guerrier(Unit):
 
         getattr(self, self.actionEnCours)()
 
-        print(self.actionEnCours)
+        #print(self.actionEnCours)
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -568,7 +568,7 @@ class Guerrier(Unit):
                     self.cooldown == 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
-                print(self.actionEnCours)
+                #print(self.actionEnCours)
 
 
         else:
@@ -1222,6 +1222,3 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
-
-
-
