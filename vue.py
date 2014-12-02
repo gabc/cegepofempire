@@ -66,9 +66,9 @@ class Vue(object):
         self.labelOr.grid(column=1, row=1)
         self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
         self.labelEnergie.grid(column=0, row=2, columnspan=2)
-        self.labelPopulationMax= Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnits))
         self.labelPopulationMax.grid(column=1, row=0)
-        
+
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
         return self.canevasMilieu.canvasx(x)
@@ -125,9 +125,9 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
-        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur").grid(column=1, row=1)
-        
+        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©er un serveur ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  un serveur").grid(column=1, row=1)
+
         Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
         self.autreip.insert(0, self.parent.monip)
@@ -168,7 +168,7 @@ class Vue(object):
         # Variable bidon
         n = "100"
         self.initLabel()
-        
+
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -432,7 +432,7 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
-    
+
     def centrerTownCenter(self):#pour appeler la fonction centrer
         self.centrer()
 
@@ -448,12 +448,12 @@ class Vue(object):
                     ecranx=float(self.canevasMilieu.winfo_width())/2.0
                     positionX = (x-ecranx)/sx
                     self.canevasMilieu.xview("moveto",positionX)
-                    
+
                     sy = float(self.rHauteur)
                     ecrany=float(self.canevasMilieu.winfo_height())/2.0
                     positionY = (y-ecrany)/sy
                     self.canevasMilieu.yview("moveto",positionY)
-                            
+
         #def centrerPlanete(self):
         #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
 
