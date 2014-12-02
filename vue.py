@@ -70,7 +70,8 @@ class Vue(object):
         self.labelPopulationMax.grid(column=1, row=0)
         #boutonCentrer=Button(self.cadreRessource,text="Centrer",command=self.centrer)
         #boutonCentrer.grid(column=1,row=2)
-        
+
+
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
         return self.canevasMilieu.canvasx(x)
@@ -127,9 +128,9 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
-        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur").grid(column=1, row=1)
-        
+        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©er un serveur ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  un serveur").grid(column=1, row=1)
+
         Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
         self.autreip.insert(0, self.parent.monip)
@@ -170,7 +171,7 @@ class Vue(object):
         # Variable bidon
         n = "100"
         self.initLabel()
-        
+
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -436,10 +437,35 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
+<<<<<<< HEAD
+
+    def centrerTownCenter(self):#pour appeler la fonction centrer
+        self.centrer()
+=======
+>>>>>>> d3381f54aa56b61caf44c5df3baf5e89829719f8
 
     def centrer(self):#Pour centrer la fenetre sur le town center
         for j in self.parent.modele.joueurs.values():
             if j.name == self.parent.nom:
+<<<<<<< HEAD
+                print("mon nom: "+ j.name)
+            for i in j.buildings:
+                if i.type == "TownCenter":
+                    x=i.posX
+                    y=i.posY
+                    sx = float(self.rLargeur)
+                    ecranx=float(self.canevasMilieu.winfo_width())/2.0
+                    positionX = (x-ecranx)/sx
+                    self.canevasMilieu.xview("moveto",positionX)
+
+                    sy = float(self.rHauteur)
+                    ecrany=float(self.canevasMilieu.winfo_height())/2.0
+                    positionY = (y-ecrany)/sy
+                    self.canevasMilieu.yview("moveto",positionY)
+
+        #def centrerPlanete(self):
+        #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
+=======
                 #print("mon nom: "+ j.name)
                 for i in j.buildings:
                     if i.type == "TownCenter":
@@ -449,11 +475,12 @@ class Vue(object):
                         ecranx=float(self.canevasMilieu.winfo_width())/2.0
                         positionX = (x-ecranx)/sx
                         self.canevasMilieu.xview("moveto",positionX)
-                        
+
                         sy = float(self.rHauteur)
                         ecrany=float(self.canevasMilieu.winfo_height())/2.0
                         positionY = (y-ecrany)/sy
                         self.canevasMilieu.yview("moveto",positionY)
+>>>>>>> d3381f54aa56b61caf44c5df3baf5e89829719f8
 
     def diplomatieFenetre(self, event):
         self.toplevel = Toplevel()
