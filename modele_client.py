@@ -196,7 +196,7 @@ class Villageois(Unit):
         self.collectionMax = 100
         self.collectionActuel = 0
         self.collectionType = 0
-        self.currentRes=(0,0)
+        self.currentRes=None
 
         self.vitesseX = 5
         self.vitesseY = 5
@@ -208,15 +208,17 @@ class Villageois(Unit):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
 
-        elif self.status is not "waiting":    #Sinon check son target si tu n'attend pas
+        if self.status is not "waiting":    #Sinon check son target si tu n'attend pas
             self.checkArrive(self.target, self.parent.parent.m)
 
         if self.status=="backToBase":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
 
-        elif self.status=="atBase" and self.currentRes is not (0,0):
+        elif self.status=="backToRes":
+
             self.deplacer(self.deplaceur, self.currentRes)
-            self.status="backToRes"
+
+        #print(self.status)
 
     def getTownCenterCoords(self):
         for b in self.parent.buildings:
@@ -229,6 +231,7 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
             self.status="backToBase"
+            self.target=self.getTownCenterCoords()
             print("Villager", self.id, "has a full inventory")
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
@@ -241,24 +244,30 @@ class Villageois(Unit):
                 case.ressource='-'
                 case.passable=True;
                 self.status="backToBase"
-                print
+                self.target=self.getTownCenterCoords()
 
         return case
 
     def checkArrive(self, target, game_map):
-        self.i+=1
+        #self.i+=1
         #print(self.i)
         arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
         townXY=self.getTownCenterCoords()
 
+        #print(x, y, "arrive", arrive.posX, arrive.posY)
+        #print(arrive.building)
         #Si il est dans le range de 1 case de son arrivee
+
+
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
         #Si t'est arrive a un town center, dump cque t'as
-            if arrive.posX==townXY[0] and arrive.posY==townXY[1]:
+            #print("arrive:", arrive.posX, arrive.posY, "Town:",townXY[0] ,townXY[1])
+
+            if arrive.building=="TownCenter":
                 self.dumpRessources()
-                self.status="atBase"
+                #print("BASE BASE BASE!!")
             #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
                 print("This space has no ressources")
@@ -286,6 +295,9 @@ class Villageois(Unit):
             c = int(self.collectionType)
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             self.collectionActuel = 0
+            self.target=self.currentRes
+            self.status="backToRes"
+
 
 
 class Guerrier(Unit):
@@ -630,7 +642,7 @@ class Tower(Building):
         self.target=None
         self.typeTarget =None
         self.targetedBy = None
-        self.actionEnCours = "scanEnemy" # Comme ÃƒÂ§a. Pas besoin de if :D
+        self.actionEnCours = "scanEnemy" # Comme ÃƒÆ’Ã‚Â§a. Pas besoin de if :D
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown

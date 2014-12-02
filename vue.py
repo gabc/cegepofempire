@@ -65,9 +65,12 @@ class Vue(object):
         self.labelOr = Label(self.cadreRessource, text="Or: ", bg="gold", relief=SOLID, width=15)
         self.labelOr.grid(column=1, row=1)
         self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
-        self.labelEnergie.grid(column=0, row=2, columnspan=2)
+        self.labelEnergie.grid(column=0, row=2,columnspan=2)#columnspan=2
         self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnits))
         self.labelPopulationMax.grid(column=1, row=0)
+        #boutonCentrer=Button(self.cadreRessource,text="Centrer",command=self.centrer)
+        #boutonCentrer.grid(column=1,row=2)
+
 
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
@@ -125,8 +128,8 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â©er un serveur ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
-        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã†â€™Ãƒâ€šÃ‚Â  un serveur").grid(column=1, row=1)
+        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©er un serveur ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  un serveur").grid(column=1, row=1)
 
         Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
@@ -180,7 +183,9 @@ class Vue(object):
         self.largeur = 800
         self.rHauteur = self.parent.h*20
         self.rLargeur = self.parent.l*20
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.rHauteur, self.rLargeur),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",
+                                    scrollregion=(0,0,self.rHauteur, self.rLargeur),
+                                    xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -203,7 +208,7 @@ class Vue(object):
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
-        #self.centrer()
+        self.centrer()
 
     def rafraichir(self):
         """ Rafraichi la vue au complet """
@@ -432,13 +437,17 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
+<<<<<<< HEAD
 
     def centrerTownCenter(self):#pour appeler la fonction centrer
         self.centrer()
+=======
+>>>>>>> d3381f54aa56b61caf44c5df3baf5e89829719f8
 
-    def centrer(self):#Pour centrer la fenetre sur le town center, ne fonctionne pas
+    def centrer(self):#Pour centrer la fenetre sur le town center
         for j in self.parent.modele.joueurs.values():
             if j.name == self.parent.nom:
+<<<<<<< HEAD
                 print("mon nom: "+ j.name)
             for i in j.buildings:
                 if i.type == "TownCenter":
@@ -456,6 +465,22 @@ class Vue(object):
 
         #def centrerPlanete(self):
         #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
+=======
+                #print("mon nom: "+ j.name)
+                for i in j.buildings:
+                    if i.type == "TownCenter":
+                        x=i.posX*self.longeurLigne
+                        y=i.posY*self.longeurLigne
+                        sx = float(self.rLargeur)
+                        ecranx=float(self.canevasMilieu.winfo_width())/2.0
+                        positionX = (x-ecranx)/sx
+                        self.canevasMilieu.xview("moveto",positionX)
+
+                        sy = float(self.rHauteur)
+                        ecrany=float(self.canevasMilieu.winfo_height())/2.0
+                        positionY = (y-ecrany)/sy
+                        self.canevasMilieu.yview("moveto",positionY)
+>>>>>>> d3381f54aa56b61caf44c5df3baf5e89829719f8
 
     def diplomatieFenetre(self, event):
         self.toplevel = Toplevel()
@@ -715,17 +740,17 @@ class Vue(object):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.l):
             for j in range(self.parent.h):
-                if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
+                if self.parent.m.mat[i][j].ressource == FOOD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
+                elif self.parent.m.mat[i][j].ressource == WOOD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ROCK:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ARTE:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ENERGY:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
+                elif self.parent.m.mat[i][j].ressource == GOLD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags='img')
 
     def imgLabelPopulation(self):
