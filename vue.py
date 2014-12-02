@@ -128,8 +128,8 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â©er un serveur ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
-        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã†â€™Ãƒâ€ Ã¢â‚¬â„¢ÃƒÆ’Ã¢â‚¬Å¡Ãƒâ€šÃ‚Â  un serveur").grid(column=1, row=1)
+        Labeljm(cadreMenu, text="Pour creer un serveur a l'adresse inscrite").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter a un serveur").grid(column=1, row=1)
 
         Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
@@ -656,8 +656,10 @@ class Vue(object):
     def rafraichirCanevas(self):
 
         for c in self.parent.m.toDelete:
-            print(c.id)
             self.canevasMilieu.delete("id_"+str(c.id))
+
+        for i in range(len(self.parent.m.toDelete)):
+            del(self.parent.m.toDelete[i])
         
         self.canevasMilieu.delete("unit")
         for j in self.parent.modele.joueurs.values():
