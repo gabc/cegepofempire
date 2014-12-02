@@ -11,15 +11,19 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
-        self.maxUnitsCourrant = 10
-        self.ressources = [10,20,30,40,50]
-        self.playerColor = None
+        self.maxUnitsCourrant = 0
         # Index des ressources:
         # Nourriture : 0
         # Bois: 1
         # Pierre : 2
         # Or : 3
         # Energie : 4
+        self.ressources = {0 : 10,
+                           1 : 20,
+                           2 : 30,
+                           3 : 40,
+                           4 : 50}
+        self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
         self.ageContemporain = 2
@@ -140,7 +144,7 @@ class Unit():
         self.chemin = []
         self.parent=parent
         self.target=(self.posX, self.posY)
-        self.status="spawned"
+        self.status="waiting"
 
 
     def faitAction(self):
@@ -188,23 +192,31 @@ class Villageois(Unit):
         self.isSelected = False ##add
 
         #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
-        self.collectionRate = 3000
-        self.collectionMax = 25
+        self.collectionRate = 1
+        self.collectionMax = 100
         self.collectionActuel = 0
+        self.collectionType = 0
+        self.currentRes=(0,0)
 
         self.vitesseX = 5
         self.vitesseY = 5
 
+        #for testing purposes
+        self.i=0
+
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
-        elif self.status is not "spawned":    #Sinon check son target si il ne viens pas juste de spawn
+
+        elif self.status is not "waiting":    #Sinon check son target si tu n'attend pas
             self.checkArrive(self.target, self.parent.parent.m)
 
-        if self.status=="return":
+        if self.status=="backToBase":
             self.deplacer(self.deplaceur, self.getTownCenterCoords())
-            self.status="waiting"
-            self.collectionActuel=0
+
+        elif self.status=="atBase" and self.currentRes is not (0,0):          
+            self.deplacer(self.deplaceur, self.currentRes)
+            self.status="backToRes"
 
     def getTownCenterCoords(self):
         for b in self.parent.buildings:
@@ -216,33 +228,43 @@ class Villageois(Unit):
 
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
-            self.status="return"
-            print("retour d'un villageois")
+            self.status="backToBase"
+            print("Villager", self.id, "has a full inventory")
         elif case.nbRessource > 0:
-            case.nbRessource-=1
-            self.collectionActuel+=1
-            print(self.collectionActuel)
-            print(self.id, "resource left: ", case.nbRessource)
+            case.nbRessource-=self.collectionRate
+            self.collectionActuel+=self.collectionRate
+            self.collectionType=case.ressource
+            self.currentRes=(case.posX, case.posY)
+            #print("resource left: ", case.nbRessource)
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
                 case.passable=True;
-                self.status="return"
+                self.status="backToBase"
+                print
 
         return case
 
     def checkArrive(self, target, game_map):
-        #check si le target est en pixels ou en cases de jeu
-        if target[0] > game_map.largeur and target[1] > game_map.hauteur:
-            arrive=game_map.mat[math.trunc(target[0]/self.parent.parent.vue.longeurLigne)][math.trunc(target[1]/self.parent.parent.vue.longeurLigne)]
-        else:
-            arrive=game_map.mat[target[0]][target[1]]
+        self.i+=1
+        #print(self.i)
+        arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
+        townXY=self.getTownCenterCoords()
 
         #Si il est dans le range de 1 case de son arrivee
-        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
-            if arrive.ressource is not "-":
+        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):           
+        #Si t'est arrive a un town center, dump cque t'as       
+            if arrive.posX==townXY[0] and arrive.posY==townXY[1]:
+                self.dumpRessources()
+                self.status="atBase"
+            #Si la case n'a pas de ressources
+            elif arrive.ressource=='-':
+                print("This space has no ressources")
+                self.status="waiting"
+            else: 
+                self.status="collecting"
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posX][arrive.posY]=arrive
 
@@ -256,6 +278,15 @@ class Villageois(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
+
+    def dumpRessources(self):
+        #check s'il a vraiment des ressources a dump avant de dump
+        if self.collectionActuel > 0:
+            print("Villager",self.id,"dumped",int(self.collectionActuel/10),"ressources at base" )
+            c = int(self.collectionType)
+            self.parent.ressources[c]+=int(self.collectionActuel/10)
+            self.collectionActuel = 0
+            
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -275,30 +306,21 @@ class Guerrier(Unit):
         self.defense = 1
         self.vitesseX = 5
         self.vitesseY = 5
-        self.champDaggro = 30
+        self.champDaggro = 5
         self.degat = 10
-        self.actionEnCours = None
+        self.actionEnCours = "scanEnemy"
         self.targetedBy = None
         self.unitCible = None
         self.unitCibleType = None
+        self.unitCiblePosCase = None
 
 
     def faitAction(self):
-        if self.actionEnCours == None:
-            self.actionEnCours = "scanEnemy"
-            print(self.actionEnCours)
-        elif self.actionEnCours == "scanEnemy":
-            self.scanEnemy()
-            print(self.actionEnCours)
-        elif self.actionEnCours == "marcheVersEnemy":
-            self.marcheVersEnemy()
-            print(self.actionEnCours)
-        elif self.actionEnCours == "attaqueCible":
-            self.attaqueCible()
-            print(self.actionEnCours)
-        elif self.chemin:
+        if len(self.chemin) != 0:
             self.deplacer(self.deplaceur, self.chemin)
 
+        getattr(self, self.actionEnCours)()
+        
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -306,40 +328,51 @@ class Guerrier(Unit):
 
 
     def scanEnemy(self):
-            if self.chemin:
-                self.deplacer(self.deplaceur, self.chemin)
-            if self.targetedBy and self.unitCible is None:
-                self.unitCible = self.targetedBy
-                self.attaqueCible(self.targetedBy)
-            else:
+            if len(self.chemin) ==0:
                 for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
                   for n in i.units:
                         if n.ownerID is not self.ownerID:
-                            caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
-                            if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            caseNx, caseNy =trouveCase(n.posX, n.posY)
+                            if Helper.calcDistance(caseGx, caseGy , caseNx, caseNy) <= self.champDaggro:
                                 self.unitCible = n
                                 self.actionEnCours = "marcheVersEnemy"
-                                self.unitCibleType = "Units"
+                                self.unitCibleType = "Unit"
+                                self.unitCiblePosCase = (caseNx, caseNy)
+                                self.unitCible.targetedBy = self
                                 break
 
     def attaqueCible(self):
         if self.unitCible.isAlive() == True:
-            if Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.range:
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+            if Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range:
                 if self.cooldown == self.maxCooldown:
                     self.unitCible.recevoirDegats(self.degat)
                     self.cooldown = 0
-            elif Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) <= self.champDaggro and Helper.calcDistance(self.unitCible.posX, self.unitCible.posY, self.posX, self.posY) >= self.range:
+            elif Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:
                 self.actionEnCours = "marcheVersEnemy"
             else:
                 self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
         else:
             self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
 
     def marcheVersEnemy(self):
-        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
-            self.deplacer(self.deplaceur, self.chemin)
-        elif self.unitCible.isAlive() and self.chemin is None:
+        if self.unitCibleType == "Unit":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+        if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:         # S'il a un chemin. Qu'il se deplace.
+            print("il a un chemin")
+            #self.deplaceUnit(self, (caseNx, caseNy))
+            self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
+        elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range and self.unitCibleType == "Unit":
+            print("il n'a pas un chemin")
             self.actionEnCours = "attaqueCible"
+
 
 
 
@@ -359,8 +392,7 @@ class Guerrier(Unit):
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-#                self.chemin[0].x = self.target[0]
-#                self.chemin[0].y = self.target[1]
+
 
 
 class Building():
@@ -566,7 +598,7 @@ class Tower(Building):
         self.target=None
         self.typeTarget =None
         self.targetedBy = None
-        self.actionEnCours = None
+        self.actionEnCours = "scanEnemy" # Comme ça. Pas besoin de if :D
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
@@ -592,8 +624,10 @@ class Tower(Building):
 
             else:
                 self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
         else:
             self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
 
 
 
@@ -624,13 +658,7 @@ class Tower(Building):
 
 
     def faitAction(self):
-        if self.actionEnCours == None:
-            self.actionEnCours ="scanEnemy"
-        if self.actionEnCours == "scanEnemy":
-            self.scanEnemy()
-            print(self.actionEnCours)
-        if self.actionEnCours == "attaqueCible":
-            self.attaqueCible()
+        getattr(self, self.actionEnCours)()
 
         if self.cooldown != self.cooldownMax:
             self.cooldown += 1

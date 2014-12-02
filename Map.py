@@ -12,6 +12,30 @@ from modele_client import *
 
 #Ratio des ressources (sur 100)
 
+global WOOD_RATIO
+global FOOD_RATIO
+global ROCK_RATIO
+global ARTE_RATIO
+global ENERGY_RATIO
+global GOLD_RATIO
+global UNDER_RATIO
+
+#Caracteres qui representent les ressources, incluant les ressources souterraines
+
+global WOOD_CHAR
+global FOOD_CHAR
+global ROCK_CHAR
+global ARTE_CHAR
+global ENERGY_CHAR
+global GOLD_CHAR
+global EMPTY_CHAR
+
+global ROCK_UNDER_CHAR
+global ENERGY_UNDER_CHAR
+global GOLD_UNDER_CHAR
+
+global PLAYER_CHAR
+
 WOOD_RATIO=10
 FOOD_RATIO=5
 ROCK_RATIO=5
@@ -19,8 +43,6 @@ ARTE_RATIO=1
 ENERGY_RATIO=3
 GOLD_RATIO=3
 UNDER_RATIO=25
-
-#Caracteres qui representent les ressources, incluant les ressources souterraines
 
 WOOD_CHAR='1'
 FOOD_CHAR='2'
@@ -84,6 +106,7 @@ class Map:
         #print("largeur: ", self.largeur, ", hauteur: ", self.hauteur)
         self.mat=[[Case(i,j,True) for j in range(hauteur)] for i in range(largeur)]
         self.toDelete=[]
+        self.MAX_RESSOURCE=5000
 
     def setSeed(self, seed):
         random.seed(seed)
@@ -95,7 +118,7 @@ class Map:
                 if nb < ratio and self.mat[i][j].ressource==EMPTY_CHAR:
                     self.mat[i][j].passable=False
                     self.mat[i][j].ressource = char
-                    self.mat[i][j].nbRessource=50
+                    self.mat[i][j].nbRessource=self.MAX_RESSOURCE
 
     def placeRessourceUnder(self, ratio, char):
          for i in range(self.largeur):
@@ -103,7 +126,7 @@ class Map:
                 nb = random.randrange(100)
                 if nb <= ratio:
                     self.mat[i][j].underRes=char
-                    self.mat[i][j].nbRessource=50
+                    self.mat[i][j].nbRessource=self.MAX_RESSOURCE
 
     def placeRessourcesOverworld(self):
         #OVERWORLD RESSOURCES
@@ -152,48 +175,51 @@ class Map:
 
                 i += 1
 
-        #print(listeAngles)
-
-        #selon un cercle
-        #Equation pour un cercle
-        #x = cx + r * cos(a)
-        #y = cy + r * sin(a)
-        #r = radius, cx & cy = origin, a=angle
-        #aire=math.pi*(rayon*rayon)
-
-        joueur=0
-
-        if self.largeur == self.hauteur:
-
-            for angle in listeAngles:
-                x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
-                y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
-                #print("x =", x,"y =", y,"a =",angle)
-                self.mat[x][y]=Case(x,y,False)
-                listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
-                joueur+=1
-
-        #selon une ellipse
-        #Equation pour une ellipse
-        #x = (abcos * (angle)) / racine de ((b^2 * cos^2(angle)) + (a^2 * sin^2(angle))
-        #y =(absin * (angle)) / racine de ((b^2 * cos^2(angle)) + (a^2 * sin^2(angle))
-        #a = demie-grand axe --> largeur / 2
-        #b = demie-petit axe --> hauteur / 2
-
         else:
             a=self.largeur/2
             b=self.hauteur/2
 
-            for angle in listeAngles:
+        joueur=0
+
+        for angle in listeAngles:
+            
+            #selon un cercle
+            #Equation pour un cercle
+            #x = cx + r * cos(a)
+            #y = cy + r * sin(a)
+            #r = radius, cx & cy = origin, a=angle
+            #aire=math.pi*(rayon*rayon)
+            
+            if self.largeur == self.hauteur:
+                x = math.trunc(rayon * math.cos(math.radians(angle)) + math.trunc(middleX))
+                y = math.trunc(rayon * math.sin(math.radians(angle)) + math.trunc(middleY))
+
+            else:
+                
+                #selon une ellipse
+                #Equation pour une ellipse
+                #x = (abcos * (angle)) / racine de ((b^2 * cos^2(angle)) + (a^2 * sin^2(angle))
+                #y =(absin * (angle)) / racine de ((b^2 * cos^2(angle)) + (a^2 * sin^2(angle))
+                #a = demie-grand axe --> largeur / 2
+                #b = demie-petit axe --> hauteur / 2
+                
                 x = math.trunc(middleX + (a*b*math.cos(math.radians(angle))) / math.sqrt( ((math.pow(b,2)) * math.pow(math.cos(math.radians(angle)),2)) + ((math.pow(a,2)) * math.pow(math.sin(math.radians(angle)),2))  ))
                 y = math.trunc(middleY + (a*b*math.sin(math.radians(angle))) / math.sqrt( ((math.pow(b,2)) * math.pow(math.cos(math.radians(angle)),2)) + ((math.pow(a,2)) * math.pow(math.sin(math.radians(angle)),2))  ))
-                if x == self.largeur:
-                    x = self.largeur -1
-                #print("x =", x,"y =", y,"a =",angle)
-                self.placeBuilding(x,y,"TownCenter")
-                self.mat[x][y].ressource=EMPTY_CHAR
-                listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
-                joueur+=1
+
+            #Pour eviter les index out of range
+            if x == self.largeur:
+                x = x - 1
+
+            if y == self.hauteur:
+                y = y - 1
+
+            self.mat[x][y].building="TownCenter"
+            self.mat[x][y].ressource=EMPTY_CHAR
+            self.mat[x][y].nbRessource=0
+            self.mat[x][y].passable=False
+            listeJoueurs[listeNomsJoueurs[joueur]].buildings.append(TownCenter(joueur, x, y))
+
+            joueur+=1
 
         #vide les cases trop pres des spawns
         listeRes=self.getListeRessources()

@@ -42,25 +42,33 @@ class Vue(object):
         self.actionSelectionnee=0#1=SpawnUnit, 2=tour##
         self.longeurLigne = 20
 
-        self.food_ress = Image.open("./img/food_ress.png")
-        self.photo_food_ress = ImageTk.PhotoImage(self.food_ress)
-        self.wood_ress = Image.open("./img/wood_ress.png")
-        self.photo_wood_ress = ImageTk.PhotoImage(self.wood_ress)
-        self.gold_ress = Image.open("./img/gold_ress.png")
-        self.photo_gold_ress = ImageTk.PhotoImage(self.gold_ress)
-        self.energy_ress = Image.open("./img/energy_ress.png")
-        self.photo_energy_ress = ImageTk.PhotoImage(self.energy_ress)
-        self.art_ress = Image.open("./img/art_ress.png")
-        self.photo_art_ress = ImageTk.PhotoImage(self.art_ress)
-        self.rock_ress = Image.open("./img/rock_ress.png")
-        self.photo_rock_ress = ImageTk.PhotoImage(self.rock_ress)
+        self.initImgs()
 
-        self.tower_build = Image.open("./img/tower_build.png")##
-        self.photo_tower_build = ImageTk.PhotoImage(self.tower_build)##
+    def initImgs(self):
+        """Initialise les images"""
+        self.imgs = {"food": ImageTk.PhotoImage(Image.open("img/food_ress.png")),
+                     "wood": ImageTk.PhotoImage(Image.open("img/wood_ress.png")),
+                     "gold": ImageTk.PhotoImage(Image.open("img/gold_ress.png")),
+                     "energy": ImageTk.PhotoImage(Image.open("img/energy_ress.png")),
+                     "art": ImageTk.PhotoImage(Image.open("img/art_ress.png")),
+                     "rock": ImageTk.PhotoImage(Image.open("img/rock_ress.png")),
+                     "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
+                     "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png"))}
 
-        self.barrack_build = Image.open("./img/barrack_build.png")##
-        self.photo_barrack_build = ImageTk.PhotoImage(self.barrack_build)##
-
+    def initLabel(self):
+        self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
+        self.labelNourriture.grid(column=0, row=0)
+        self.labelBois = Label(self.cadreRessource, text="Bois: ", bg="brown", relief=SOLID, width=15)
+        self.labelBois.grid(column=1, row=0)
+        self.labelPierre = Label(self.cadreRessource, text="Pierre: ", bg="gray", relief=SOLID, width=15)
+        self.labelPierre.grid(column=0, row=1)
+        self.labelOr = Label(self.cadreRessource, text="Or: ", bg="gold", relief=SOLID, width=15)
+        self.labelOr.grid(column=1, row=1)
+        self.labelEnergie = Label(self.cadreRessource, text="Energie: ", bg="green2", relief=SOLID, width=15)
+        self.labelEnergie.grid(column=0, row=2, columnspan=2)
+        self.labelPopulationMax= Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
+        self.labelPopulationMax.grid(column=1, row=0)
+        
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
         return self.canevasMilieu.canvasx(x)
@@ -117,26 +125,17 @@ class Vue(object):
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
 
-
-        lcree = Labeljm(cadreMenu, text="Pour crÃƒÂ©er un serveur ÃƒÂ  l'adresse inscrite  | ")
-        lconnect = Labeljm(cadreMenu, text="Pour vous connecter ÃƒÂ  un serveur")
-        lcree.grid(column=0, row=1)
-        lconnect.grid(column=1, row=1)
-
-        lip = Labeljm(cadreMenu, text=self.parent.monip)
+        Labeljm(cadreMenu, text="Pour crÃƒÆ’Ã‚Â©er un serveur ÃƒÆ’Ã‚Â  l'adresse inscrite  | ").grid(column=0, row=1)
+        Labeljm(cadreMenu, text="Pour vous connecter ÃƒÆ’Ã‚Â  un serveur").grid(column=1, row=1)
+        
+        Labeljm(cadreMenu, text=self.parent.monip).grid(column=0, row=2)
         self.autreip = Entry(cadreMenu)
         self.autreip.insert(0, self.parent.monip)
-        lip.grid(column=0, row=2)
         self.autreip.grid(column=1, row=2)
 
-        creerB = Buttonjm(cadreMenu, text="Creer un serveur", command=self.creerServeur)
-        connecterB = Buttonjm(cadreMenu, text="Connecter a un serveur", command=self.connecterServeur)
-        creerB.grid(column=0, row=3)
-        connecterB.grid(column=1, row=3)
+        Buttonjm(cadreMenu, text="Creer un serveur", command=self.creerServeur).grid(column=0, row=3)
+        Buttonjm(cadreMenu, text="Connecter a un serveur", command=self.connecterServeur).grid(column=1, row=3)
 
-        # self.galax=PhotoImage(file="galaxie.gif")
-        # galaxl=Labeljm(self.cadreConnection,image=self.galax)
-        # galaxl.pack()
         cadreMenu.pack()
 
     def creeCadreAttente(self):
@@ -147,9 +146,6 @@ class Vue(object):
         self.demarreB.grid(column=0, row=1)
         self.listeJoueurs.grid(column=0, row=0)
         cadreMenu.pack(side=LEFT)
-        # self.galax2=PhotoImage(file="galaxie.gif")
-        # galax=Labeljm(self.cadreAttente,image=self.galax2)
-        # galax.pack(side=RIGHT)
 
     def afficheListeJoueurs(self, liste):
         self.listeJoueurs.delete(0, END)
@@ -159,12 +155,8 @@ class Vue(object):
     def initPartie(self, modele):
         self.partie = modele
         self.moi = modele.parent.nom
-
         self.cadreMenuPartie.grid(column=0, row=0, sticky=W + E)
-
-
         self.initJeu()
-
         self.placeCadre(self.cadrePartie)
 
 
@@ -175,12 +167,8 @@ class Vue(object):
         self.initCadre()
         # Variable bidon
         n = "100"
-        self.changeLabelBois(self.parent.myPlayer.ressources[1])
-        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
-        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
-        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
-        self.changeLabelOr(self.parent.myPlayer.ressources[3])
-        self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
+        self.initLabel()
+        
         self.diplomatieClic()
         self.imgLabelPopulation()
         self.initLabelBas()
@@ -190,7 +178,9 @@ class Vue(object):
         # Milieu
         self.hauteur = 600
         self.largeur = 800
-        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.parent.l*20, self.parent.h*20),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
+        self.rHauteur = self.parent.h*20
+        self.rLargeur = self.parent.l*20
+        self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.rHauteur, self.rLargeur),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
         #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
 
@@ -213,12 +203,13 @@ class Vue(object):
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
+        #self.centrer()
 
     def rafraichir(self):
         """ Rafraichi la vue au complet """
         self.rafraichirInfo()
         self.rafraichirCanevas()
-        
+
     def rafraichirInfo(self):
         """ Rafraichi les informations (labels, ressources, populations)"""
         self.changeLabelBois(self.parent.myPlayer.ressources[1])
@@ -227,8 +218,8 @@ class Vue(object):
         self.changeLabelPierre(self.parent.myPlayer.ressources[2])
         self.changeLabelOr(self.parent.myPlayer.ressources[3])
         self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
-        
-        
+
+
     def bougeVersGauche(self, event):
         self.canevasMilieu.xview(SCROLL, -1, "units")
 
@@ -297,9 +288,9 @@ class Vue(object):
         if self.actionSelectionnee == 1:
             self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
         elif self.actionSelectionnee == 2:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_tower_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["tower"], anchor='nw', tags="test")
         elif self.actionSelectionnee == 3:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.photo_barrack_build, anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="test")
         elif self.actionSelectionnee == 4:
             self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
 
@@ -410,30 +401,24 @@ class Vue(object):
     ####Pour les images
 
     def changeLabelNourriture(self, n):
-        labelNourriture = Label(self.cadreRessource, text="Nourriture: " + str(n), bg="red", relief=SOLID, width=15)
-        labelNourriture.grid(column=0, row=0)  # (column=1,row=0)
+        self.labelNourriture.config(text="Nourriture: " + str(n))
 
     def changeLabelBois(self, n):
-        labelBois = Label(self.cadreRessource, text="Bois: " + str(n), bg="brown", relief=SOLID, width=15)
-        labelBois.grid(column=1, row=0)  # (column=3,row=0)
+        self.labelBois.config(text="Bois: " + str(n))
 
     def changeLabelPierre(self, n):
-        labelPierre = Label(self.cadreRessource, text="Pierre: " + str(n), bg="gray", relief=SOLID, width=15)
-        labelPierre.grid(column=0, row=1)  # (column=1,row=1)
+        self.labelPierre.config(text="Pierre: " + str(n))
 
     def changeLabelOr(self, n):
-        labelOr = Label(self.cadreRessource, text="Or: " + str(n), bg="gold", relief=SOLID, width=15)
-        labelOr.grid(column=1, row=1)  # (column=3,row=1)
+        self.labelOr.config(text="Or: " + str(n))
 
     def changeLabelEnergie(self, n):
-        labelEnergie = Label(self.cadreRessource, text="Energie: " + str(n), bg="green2", relief=SOLID, width=15)
-        labelEnergie.grid(column=0, row=2, columnspan=2)  # (column=1,row=2,columnspan=2)
+        self.labelEnergie.config(text="Energie: " + str(n))
 
         # Pour le cadre de population
 
     def changeLabelPopulation(self, n):  # population et population max
-        labelPopulationMax = Label(self.cadrePopulation, text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
-        labelPopulationMax.grid(column=1, row=0)
+        self.labelPopulationMax.config(text=str(n) +" / " + str(self.parent.myPlayer.maxUnits))
 
         # Pour le cadre Diplomatie/echange
 
@@ -447,7 +432,30 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
+    
+    def centrerTownCenter(self):#pour appeler la fonction centrer
+        self.centrer()
 
+    def centrer(self):#Pour centrer la fenetre sur le town center, ne fonctionne pas
+        for j in self.parent.modele.joueurs.values():
+            if j.name == self.parent.nom:
+                print("mon nom: "+ j.name)
+            for i in j.buildings:
+                if i.type == "TownCenter":
+                    x=i.posX
+                    y=i.posY
+                    sx = float(self.rLargeur)
+                    ecranx=float(self.canevasMilieu.winfo_width())/2.0
+                    positionX = (x-ecranx)/sx
+                    self.canevasMilieu.xview("moveto",positionX)
+                    
+                    sy = float(self.rHauteur)
+                    ecrany=float(self.canevasMilieu.winfo_height())/2.0
+                    positionY = (y-ecrany)/sy
+                    self.canevasMilieu.yview("moveto",positionY)
+                            
+        #def centrerPlanete(self):
+        #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
 
     def diplomatieFenetre(self, event):
         self.toplevel = Toplevel()
@@ -653,13 +661,13 @@ class Vue(object):
                     uniteMorts.append(u)
             for i in uniteMorts:
                 j.units.remove(i)
-            
+
             for u in j.buildings: # Retire les batiments... ish.
                 if u.isAlive() == False:
                     buildingMorts.append(u)
             for i in buildingMorts:
-                j.buildings.remove(i)   
-            
+                j.buildings.remove(i)
+
             for u in j.units:
                 if u.type == "Guerrier":
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
@@ -681,9 +689,9 @@ class Vue(object):
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
-                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.photo_barrack_build, anchor='nw', tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["barrack"], anchor='nw', tags="unit")
                 elif i.type == "Tower":
-                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.photo_tower_build, anchor='nw', tags="unit")
+                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["tower"], anchor='nw', tags="unit")
                 else: ##town center
                     self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
@@ -708,17 +716,17 @@ class Vue(object):
         for i in range(self.parent.l):
             for j in range(self.parent.h):
                 if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_food_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_wood_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_rock_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_art_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_energy_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags='img')
                 elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.photo_gold_ress, anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags='img')
 
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
