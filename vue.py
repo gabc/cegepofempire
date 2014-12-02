@@ -287,7 +287,8 @@ class Vue(object):
             print("creating house with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["maison", caseX, caseY]])
-            self.parent.myPlayer.maxUnitsDepart+=10
+            if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
+                self.parent.myPlayer.maxUnitsDepart+=10
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
