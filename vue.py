@@ -292,7 +292,10 @@ class Vue(object):
             self.actionSelectionnee=0##
             print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
-        
+        elif self.actionSelectionnee==7:# archer
+            self.actionSelectionnee=0##
+            print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["archer", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -357,10 +360,13 @@ class Vue(object):
         buttonRetour.grid(column=2,row=2)##
 
         self.cadreOptionBarrack = Frame(self.cadrePartie)
-        buttonCreeGuerrier = Button(self.cadreOptionBarrack, text="Cree", command=self.creeGuerrier, width=8)  # text="Cree",command=,
+        buttonCreeGuerrier = Button(self.cadreOptionBarrack, text="Guerrier", command=self.creeGuerrier, width=8)  # text="Cree",command=,
         buttonCreeGuerrier.grid(column=0, row=1)
+        buttonCreeArcher = Button(self.cadreOptionBarrack, text="Archer", command=self.creeArcher, width=8)  # text="Cree",command=,
+        buttonCreeArcher.grid(column=1, row=1)
         buttonCreeMouton = Button(self.cadreOptionBarrack, text="Cree Mouton", command=self.creeMouton, width=8)
-        buttonCreeMouton.grid(column=1,row=1)
+        buttonCreeMouton.grid(column=2,row=1)
+
 
         self.cadreOptionGuerrier = Frame(self.cadrePartie)
         buttonAttaquer = Button(self.cadreOptionGuerrier, text="Attaquer", width=8)
@@ -434,6 +440,9 @@ class Vue(object):
     
     def creeMouton(self):
         self.actionSelectionnee=6
+
+    def creeArcher(self):
+        self.actionSelectionnee=7
 
     ####Pour les images
 
@@ -681,7 +690,6 @@ class Vue(object):
             self.labelAttaquantNom.grid(column=0,row=3)##
             self.labelAttaquantAttaque.grid(column=0,row=4)##
             self.labelAttaquantDefense.grid(column=0,row=5)##
-            
         elif self.parent.myPlayer.objectsSelectionne[0].type == "Mouton":
             self.forgetAllCadre()
             self.labelAttaquantHp= Label(self.cadreInfoAttaquant, text="Points de vie : "+str(self.parent.myPlayer.objectsSelectionne[0].hpActuel)+"/"+str(self.parent.myPlayer.objectsSelectionne[0].hpMax),width=19)##
@@ -691,7 +699,6 @@ class Vue(object):
             self.labelAttaquantNom = Label(self.cadreInfoAttaquant, text="Type: "+self.parent.myPlayer.objectsSelectionne[0].type,width=19)##
             self.labelAttaquantAttaque = Label(self.cadreInfoAttaquant,text="Attaque : "+str(self.parent.myPlayer.objectsSelectionne[0].degat),width=10)##
             self.labelAttaquantDefense = Label(self.cadreInfoAttaquant,text="Defense : "+str(self.parent.myPlayer.objectsSelectionne[0].defense),width=10)##
-
             self.cadreOptionMouton.grid(column=0,row=2)
             self.cadreInfoAttaquant.grid(column=1,row=2)##
             self.labelAttaquantHp.grid(column=0,row=1)##
@@ -754,6 +761,11 @@ class Vue(object):
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 elif u.type == "Villageois":
+                    self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                        if u == self.parent.myPlayer.objectsSelectionne[0]:
+                            self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+                elif u.type == "Archer":
                     self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
