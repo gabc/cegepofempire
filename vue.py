@@ -436,33 +436,24 @@ class Vue(object):
 
     def afficheSelection(self):
         pass
-    
-    def centrerTownCenter(self):#pour appeler la fonction centrer
-        self.centrer()
 
-    def centrer(self):#Pour centrer la fenetre sur le town center, ne fonctionne pas
+    def centrer(self):#Pour centrer la fenetre sur le town center
         for j in self.parent.modele.joueurs.values():
             if j.name == self.parent.nom:
-                print("mon nom: "+ j.name)
+                #print("mon nom: "+ j.name)
                 for i in j.buildings:
                     if i.type == "TownCenter":
-                        print(i.posX,i.posY)
                         x=i.posX*self.longeurLigne
                         y=i.posY*self.longeurLigne
                         sx = float(self.rLargeur)
                         ecranx=float(self.canevasMilieu.winfo_width())/2.0
                         positionX = (x-ecranx)/sx
-                        print("calc",x,ecranx,sx,positionX)
                         self.canevasMilieu.xview("moveto",positionX)
                         
                         sy = float(self.rHauteur)
                         ecrany=float(self.canevasMilieu.winfo_height())/2.0
                         positionY = (y-ecrany)/sy
                         self.canevasMilieu.yview("moveto",positionY)
-                        print("deplacement",positionX,positionY)
-                            
-        #def centrerPlanete(self):
-        #self.centrerObjet( self.partie.civs[self.parent.nom].planeteMere.parent)
 
     def diplomatieFenetre(self, event):
         self.toplevel = Toplevel()
