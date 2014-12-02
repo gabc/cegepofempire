@@ -650,6 +650,11 @@ class Vue(object):
             self.parent.actions.append([self.parent.nom, "deplace", [(0, u.id), (int(self.canx(event.x) / self.longeurLigne), int(self.cany(event.y) / self.longeurLigne))]])
 
     def rafraichirCanevas(self):
+
+        for c in self.parent.m.toDelete:
+            print(c.id)
+            self.canevasMilieu.delete("id_"+str(c.id))
+        
         self.canevasMilieu.delete("unit")
         for j in self.parent.modele.joueurs.values():
             uniteMorts=[]
@@ -713,18 +718,19 @@ class Vue(object):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.l):
             for j in range(self.parent.h):
+                tagID=str(self.parent.m.mat[i][j].id)
                 if self.parent.m.mat[i][j].ressource == FOOD:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags=('img', "id_"+str(tagID)))
                 elif self.parent.m.mat[i][j].ressource == WOOD:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags=('img', "id_"+str(tagID)))
                 elif self.parent.m.mat[i][j].ressource == ROCK:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags=('img', "id_"+str(tagID)))
                 elif self.parent.m.mat[i][j].ressource == ARTE:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags=('img', "id_"+str(tagID)))
                 elif self.parent.m.mat[i][j].ressource == ENERGY:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags=('img', "id_"+str(tagID)))
                 elif self.parent.m.mat[i][j].ressource == GOLD:
-                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags='img')
+                    self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags=('img', "id_"+str(tagID)))
 
     def imgLabelPopulation(self):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)

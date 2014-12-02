@@ -58,8 +58,11 @@ GOLD_UNDER=12
 
 PLAYER='#'
 
+ID_CASE=0
+
 class Case:
     def __init__(self,posX,posY,passable):
+        global ID_CASE
         self.posX=posX
         self.posY=posY
         self.passable=passable
@@ -67,6 +70,9 @@ class Case:
         self.underRes=0
         self.building=0
         self.nbRessource=0
+
+        ID_CASE+=1
+        self.id=ID_CASE
 
     def isPassable(self):
         return self.passable
@@ -208,10 +214,10 @@ class Map:
 
             #Pour eviter les index out of range
             if x == self.largeur:
-                x = x - 1
+                x = x - 2
 
             if y == self.hauteur:
-                y = y - 1
+                y = y - 2
 
             self.mat[x][y].building="TownCenter"
             self.mat[x][y].ressource=EMPTY
