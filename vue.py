@@ -713,17 +713,17 @@ class Vue(object):
         self.canevasMilieu.delete("img")
         for i in range(self.parent.l):
             for j in range(self.parent.h):
-                if self.parent.m.mat[i][j].ressource == FOOD_CHAR :
+                if self.parent.m.mat[i][j].ressource == FOOD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["food"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == WOOD_CHAR:
+                elif self.parent.m.mat[i][j].ressource == WOOD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["wood"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ROCK_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ROCK:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["rock"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ARTE_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ARTE:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["art"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == ENERGY_CHAR:
+                elif self.parent.m.mat[i][j].ressource == ENERGY:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["energy"], anchor='nw', tags='img')
-                elif self.parent.m.mat[i][j].ressource == GOLD_CHAR:
+                elif self.parent.m.mat[i][j].ressource == GOLD:
                     self.canevasMilieu.create_image(i * self.longeurLigne + self.longeurLigne / 2 - 9, j * self.longeurLigne + self.longeurLigne / 2 - 9, image=self.imgs["gold"], anchor='nw', tags='img')
 
     def imgLabelPopulation(self):
