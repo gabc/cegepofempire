@@ -294,8 +294,12 @@ class Vue(object):
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==7:# archer
             self.actionSelectionnee=0##
-            print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+            print("creating archer with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Archer", self.canx(self.currentX), self.cany(self.currentY)]])##
+        elif self.actionSelectionnee==8:# chevalier
+            self.actionSelectionnee=0##
+            print("creating chevalier with owner id: ", self.parent.myPlayer.ID)##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["Chevalier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -366,6 +370,8 @@ class Vue(object):
         buttonCreeArcher.grid(column=1, row=1)
         buttonCreeMouton = Button(self.cadreOptionBarrack, text="Cree Mouton", command=self.creeMouton, width=8)
         buttonCreeMouton.grid(column=2,row=1)
+        buttonCreeChevalier = Button(self.cadreOptionBarrack, text="Chevalier", command=self.creeChevalier, width=8)  # text="Cree",command=,
+        buttonCreeChevalier.grid(column=3, row=1)
 
 
         self.cadreOptionGuerrier = Frame(self.cadrePartie)
@@ -443,6 +449,9 @@ class Vue(object):
 
     def creeArcher(self):
         self.actionSelectionnee=7
+
+    def creeChevalier(self):
+        self.actionSelectionnee=8
 
     ####Pour les images
 
@@ -775,6 +784,11 @@ class Vue(object):
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
+                elif u.type == "Chevalier":
+                    self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
+                        if u == self.parent.myPlayer.objectsSelectionne[0]:
+                            self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 
             for i in j.buildings:
                 caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
