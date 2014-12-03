@@ -342,7 +342,7 @@ class Vue(object):
         buttonConstruire.grid(column=0, row=1)
 
         self.cadreOptionTownCenter = Frame(self.cadrePartie)
-        self.buttonCreeVillageois = Button(self.cadreOptionTownCenter, text="Creer", command=self.creeUnite, width=8)  # text="Cree",command=,
+        self.buttonCreeVillageois = Button(self.cadreOptionTownCenter, text="Villageois", command=self.creeUnite, width=8)  # text="Cree",command=,
         self.buttonCreeVillageois.grid(column=0, row=1)
         buttonUpgrade = Button(self.cadreOptionTownCenter, text="Upgrade1", width=8)##
         buttonUpgrade.grid(column=1,row=1)##
@@ -368,7 +368,7 @@ class Vue(object):
         buttonCreeGuerrier.grid(column=0, row=1)
         buttonCreeArcher = Button(self.cadreOptionBarrack, text="Archer", command=self.creeArcher, width=8)  # text="Cree",command=,
         buttonCreeArcher.grid(column=1, row=1)
-        buttonCreeMouton = Button(self.cadreOptionBarrack, text="Cree Mouton", command=self.creeMouton, width=8)
+        buttonCreeMouton = Button(self.cadreOptionBarrack, text="Mouton", command=self.creeMouton, width=8)
         buttonCreeMouton.grid(column=2,row=1)
         buttonCreeChevalier = Button(self.cadreOptionBarrack, text="Chevalier", command=self.creeChevalier, width=8)  # text="Cree",command=,
         buttonCreeChevalier.grid(column=3, row=1)
