@@ -2,39 +2,10 @@ import random
 import math
 from modele_client import *
 
-#NOTE: pour l'instant, ceci n'est seulement que pour des hauteurs et largeurs impaires pour les spawns des joueurs
-#Ressources: MatÃƒÂ©riaux, nourriture, ÃƒÂ©nergie, or. + artefacts
-
-
-
 #TODO:
 #Precise ressources (bois, pierre, etc)
 
 #Ratio des ressources (sur 100)
-
-global WOOD_RATIO
-global FOOD_RATIO
-global ROCK_RATIO
-global ARTE_RATIO
-global ENERGY_RATIO
-global GOLD_RATIO
-global UNDER_RATIO
-
-#Caracteres qui representent les ressources, incluant les ressources souterraines
-
-global WOOD
-global FOOD
-global ROCK
-global ARTE
-global ENERGY
-global GOLD
-global EMPTY
-
-global ROCK_UNDER
-global ENERGY_UNDER
-global GOLD_UNDER
-
-global PLAYER
 
 WOOD_RATIO=10
 FOOD_RATIO=5
@@ -44,19 +15,7 @@ ENERGY_RATIO=3
 GOLD_RATIO=3
 UNDER_RATIO=25
 
-FOOD=0
-WOOD=1
-ROCK=2
-GOLD=3
-ENERGY=4
-ARTE=5
-EMPTY='-'
-
-ROCK_UNDER=10
-ENERGY_UNDER=11
-GOLD_UNDER=12
-
-PLAYER='#'
+#Caracteres qui representent les ressources, incluant les ressources souterraines
 
 ID_CASE=0
 
@@ -81,7 +40,7 @@ class Case:
 class Map:
     """Methodes
 
-    initMap(): initialize toutes les cases de la map
+    initMap(): initialize toutes les cases vides de la map
 
     setSeed(seed): pour set le seed recu par le server
 
@@ -246,7 +205,6 @@ class Map:
                     r.nbRessource=0
                     r.passable=True
                     self.mat[r.posX][r.posY]=r
-                    print("delete case")
 
     def placeBuilding(self, posX, posY, buildingType):
         if self.mat[posX][posY].isPassable():

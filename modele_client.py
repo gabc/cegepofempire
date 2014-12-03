@@ -3,6 +3,38 @@ import timeit
 from utils import *
 from helper import *
 from deplacement import *
+
+global WOOD
+global FOOD
+global ROCK
+global ARTE
+global ENERGY
+global GOLD
+global EMPTY
+
+global ROCK_UNDER
+global ENERGY_UNDER
+global GOLD_UNDER
+
+WOOD_RATIO=10
+FOOD_RATIO=5
+ROCK_RATIO=5
+ARTE_RATIO=1
+ENERGY_RATIO=3
+GOLD_RATIO=3
+UNDER_RATIO=25
+
+FOOD="Nourriture"
+WOOD="Bois"
+ROCK="Pierre"
+GOLD="Or"
+ENERGY="Energie"
+ARTE="Artefact"
+ROCK_UNDER="Roche souterraine"
+ENERGY_UNDER="Energie souterraine"
+GOLD_UNDER="Or soutterrain"
+EMPTY='-'
+
 class Joueur():
     def __init__(self, parent, ID, name):
         self.parent = parent
@@ -19,11 +51,11 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-        self.ressources = {0 : 50,
-                           1 : 20,
-                           2 : 30,
-                           3 : 40,
-                           4 : 50}
+        self.ressources = {FOOD : 100,
+                           WOOD : 100,
+                           ROCK : 100,
+                           GOLD : 100,
+                           ENERGY : 100}
         self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
@@ -89,49 +121,49 @@ class Joueur():
         pass
 
     def creerUnit(self, type, x, y):
-        if type == "villageois":
-            v=Villageois(self.ID, x, y,self)
-            if self.compEtSousCout(v.coutRes):
-                self.units.append(v)
-                self.maxUnitsCourrant+=v.coutPop
-        elif type == "guerrier":
-            g=Guerrier(self.ID, x, y,self)
-            if self.compEtSousCout(g.coutRes):
-                self.units.append(g)
-                self.maxUnitsCourrant+=g.coutPop
-        elif type == "mouton":
-            self.units.append(Mouton(self.ID, x, y,self))
-        elif type == "archer":
-            self.units.append(Archer(self.ID, x, y,self))
+        #DEM ifs        
+        if type == "Villageois":
+            unit=Villageois(self.ID, x, y,self)
+        elif type == "Guerrier":
+            unit=Guerrier(self.ID, x, y,self)
+        elif type == "Mouton":
+            unit=Mouton(self.ID, x, y,self)
+        elif type == "Archer":
+            unit=Archer(self.ID, x, y,self)
 
-    def creerJoueurBuilding(self, type, x, y):
-        if type == "tower":
-            if self.parent.m.placeBuilding(x,y,"tower"):
-                self.buildings.append(Tower(self.ID, x, y,self))
-                self.parent.m.placeBuilding(x,y,"tower")
-        if type == "barrack":
-            if self.parent.m.placeBuilding(x,y,"barrack"):
-                self.buildings.append(Barrack(self.ID, x, y,self))
-                self.parent.m.placeBuilding(x,y,"barrack")
-        if type == "maison":
-            if self.parent.m.placeBuilding(x,y,"maison"):
-                self.buildings.append(Maison(self.ID, x, y,self))
-                self.parent.m.placeBuilding(x,y,"maison")
+        if self.compareCout(unit.coutRes):
+            self.soustraitCout(unit.coutRes)
+            self.units.append(unit)
+            self.maxUnitsCourrant+=unit.coutPop
+
+    def creerJoueurBuilding(self, type, x, y):        
+        if type == "Tower":
+                building=Tower(self.ID, x, y,self)
+        if type == "Barrack":
+                building=Barrack(self.ID, x, y,self)
+        if type == "Maison":
+                building=Maison(self.ID, x, y,self)
+
+        if self.parent.m.placeBuilding(x,y,building.type):
+            if self.compareCout(building.coutRes):
+                self.soustraitCout(building.coutRes)
+                self.buildings.append(building)
+
 
     def changerAllies(self):
         pass
 
-    def compEtSousCout(self, cout):      
-        for k in self.ressources:
-            self.ressources[k] -= cout[k]
-            
-            if self.ressources[k] < 0:
-                self.ressources[k] += cout[k]
-                print("Not enough ressources of type "+str(k))
+    def compareCout(self, cout):      
+        for k in self.ressources:           
+            if (self.ressources[k] - cout[k]) < 0:
+                print("Pas assez de ressources du type "+k)
                 return False
 
         return True
-                
+
+    def soustraitCout(self, cout):      
+        for k in self.ressources:
+            self.ressources[k] -= cout[k]
 
     #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
@@ -175,16 +207,16 @@ class Unit():
         self.target=(self.posX, self.posY)
         self.status="waiting"
         self.food=0
-        self.coutRes = {0 : 0,
-                        1 : 0,
-                        2 : 0,
-                        3 : 0,
-                        4 : 0}
+        self.coutRes = {FOOD : 0,
+                           WOOD : 0,
+                           ROCK : 0,
+                           GOLD : 0,
+                           ENERGY : 0}
         self.coutPop=0
 
+    
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
-
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
@@ -195,7 +227,6 @@ class Unit():
             return False
         else:
             return True
-
 
     def recevoirDegats(self, degatsRecus):
         if degatsRecus >= self.hpActuel:
@@ -240,7 +271,7 @@ class Villageois(Unit):
         self.vitesseX = 5
         self.vitesseY = 5
 
-        self.setCoutRes(0,30)
+        self.setCoutRes(FOOD,30)
         self.coutPop=1
 
     def faitAction(self):
@@ -271,7 +302,7 @@ class Villageois(Unit):
         if self.collectionActuel ==self.collectionMax:
             self.status="backToBase"
             self.target=self.getTownCenterCoords()
-            print("Villager", self.id, "has a full inventory")
+            print("Villageois no", self.id, "a remplis son inventaire.")
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
             self.collectionActuel+=self.collectionRate
@@ -306,7 +337,7 @@ class Villageois(Unit):
                 #print("BASE BASE BASE!!")
             #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
-                print("This space has no ressources")
+                print("Cet case n'a pas de ressources.")
                 self.status="waiting"
             else:
                 self.status="collecting"
@@ -327,10 +358,10 @@ class Villageois(Unit):
     def dumpRessources(self):
         #check s'il a vraiment des ressources a dump avant de dump
         if self.collectionActuel > 0:
-            print("Villager",self.id,"dumped",int(self.collectionActuel/10),"ressources at base" )
-            c = int(self.collectionType)
+            c = self.collectionType
             self.parent.ressources[c]+=int(self.collectionActuel/10)
-            self.collectionActuel = 0
+            print("Villageois no",self.id,"a rapporter",int(self.collectionActuel/10),"ressources a la base, de type", c )
+            self.collectionActuel = 0         
 
             self.target=self.currentRes
             self.status="backToRes"
@@ -359,6 +390,8 @@ class Mouton(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
+        self.setCoutRes(FOOD,500)
+        self.setCoutRes(GOLD,500)
 
 
     def faitAction(self):
@@ -477,7 +510,6 @@ class Guerrier(Unit):
         Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Guerrier"
 
-
         #Arbitraire
         self.champDeVision = 50
         self.delaiDeConstruction = 20000
@@ -498,10 +530,8 @@ class Guerrier(Unit):
         self.unitCibleType = None
         self.unitCiblePosCase = None
         self.coutPop=3
-        self.setCoutRes(0,50)
-        self.setCoutRes(1,25)
-        self.setCoutRes(2,15)
-
+        self.setCoutRes(FOOD,50)
+        self.setCoutRes(GOLD,25)
 
     def faitAction(self):
         if len(self.chemin) != 0:
@@ -640,6 +670,10 @@ class Archer(Unit):
         self.unitCibleType = None
         self.unitCiblePosCase = None
 
+        self.setCoutRes(FOOD,20)
+        self.setCoutRes(WOOD,40)
+        self.setCoutRes(GOLD,15)
+
 
     def faitAction(self):
         if len(self.chemin) != 0:
@@ -773,6 +807,14 @@ class Building():
         self.champDeVision = -1
         #idem pour le delai de Construction
         self.delaiDeConstruction = -1
+        self.coutRes = {FOOD : 0,
+                        WOOD : 0,
+                        ROCK : 0,
+                        GOLD : 0,
+                        ENERGY : 0}
+    
+    def setCoutRes(self, idRes, nbRes):
+        self.coutRes[idRes]=nbRes
 
     def faitAction(self):
         pass
@@ -832,6 +874,9 @@ class TownCenter(Building):
         self.uniteCreable = [Villageois]
         self.creationQueue = []
         self.tempsRestant = 0
+        self.setCoutRes(ROCK, 1500)
+        self.setCoutRes(WOOD, 1500)
+        self.setCoutRes(GOLD, 1000)
 
     def uniteCreable(self):
         return self.uniteCreable
@@ -883,6 +928,7 @@ class Maison(Building):
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 10000
+        self.setCoutRes(WOOD,100)
 
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY, parent):
@@ -900,6 +946,8 @@ class Barrack(Building):
         self.uniteCreable = [Guerrier,Mouton]
         self.creationQueue = []
         self.tempsRestant = 0
+        self.setCoutRes(WOOD,125)
+        self.setCoutRes(GOLD,125)
 
     def uniteCreable(self):
         return self.uniteCreable
@@ -961,7 +1009,9 @@ class Tower(Building):
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
-
+        self.setCoutRes(ROCK,200)
+        self.setCoutRes(WOOD,200)
+        self.setCoutRes(GOLD,100)
 
     def attaqueCible(self):
         if self.target.isAlive() == True:

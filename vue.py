@@ -216,11 +216,11 @@ class Vue(object):
 
     def rafraichirInfo(self):
         """ Rafraichi les informations (labels, ressources, populations)"""
-        self.changeLabelBois(self.parent.myPlayer.ressources[1])
-        self.changeLabelEnergie(self.parent.myPlayer.ressources[4])
-        self.changeLabelNourriture(self.parent.myPlayer.ressources[0])
-        self.changeLabelPierre(self.parent.myPlayer.ressources[2])
-        self.changeLabelOr(self.parent.myPlayer.ressources[3])
+        self.changeLabelBois(self.parent.myPlayer.ressources[WOOD])
+        self.changeLabelEnergie(self.parent.myPlayer.ressources[ENERGY])
+        self.changeLabelNourriture(self.parent.myPlayer.ressources[FOOD])
+        self.changeLabelPierre(self.parent.myPlayer.ressources[ROCK])
+        self.changeLabelOr(self.parent.myPlayer.ressources[GOLD])
         self.changeLabelPopulation(self.parent.myPlayer.maxUnitsCourrant)
 
 
@@ -266,36 +266,36 @@ class Vue(object):
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:#tower
             self.actionSelectionnee = 0
             print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
-            self.parent.actions.append([self.parent.nom, "creerBuilding", ["tower", caseX, caseY]])##
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["Tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
             print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
-            self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["Barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
             print("creating guerrier with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["Guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==5:# maison
             self.actionSelectionnee = 0
             print("creating house with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
-            self.parent.actions.append([self.parent.nom, "creerBuilding", ["maison", caseX, caseY]])
+            self.parent.actions.append([self.parent.nom, "creerBuilding", ["Maison", caseX, caseY]])
             if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
                 self.parent.myPlayer.maxUnitsDepart+=10
         elif self.actionSelectionnee==6:#Mouton
             self.actionSelectionnee=0##
             print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["Mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==7:# archer
             self.actionSelectionnee=0##
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
-            self.parent.actions.append([self.parent.nom, "creerUnite", ["archer", self.canx(self.currentX), self.cany(self.currentY)]])##
+            self.parent.actions.append([self.parent.nom, "creerUnite", ["Archer", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
         self.canevasMilieu.delete("test")
@@ -317,7 +317,7 @@ class Vue(object):
 
     def spawnUnit(self, event):
         print("creating vil with owner id: ", self.parent.myPlayer.ID)
-        self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
+        self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])
         print("units "+ str(self.parent.myPlayer.maxUnitsCourrant))
 
     def initCadre(self):
