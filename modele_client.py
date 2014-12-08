@@ -490,6 +490,7 @@ class Mouton(Unit):
         self.unitCiblePosCase = None
         self.setCoutRes(FOOD,500)
         self.setCoutRes(GOLD,500)
+        self.setCoutRes(ENERGY,500)
 
 
 class Guerrier(Unit):
@@ -790,7 +791,7 @@ class Tower(Building):
             self.unitCibleType = None
 
     def scanEnemy(self):
-        if self.targetedBy and target is None:
+        if self.targetedBy and self.target is None:
             self.target = self.targetedBy
             self.attaqueCible(targetedBy)
         else:
@@ -838,7 +839,7 @@ class Modele(object):
 
     def initPartie(self,listeNomsJoueurs):
         n=0
-        self.playerColors = ["blue", "green", "yellow", "purple", "brown", "black", "white", "orange", "pink"]
+        self.playerColors = ["blue", "purple", "yellow", "green", "brown", "black", "white", "orange", "pink"]
         #init tous les joueur avec leur unite, batiments, etc...
         print("Nombre total de joueurs: ", len(listeNomsJoueurs))
         for j in listeNomsJoueurs:
