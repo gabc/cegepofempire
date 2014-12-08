@@ -43,8 +43,8 @@ class Controleur(object):
             pythonExe = "/usr/bin/python3"
         else:
             #IL EST IMPORTANT DE CHECKER LA VERSION DE PYTHON!!!
-            #pythonExe = "C:\\Python33\\Python.exe"
-            pythonExe = "C:\\Python34\\Python.exe"
+            pythonExe = "C:\\Python33\\Python.exe"
+            #pythonExe = "C:\\Python34\\Python.exe"
         pid = Popen([pythonExe, "serveur.py"]).pid
         
         print("APRES SERVEUR")
