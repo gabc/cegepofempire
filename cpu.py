@@ -4,19 +4,15 @@ import random
 from Map import *
 from modele_client import *
 """
-A LIRE:
-    TEST POSSIBLE:
-        1- VERIFICATION A CHAQUE nb X de tic A PRENDRE UNE DECISION
-        2- ENGAGE UN VILLAGEOIS  J USQU A UN NOMBRE DE 5 x NOMBRE DE RESSOURCES NECESSAIRE SELON L AGE COURRANT
-        3- CONSTRUCTION DE MAISON LORQUE LE NOMBRE DE VILLAGEOIS ATTEINT 75/100 DU MAX UNITS COURRANT
-        4- LA CONSTRUCTION DES BATIMENTS SE FONT TOUS SUR DES CASES PASSABLE- ET METTE CES CASE IMPASSABLE
+POUR MODIFIER LA VALEUR DE TEMPS DE JEU AUQUEL LE CPU FAIT SES OPTIONS:
+    - tout au bas de la page, au niveau du controleur:
+        - changer la valeur int 7000 dans cette ligne:
+               while (count < 7000):
 
-tout cela fonctionne theoriquement. je n ai pas fait de tests ultime mais tout semble fonctionnel
-ps- les print sont deja present alors faite le rouler.
+    -plus la valeur est elever, plus le cpu aura le temps de cree des units, des maison et des tower
+    -sa monnaie va monter d elle meme, pour verifier le changement d ere au bon moment
+    cependant, les buildings et units ne coute rien en se moment..
 
-pour une plus ample comprehension: verifier ce que le controleur fait.
-ctrl-f : balancementCaptif
-ctrl-f : Decision
 """
 class Cpu(Joueur):
     def __init__(self, ID, posX, posY,parent):
@@ -28,6 +24,9 @@ class Cpu(Joueur):
         self.nbVillageois = 0
         #nbTypeDeRessources = 3
         self.valeurRandom = random.randrange(2,6) * 20
+        self.valeurRandomPosX = random.randrange(100,120)
+        self.valeurRandomPosY = random.randrange(100,120)
+        self.click = (self.valeurRandomPosX, self.valeurRandomPosY)
         # Index des ressources _Reminder
         # Nourriture          # index 0
         # bois                # index 1
@@ -82,10 +81,19 @@ class Cpu(Joueur):
                 self.maxUnitsCourrant += 10
 
     def printBatimentsPositions(self):
+        NbMaison = 0
+        NbTower = 0
+        NbBarrack = 0
         print("Position de tout les buildings :")
         for i in self.buildings:
             print(" " + str(i.type) + " - : ( " + str(i.posX) + ", " + str(i.posY) + " )")
-
+            if i.type == "Maison":
+                 NbMaison += 1
+            if i.type == "Tower":
+                NbTower += 1
+        print("Batiments:")
+        print(" Tower: " + str(NbTower))
+        print(" Maison: " + str(NbMaison))
     def balancementCaptif(self):
         # will be in a loop
         #print("Balancement:")
@@ -96,16 +104,25 @@ class Cpu(Joueur):
         if self.nbVillageois < self.maxUnitsCourrant:
             if self.nbVillageois <= (10*self.nbTypeDeRessources) and self.mode != self.offensive:
                 #changer pour que le towncenter fait le villageois
+                self.nouveauUnit("villageois")
+                """
                 villageois = Villageois(self.ID,0,0,self.parent)
                 self.units.append(villageois)
+                """
             elif self.nbVillageois <= 5 and self.mode == self.offensive:
                 #changer pour que le TownCenter fait le villageois
+                self.nouveauUnit("villageois")
+                """
                 villageois = Villageois(self.ID,0,0,self.parent)
                 self.units.append(villageois)
-            else:
+                """
+            elif len(self.units) < self.maxUnits:
                 #changer cette ligne pour que la barrack fait le guerrier
+                self.nouveauUnit("guerrier")
+                """
                 guerrier = Guerrier(self.ID,0,0,self.parent)
                 self.units.append(guerrier)
+                """
         if len(self.units) > 0.75 * self.maxUnitsCourrant and self.maxUnitsCourrant < self.maxUnits:
             #print("Cherche Villageois non occuper -> construit maison") #(findUnoccupiedVillager().construire(?)
             self.verificationPosition(self.m.mat)
@@ -117,15 +134,21 @@ class Cpu(Joueur):
                 self.m.mat[self.cherchePosY][self.cherchePosX].passable = False
             else:
                 if len(self.units) < self.maxUnitsCourrant:
+                    self.nouveauUnit("villageois")
+                    """
                     villageois = Villageois(self.ID,0,0,self.parent)
-                self.units.append(villageois)
+                    self.units.append(villageois)
+                    """
         for i in range(self.nbTypeDeRessources):
             if self.villageoisParRessources[i] < self.nbCollecteurParRessourcesAuBesoin[i] :
                 self.villageoisParRessources[i] += 1
         if len(self.buildings) %5 == 0:
             self.verificationPosition(self.m.mat)
+            #self.creerJoueurBuilding("tower", self.cherchePosX, self.cherchePosY)
+
             tower = Tower(self.ID, self.cherchePosX, self.cherchePosY, self.parent)
             self.buildings.append(tower)
+
 
     def calculVillageois(self):
         self.nbVillageois = 0
@@ -162,7 +185,14 @@ class Cpu(Joueur):
             if self.positionVerifBool == True:
                 break
 
+    def nouveauUnit(self, type): #"villageois" ou "guerrier"
+        for i in self.buildings:
+            if i.type == "TownCenter":
 
+                self.valeurRandomPosX = random.randrange(100,120)
+                self.valeurRandomPosY = random.randrange(100,120)
+                self.click = (self.valeurRandomPosX + i.posX * 20 , self.valeurRandomPosY + i.posY * 20)
+                self.creerUnit(type,self.valeurRandomPosX + i.posX*20, self.valeurRandomPosY + i.posY*20)
 
 
 
@@ -206,12 +236,14 @@ class Cpu(Joueur):
             if self.ageCourrante != self.ageFutur:
                 self.changerEre()
                 print("food" + str(self.ressources[0]) + "wood" + str(self.ressources[1]) + "rock" + str(self.ressources[2]) + "gold" + str(self.ressources[3]) + "energy" + str(self.ressources[4]))
-            self.valeurRandom = random.randrange(2,6)*200
+            self.valeurRandom = random.randrange(2,6)*20
         #print("Prochaine decision dans " + str(self.valeurRandom) + " ping !")
 
     def printUnitsQte(self):
         NbVillageois = 0
         NbGuerrier = 0
+        self.calculMaxUnit()
+        print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
         for i in self.units:
             if i.type == "Guerrier":
                 NbGuerrier += 1
@@ -230,11 +262,9 @@ class Controleur():
 if __name__ == '__main__':
     c = Controleur()
     count = 0
-    while (count < 50000):
+    while (count < 7000):
         c.cpu.Decision()
         count += 1
-    c.cpu.calculMaxUnit()
-    print("le max unit courrant est : " + str(c.cpu.maxUnitsCourrant))
     c.cpu.printBatimentsPositions()
     c.cpu.printUnitsQte()
     print("fin",c.cpu)

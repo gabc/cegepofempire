@@ -3,6 +3,38 @@ import timeit
 from utils import *
 from helper import *
 from deplacement import *
+
+global WOOD
+global FOOD
+global ROCK
+global ARTE
+global ENERGY
+global GOLD
+global EMPTY
+
+global ROCK_UNDER
+global ENERGY_UNDER
+global GOLD_UNDER
+
+WOOD_RATIO=10
+FOOD_RATIO=5
+ROCK_RATIO=5
+ARTE_RATIO=1
+ENERGY_RATIO=3
+GOLD_RATIO=3
+UNDER_RATIO=25
+
+FOOD="Nourriture"
+WOOD="Bois"
+ROCK="Pierre"
+GOLD="Or"
+ENERGY="Energie"
+ARTE="Artefact"
+ROCK_UNDER="Roche souterraine"
+ENERGY_UNDER="Energie souterraine"
+GOLD_UNDER="Or soutterrain"
+EMPTY='-'
+
 class Joueur():
     def __init__(self, parent, ID, name):
         self.parent = parent
@@ -11,6 +43,7 @@ class Joueur():
         self.currentTime = 0
         self.ere = 1
         self.maxUnits = 200
+        self.maxUnitsDepart = 10
         self.maxUnitsCourrant = 0
         # Index des ressources:
         # Nourriture : 0
@@ -18,11 +51,11 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-        self.ressources = {0 : 10,
-                           1 : 20,
-                           2 : 30,
-                           3 : 40,
-                           4 : 50}
+        self.ressources = {FOOD : 100,
+                           WOOD : 100,
+                           ROCK : 100,
+                           GOLD : 100,
+                           ENERGY : 100}
         self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
@@ -52,17 +85,17 @@ class Joueur():
                 self.Ere3()
             elif self.ageCourrante == self.ageModerne:
                 self.Ere4()
-            print(" changement d'ere reussi ")
-        print("age courante est " + str(self.ageCourrante))
+            #print(" changement d'ere reussi ")
+            #print("age courante est " + str(self.ageCourrante))
         self.changerErePossible = False
 
 
     def changerEreVerif(self):
         if self.ageCourrante != self.ageFutur:
             for i in range(self.nbTypeDeRessources):
-                if self.ressources[i] > 10:
+                if self.ressources[i] > 10: # 10 etant le cout des ressource pour changer d ere
                     self.changerErePossible = True
-                    print("peut changer d'ere ! ")
+                    #print("peut changer d'ere ! ")
 
     def Ere2(self):
         self.ageCourrante = self.ageContemporain
@@ -88,21 +121,51 @@ class Joueur():
         pass
 
     def creerUnit(self, type, x, y):
-        if type == "villageois":
-            self.units.append(Villageois(self.ID, x, y,self))
-        elif type == "guerrier":
-            self.units.append(Guerrier(self.ID, x, y,self))
+        #DEM ifs        
+        if type == "Villageois":
+            unit=Villageois(self.ID, x, y,self)
+        elif type == "Guerrier":
+            unit=Guerrier(self.ID, x, y,self)
+        elif type == "Mouton":
+            unit=Mouton(self.ID, x, y,self)
+        elif type == "Archer":
+            unit=Archer(self.ID, x, y,self)
+        elif type == "Chevalier":
+            unit=Chevalier(self.ID, x, y,self)
 
-    def creerJoueurBuilding(self, type, x, y):
-        if type == "tower":
-            self.buildings.append(Tower(self.ID, x, y,self))
-            self.parent.m.placeBuilding(x,y,"tower")
-        if type == "barrack":
-            self.buildings.append(Barrack(self.ID, x, y,self))
-            self.parent.m.placeBuilding(x,y,"barrack")
+        if self.compareCout(unit.coutRes):
+            self.soustraitCout(unit.coutRes)
+            self.units.append(unit)
+            self.maxUnitsCourrant+=unit.coutPop
 
-    def changerAllies():
+    def creerJoueurBuilding(self, type, x, y):        
+        if type == "Tower":
+                building=Tower(self.ID, x, y,self)
+        elif type == "Barrack":
+                building=Barrack(self.ID, x, y,self)
+        elif type == "Maison":
+                building=Maison(self.ID, x, y,self)
+
+        if self.parent.m.mat[x][y].isPassable():
+            if self.compareCout(building.coutRes):
+                self.parent.m.placeBuilding(x,y,building.type)
+                self.soustraitCout(building.coutRes)
+                self.buildings.append(building)
+
+    def changerAllies(self):
         pass
+
+    def compareCout(self, cout):      
+        for k in self.ressources:           
+            if (self.ressources[k] - cout[k]) < 0:
+                print("Pas assez de ressources du type "+k)
+                return False
+
+        return True
+
+    def soustraitCout(self, cout):      
+        for k in self.ressources:
+            self.ressources[k] -= cout[k]
 
     #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
@@ -135,6 +198,12 @@ class Unit():
         #le hp d'un unit generique est -1
         self.hpMax = -1
         self.hpActuel = self.hpMax
+        self.range = 1 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 0
+        self.degat = 0
         self.posX = posX
         self.posY = posY
         #le champs de vision est arbitraire et devrait dependre du type du Unit
@@ -145,11 +214,36 @@ class Unit():
         self.parent=parent
         self.target=(self.posX, self.posY)
         self.status="waiting"
+        self.food=0
+        self.coutRes = {FOOD : 0,
+                        WOOD : 0,
+                        ROCK : 0,
+                        GOLD : 0,
+                        ENERGY : 0}
+        self.coutPop=0
+        self.cooldown= 20
+        self.maxCooldown = 20
 
+    def say(self, text):
+        #Pour print seulement si le unit appartient a myPlayer
+        if self.parent == self.parent.parent.myPlayer:
+            print(text)
+    
+    def setCoutRes(self, idRes, nbRes):
+        self.coutRes[idRes]=nbRes
 
     def faitAction(self):
-        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+        if len(self.chemin) != 0:
             self.deplacer(self.deplaceur, self.chemin)
+
+        getattr(self, self.actionEnCours)()
+
+        #print(self.actionEnCours)
+
+        if self.cooldown != self.maxCooldown:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
 
     def isAlive(self):
         if self.hpActuel <= 0:
@@ -157,11 +251,10 @@ class Unit():
         else:
             return True
 
-
     def recevoirDegats(self, degatsRecus):
         if degatsRecus >= self.hpActuel:
             self.hpActuel = 0
-            print("Unite mort")
+            self.print("Unite mort")
         else :
             self.hpActuel -= degatsRecus
 
@@ -175,7 +268,97 @@ class Unit():
         if self.posY > ay:
             self.posY -= self.vitesseY
         if self.posY < ay:
-            self.posY += self.vitesseY
+            self.posY += self.vitesseY   
+
+    def scanEnemy(self):
+            if len(self.chemin) ==0:
+                for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                  for n in i.units:
+                        if n.ownerID is not self.ownerID:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            caseNx, caseNy =trouveCase(n.posX, n.posY)
+                            if Helper.calcDistance(caseGx, caseGy , caseNx, caseNy) <= self.champDaggro:
+                                self.unitCible = n
+                                self.actionEnCours = "marcheVersEnemy"
+                                self.unitCibleType = "Unit"
+                                self.unitCiblePosCase = (caseNx, caseNy)
+                                self.unitCible.targetedBy = self
+                                break
+                  for m in i.buildings:
+                        if m.ownerID is not self.ownerID:
+                            caseGx, caseGy = trouveCase(self.posX,self.posY)
+                            if Helper.calcDistance(caseGx, caseGy, m.posX, m.posY) <= self.champDaggro:
+                                self.unitCible = m
+                                self.actionEnCours = "marcheVersEnemy"
+                                self.unitCibleType = "Building"
+                                self.unitCiblePosCase = (m.posX,m.posY)
+                                self.unitCible.targetedBy = self
+                                break
+                            
+    def attaqueCible(self):
+        if self.unitCible.isAlive() == True and self.unitCibleType =="Unit":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+
+            if Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range:
+                if self.cooldown == self.maxCooldown:
+                    self.unitCible.recevoirDegats(self.degat)
+                    self.cooldown = 0
+            elif Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:
+                self.actionEnCours = "marcheVersEnemy"
+
+        elif self.unitCible.isAlive() == True and self.unitCibleType == "Building":
+            caseGx, caseGy = trouveCase(self.posX,self.posY)
+
+            if Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.range or math.floor(Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY)) == 1:
+                if self.cooldown == self.maxCooldown:
+                    self.unitCible.recevoirDegats(self.degat)
+                    print(self.unitCible.hpActuel, " = la vie de ",self.unitCible.type)
+                    self.cooldown == 0
+            elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
+                self.actionEnCours = "marcheVersEnemy"
+                #print(self.actionEnCours)
+
+
+        else:
+            self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
+
+    def marcheVersEnemy(self):
+        if self.unitCible.isAlive():
+            if self.unitCibleType == "Unit":
+                caseGx, caseGy = trouveCase(self.posX,self.posY)
+                caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
+            elif self.unitCibleType == "Building":
+                caseGx, caseGy = trouveCase(self.posX,self.posY)
+                caseNx, caseNy =self.unitCible.posX,self.unitCible.posY
+
+            if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
+                #self.deplaceUnit(self, (caseNx, caseNy))
+                self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
+                #print("on rester pogner dans le marche vers")
+            elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
+                self.actionEnCours = "attaqueCible"
+        else:
+            self.actionEnCours ="scanEnemy"
+
+    def recevoirDegats(self, degatsRecus):
+        if degatsRecus -self.defense > self.hpActuel:
+            self.hpActuel = 0
+        else :
+            self.hpActuel -= degatsRecus -self.defense
+
+    def deplacer(self, deplaceur, arrive):
+        cx, cy = trouveCase(self.posX, self.posY)
+        if self.chemin is None or self.chemin == []:
+            self.deplaceur = deplaceur
+            self.chemin = deplaceur.chemin(self, arrive)
+        else:
+            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
+                del self.chemin[0]
+            if self.chemin:
+                self.effectueDeplacement(self.chemin[0])
+                
 
 class Villageois(Unit):
     def __init__(self,ownerID, posX, posY,parent):
@@ -196,29 +379,33 @@ class Villageois(Unit):
         self.collectionMax = 100
         self.collectionActuel = 0
         self.collectionType = 0
-        self.currentRes=(0,0)
+        self.currentRes=None
 
         self.vitesseX = 5
         self.vitesseY = 5
 
-        #for testing purposes
-        self.i=0
+        self.setCoutRes(FOOD,30)
+        self.coutPop=1
+
+        self.dumpCoords=self.getDumpCoords()
 
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
 
-        elif self.status is not "waiting":    #Sinon check son target si tu n'attend pas
+        if self.status is not "waiting":    #Sinon check son target si tu n'attend pas
             self.checkArrive(self.target, self.parent.parent.m)
 
         if self.status=="backToBase":
-            self.deplacer(self.deplaceur, self.getTownCenterCoords())
+            self.deplacer(self.deplaceur, self.dumpCoords)
 
-        elif self.status=="atBase" and self.currentRes is not (0,0):          
+        elif self.status=="backToRes":
+
             self.deplacer(self.deplaceur, self.currentRes)
-            self.status="backToRes"
 
-    def getTownCenterCoords(self):
+        #print(self.status)
+
+    def getDumpCoords(self):
         for b in self.parent.buildings:
             if b.type=="TownCenter":
                 x=b.posX
@@ -229,7 +416,9 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
             self.status="backToBase"
-            print("Villager", self.id, "has a full inventory")
+            self.target=self.dumpCoords
+            s="Villageois no " + str(self.id) + " a remplis son inventaire."
+            #self.say(s)
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
             self.collectionActuel+=self.collectionRate
@@ -241,58 +430,72 @@ class Villageois(Unit):
                 case.ressource='-'
                 case.passable=True;
                 self.status="backToBase"
-                print
+                self.target=self.dumpCoords
 
         return case
 
     def checkArrive(self, target, game_map):
-        self.i+=1
-        #print(self.i)
         arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
-        townXY=self.getTownCenterCoords()
+        townXY=self.dumpCoords
 
         #Si il est dans le range de 1 case de son arrivee
-        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):           
-        #Si t'est arrive a un town center, dump cque t'as       
-            if arrive.posX==townXY[0] and arrive.posY==townXY[1]:
+        if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
+            if arrive.building=="TownCenter":
                 self.dumpRessources()
-                self.status="atBase"
-            #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
-                print("This space has no ressources")
                 self.status="waiting"
-            else: 
+            else:
                 self.status="collecting"
                 arrive=self.recolteRessource(arrive)
                 game_map.mat[arrive.posX][arrive.posY]=arrive
 
-    def deplacer(self, deplaceur, arrive):
-        cx, cy = trouveCase(self.posX, self.posY)
-        if self.chemin is None or self.chemin == []:
-            self.deplaceur = deplaceur
-            self.chemin = deplaceur.chemin(self, arrive)
-        else:
-            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
-                del self.chemin[0]
-            if self.chemin:
-                self.effectueDeplacement(self.chemin[0])
-
     def dumpRessources(self):
         #check s'il a vraiment des ressources a dump avant de dump
         if self.collectionActuel > 0:
-            print("Villager",self.id,"dumped",int(self.collectionActuel/10),"ressources at base" )
-            c = int(self.collectionType)
+            c = self.collectionType
             self.parent.ressources[c]+=int(self.collectionActuel/10)
-            self.collectionActuel = 0
+            s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
+            #self.say(s)
+            self.collectionActuel = 0         
+
+            self.target=self.currentRes
+            self.status="backToRes"
             
+
+class Mouton(Unit):
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
+        self.type = "Mouton"
+        
+        #Arbitraire
+        self.champDeVision = 50
+        self.delaiDeConstruction = 20000
+        self.hpMax =100000 #50
+        self.hpActuel = self.hpMax
+        self.range = 1 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 1000#1
+        self.vitesseX = 9#5
+        self.vitesseY = 9#5
+        self.champDaggro = 5
+        self.degat = 10000000#10
+        self.actionEnCours = "scanEnemy"
+        self.targetedBy = None
+        self.unitCible = None
+        self.unitCibleType = None
+        self.unitCiblePosCase = None
+        self.setCoutRes(FOOD,500)
+        self.setCoutRes(GOLD,500)
+
 
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Guerrier"
-
 
         #Arbitraire
         self.champDeVision = 50
@@ -313,87 +516,68 @@ class Guerrier(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
+        self.coutPop=3
+        self.setCoutRes(FOOD,50)
+        self.setCoutRes(GOLD,25)
+    
+
+class Archer(Unit):
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
+        self.type = "Archer"
 
 
-    def faitAction(self):
-        if len(self.chemin) != 0:
-            self.deplacer(self.deplaceur, self.chemin)
+        #Arbitraire
+        self.champDeVision = 50
+        self.delaiDeConstruction = 20000
+        self.hpMax =100
+        self.hpActuel = self.hpMax
+        self.range = 25 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 1
+        self.vitesseX = 5
+        self.vitesseY = 5
+        self.champDaggro = 5
+        self.degat = 10
+        self.actionEnCours = "scanEnemy"
+        self.targetedBy = None
+        self.unitCible = None
+        self.unitCibleType = None
+        self.unitCiblePosCase = None
 
-        getattr(self, self.actionEnCours)()
-        
-        if self.cooldown != self.maxCooldown:
-            self.cooldown += 1
-        if self.hpActuel  ==0:
-            del self
+        self.setCoutRes(FOOD,20)
+        self.setCoutRes(WOOD,40)
+        self.setCoutRes(GOLD,15)
 
-
-    def scanEnemy(self):
-            if len(self.chemin) ==0:
-                for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
-                  for n in i.units:
-                        if n.ownerID is not self.ownerID:
-                            caseGx, caseGy = trouveCase(self.posX,self.posY)
-                            caseNx, caseNy =trouveCase(n.posX, n.posY)
-                            if Helper.calcDistance(caseGx, caseGy , caseNx, caseNy) <= self.champDaggro:
-                                self.unitCible = n
-                                self.actionEnCours = "marcheVersEnemy"
-                                self.unitCibleType = "Unit"
-                                self.unitCiblePosCase = (caseNx, caseNy)
-                                self.unitCible.targetedBy = self
-                                break
-
-    def attaqueCible(self):
-        if self.unitCible.isAlive() == True:
-            caseGx, caseGy = trouveCase(self.posX,self.posY)
-            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
-
-            if Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range:
-                if self.cooldown == self.maxCooldown:
-                    self.unitCible.recevoirDegats(self.degat)
-                    self.cooldown = 0
-            elif Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:
-                self.actionEnCours = "marcheVersEnemy"
-            else:
-                self.actionEnCours ="scanEnemy"
-                self.unitCibleType = None
-        else:
-            self.actionEnCours="scanEnemy"
-            self.unitCibleType = None
-
-    def marcheVersEnemy(self):
-        if self.unitCibleType == "Unit":
-            caseGx, caseGy = trouveCase(self.posX,self.posY)
-            caseNx, caseNy =trouveCase(self.unitCible.posX, self.unitCible.posY)
-
-        if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) >= self.range:         # S'il a un chemin. Qu'il se deplace.
-            print("il a un chemin")
-            #self.deplaceUnit(self, (caseNx, caseNy))
-            self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-        elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range and self.unitCibleType == "Unit":
-            print("il n'a pas un chemin")
-            self.actionEnCours = "attaqueCible"
+class Chevalier(Unit):
+    def __init__(self, ownerID, posX, posY, parent):
+        Unit.__init__(self, ownerID,posX,posY, parent)
+        self.type = "Chevalier"
 
 
-
-
-    def recevoirDegats(self, degatsRecus):
-        if degatsRecus -self.defense > self.hpActuel:
-            self.hpActuel = 0
-        else :
-            self.hpActuel -= degatsRecus -self.defense
-
-    def deplacer(self, deplaceur, arrive):
-        cx, cy = trouveCase(self.posX, self.posY)
-        if self.chemin is None or self.chemin == []:
-            self.deplaceur = deplaceur
-            self.chemin = deplaceur.chemin(self, arrive)
-        else:
-            if (cx == self.chemin[0].x) and (cy == self.chemin[0].y):
-                del self.chemin[0]
-            if self.chemin:
-                self.effectueDeplacement(self.chemin[0])
-
-
+        #Arbitraire
+        self.champDeVision = 50
+        self.delaiDeConstruction = 20000
+        self.hpMax =100
+        self.hpActuel = self.hpMax
+        self.range = 2 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 1
+        self.vitesseX = 9
+        self.vitesseY = 9
+        self.champDaggro = 5
+        self.degat = 11
+        self.actionEnCours = "scanEnemy"
+        self.targetedBy = None
+        self.unitCible = None
+        self.unitCibleType = None
+        self.unitCiblePosCase = None
+        self.setCoutRes(FOOD,200)
+        self.setCoutRes(GOLD,200)
 
 class Building():
 
@@ -415,6 +599,14 @@ class Building():
         self.champDeVision = -1
         #idem pour le delai de Construction
         self.delaiDeConstruction = -1
+        self.coutRes = {FOOD : 0,
+                        WOOD : 0,
+                        ROCK : 0,
+                        GOLD : 0,
+                        ENERGY : 0}
+    
+    def setCoutRes(self, idRes, nbRes):
+        self.coutRes[idRes]=nbRes
 
     def faitAction(self):
         pass
@@ -425,13 +617,52 @@ class Building():
         else:
             return True
 
-
     def recevoirDegats(self, degatsRecus):
         if degatsRecus > self.hpActuel:
             self.hpActuel = 0
-            print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
+            #print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
         else :
             self.hpActuel -= degatsRecus
+
+    def uniteCreable(self):
+        return self.uniteCreable
+
+    def createUnit(self, Unit):
+
+        if len(self.creationQueue) < 5:
+            self.creationQueue.insert(1,Unit)
+        else:
+            #print("la queue est pleine")
+            return False
+
+        if self.creationQueue[0] == Unit:
+            self.tempsRestant = Unit.delaiDeConstruction
+
+        return True
+
+    def unitSortir(self):
+        # a appeler quand le temps Restant atteint 0
+        UnitCree = None
+        if len(self.creationQueue) != 0:
+            UnitCree = self.creationQueue[0]
+            self.creationQueue.pop(0)
+            self.tempsRestant =0
+            # creer l'objet dans le canvas I guess
+        else:
+            return false
+
+        if len(self.creationQueue) !=0:
+            self.tempsRestant = self.creationQueue[0].delaiDeConstruction
+
+
+        return UnitCree
+
+    def annulationUnit(self):
+        if len(self.creationQueue != 0):
+            self.creationQueue.pop()
+            return True
+        else :
+            return False
 
 
 class TownCenter(Building):
@@ -474,46 +705,9 @@ class TownCenter(Building):
         self.uniteCreable = [Villageois]
         self.creationQueue = []
         self.tempsRestant = 0
-
-    def uniteCreable(self):
-        return self.uniteCreable
-
-    def createUnit(self, Unit):
-
-        if len(self.creationQueue) < 5:
-            self.creationQueue.insert(1,Unit)
-        else:
-            print("la queue est pleine")
-            return False
-
-        if self.creationQueue[0] == Unit:
-            self.tempsRestant = Unit.delaiDeConstruction
-
-        return True
-
-    def unitSortir(self):
-        # a appeler quand le temps Restant atteint 0
-        UnitCree = None
-        if len(self.creationQueue) != 0:
-            UnitCree = self.creationQueue[0]
-            self.creationQueue.pop(0)
-            self.tempsRestant =0
-            # creer l'objet dans le canvas I guess
-        else:
-            return false
-
-        if len(self.creationQueue) !=0:
-            self.tempsRestant = self.creationQueue[0].delaiDeConstruction
-
-
-        return UnitCree
-
-    def annulationUnit(self):
-        if len(self.creationQueue != 0):
-            self.creationQueue.pop()
-            return True
-        else :
-            return False
+        self.setCoutRes(ROCK, 1500)
+        self.setCoutRes(WOOD, 1500)
+        self.setCoutRes(GOLD, 1000)
 
 class Maison(Building):
     def __init__(self, ownerID, posX, posY, parent):
@@ -525,6 +719,7 @@ class Maison(Building):
         self.longueur = 100
         self.largeur = 100
         self.delaiDeConstruction = 10000
+        self.setCoutRes(WOOD,100)
 
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY, parent):
@@ -539,49 +734,11 @@ class Barrack(Building):
         self.delaiDeConstruction = 20000
         self.champDeVision = 50
 
-        self.uniteCreable = [Guerrier]
+        self.uniteCreable = [Guerrier,Mouton]
         self.creationQueue = []
         self.tempsRestant = 0
-
-    def uniteCreable(self):
-        return self.uniteCreable
-
-    def createUnit(self, Unit):
-
-        if len(self.creationQueue) < 5:
-            self.creationQueue.insert(1,Unit)
-        else:
-            print("la queue est pleine")
-            return False
-
-        if self.creationQueue[0] == Unit:
-            self.tempsRestant = Unit.delaiDeConstruction
-
-        return True
-
-    def unitSortir(self):
-        # a appeler quand le temps Restant atteint 0
-        UnitCree = None
-        if len(self.creationQueue) != 0:
-            UnitCree = self.creationQueue[0]
-            self.creationQueue.pop(0)
-            self.tempsRestant =0
-            # creer l'objet dans le canvas I guess
-        else:
-            return false
-
-        if len(self.creationQueue) !=0:
-            self.tempsRestant = self.creationQueue[0].delaiDeConstruction
-
-
-        return UnitCree
-
-    def annulationUnit(self):
-        if len(self.creationQueue != 0):
-            self.creationQueue.pop()
-            return True
-        else :
-            return False
+        self.setCoutRes(WOOD,125)
+        self.setCoutRes(GOLD,125)
 
 # modifier le 11/11/2014
 class Tower(Building):
@@ -598,11 +755,14 @@ class Tower(Building):
         self.target=None
         self.typeTarget =None
         self.targetedBy = None
-        self.actionEnCours = "scanEnemy" # Comme ça. Pas besoin de if :D
+
+        self.actionEnCours = "scanEnemy"
         self.degat = 50
         self.cooldown = 30
         self.cooldownMax = self.cooldown
-
+        self.setCoutRes(ROCK,200)
+        self.setCoutRes(WOOD,200)
+        self.setCoutRes(GOLD,100)
 
     def attaqueCible(self):
         if self.target.isAlive() == True:
@@ -628,10 +788,6 @@ class Tower(Building):
         else:
             self.actionEnCours="scanEnemy"
             self.unitCibleType = None
-
-
-
-
 
     def scanEnemy(self):
         if self.targetedBy and target is None:
@@ -665,16 +821,6 @@ class Tower(Building):
         if self.hpActuel  ==0:
             del self
 
-
-
-
-
-#
-
-
-
-
-
 class Modele(object):
     id=0
     def nextId():
@@ -707,8 +853,6 @@ class Modele(object):
 
     def creerUnite(self, args):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
-        self.joueurs[args[0]].maxUnitsCourrant+=1
-
 
     def deplaceUnite(self, args):
         self.joueurs[args[0]].deplaceUnit(args[2][0],args[2][1])
@@ -725,6 +869,3 @@ class Modele(object):
         # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
-
-
-
