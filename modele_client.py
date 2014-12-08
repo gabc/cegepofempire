@@ -198,6 +198,12 @@ class Unit():
         #le hp d'un unit generique est -1
         self.hpMax = -1
         self.hpActuel = self.hpMax
+        self.range = 1 #melee
+        self.atkSpeed = 50 #en millisecondes
+        self.cooldown= 20
+        self.maxCooldown = 20
+        self.defense = 0
+        self.degat = 0
         self.posX = posX
         self.posY = posY
         #le champs de vision est arbitraire et devrait dependre du type du Unit
