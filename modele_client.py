@@ -86,7 +86,7 @@ class Joueur():
             elif self.ageCourrante == self.ageModerne:
                 self.Ere4()
             #print(" changement d'ere reussi ")
-            print("age courante est " + str(self.ageCourrante))
+            #print("age courante est " + str(self.ageCourrante))
         self.changerErePossible = False
 
 
@@ -209,12 +209,16 @@ class Unit():
         self.status="waiting"
         self.food=0
         self.coutRes = {FOOD : 0,
-                           WOOD : 0,
-                           ROCK : 0,
-                           GOLD : 0,
-                           ENERGY : 0}
+                        WOOD : 0,
+                        ROCK : 0,
+                        GOLD : 0,
+                        ENERGY : 0}
         self.coutPop=0
 
+    def say(self, text):
+        #OH BOY
+        if self.parent == self.parent.parent.myPlayer:
+            print(text)
     
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
@@ -232,7 +236,7 @@ class Unit():
     def recevoirDegats(self, degatsRecus):
         if degatsRecus >= self.hpActuel:
             self.hpActuel = 0
-            print("Unite mort")
+            self.print("Unite mort")
         else :
             self.hpActuel -= degatsRecus
 
@@ -275,6 +279,8 @@ class Villageois(Unit):
         self.setCoutRes(FOOD,30)
         self.coutPop=1
 
+        self.dumpCoords=self.getDumpCoords()
+
     def faitAction(self):
         if self.chemin:         # S'il a un chemin. Qu'il se deplace.
             self.deplacer(self.deplaceur, self.chemin)
@@ -283,7 +289,7 @@ class Villageois(Unit):
             self.checkArrive(self.target, self.parent.parent.m)
 
         if self.status=="backToBase":
-            self.deplacer(self.deplaceur, self.getTownCenterCoords())
+            self.deplacer(self.deplaceur, self.dumpCoords)
 
         elif self.status=="backToRes":
 
@@ -291,7 +297,7 @@ class Villageois(Unit):
 
         #print(self.status)
 
-    def getTownCenterCoords(self):
+    def getDumpCoords(self):
         for b in self.parent.buildings:
             if b.type=="TownCenter":
                 x=b.posX
@@ -302,8 +308,9 @@ class Villageois(Unit):
     def recolteRessource(self, case):
         if self.collectionActuel ==self.collectionMax:
             self.status="backToBase"
-            self.target=self.getTownCenterCoords()
-            print("Villageois no", self.id, "a remplis son inventaire.")
+            self.target=self.dumpCoords
+            s="Villageois no " + str(self.id) + " a remplis son inventaire."
+            #self.say(s)
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
             self.collectionActuel+=self.collectionRate
@@ -315,7 +322,7 @@ class Villageois(Unit):
                 case.ressource='-'
                 case.passable=True;
                 self.status="backToBase"
-                self.target=self.getTownCenterCoords()
+                self.target=self.dumpCoords
 
         return case
 
@@ -323,7 +330,7 @@ class Villageois(Unit):
         arrive=game_map.mat[target[0]][target[1]]
 
         x, y = trouveCase(self.posX, self.posY)
-        townXY=self.getTownCenterCoords()
+        townXY=self.dumpCoords
 
         #print(x, y, "arrive", arrive.posX, arrive.posY)
         #print(arrive.building)
@@ -338,7 +345,7 @@ class Villageois(Unit):
                 #print("BASE BASE BASE!!")
             #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
-                print("Cet case n'a pas de ressources.")
+                #print("Cet case n'a pas de ressources.")
                 self.status="waiting"
             else:
                 self.status="collecting"
@@ -361,7 +368,8 @@ class Villageois(Unit):
         if self.collectionActuel > 0:
             c = self.collectionType
             self.parent.ressources[c]+=int(self.collectionActuel/10)
-            print("Villageois no",self.id,"a rapporter",int(self.collectionActuel/10),"ressources a la base, de type", c )
+            s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
+            #self.say(s)
             self.collectionActuel = 0         
 
             self.target=self.currentRes
@@ -619,7 +627,7 @@ class Guerrier(Unit):
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
                 #self.deplaceUnit(self, (caseNx, caseNy))
                 self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-                print("on rester pogner dans le marche vers")
+                #print("on rester pogner dans le marche vers")
             elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
                 self.actionEnCours = "attaqueCible"
         else:
@@ -682,7 +690,7 @@ class Archer(Unit):
 
         getattr(self, self.actionEnCours)()
 
-        print(self.actionEnCours)
+        #print(self.actionEnCours)
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -739,7 +747,7 @@ class Archer(Unit):
                     self.cooldown == 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
-                print(self.actionEnCours)
+                #print(self.actionEnCours)
 
 
         else:
@@ -761,7 +769,7 @@ class Archer(Unit):
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
                 #self.deplaceUnit(self, (caseNx, caseNy))
                 self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-                print("on rester pogner dans le marche vers")
+                #print("on rester pogner dans le marche vers")
             elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
                 self.actionEnCours = "attaqueCible"
         else:
@@ -822,7 +830,7 @@ class Chevalier(Unit):
 
         getattr(self, self.actionEnCours)()
 
-        print(self.actionEnCours)
+        #print(self.actionEnCours)
 
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
@@ -879,7 +887,7 @@ class Chevalier(Unit):
                     self.cooldown == 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
-                print(self.actionEnCours)
+                #print(self.actionEnCours)
 
 
         else:
@@ -901,7 +909,7 @@ class Chevalier(Unit):
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
                 #self.deplaceUnit(self, (caseNx, caseNy))
                 self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-                print("on rester pogner dans le marche vers")
+                #print("on rester pogner dans le marche vers")
             elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
                 self.actionEnCours = "attaqueCible"
         else:
@@ -970,7 +978,7 @@ class Building():
     def recevoirDegats(self, degatsRecus):
         if degatsRecus > self.hpActuel:
             self.hpActuel = 0
-            print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
+            #print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
         else :
             self.hpActuel -= degatsRecus
 
@@ -1027,7 +1035,7 @@ class TownCenter(Building):
         if len(self.creationQueue) < 5:
             self.creationQueue.insert(1,Unit)
         else:
-            print("la queue est pleine")
+            #print("la queue est pleine")
             return False
 
         if self.creationQueue[0] == Unit:
@@ -1098,7 +1106,7 @@ class Barrack(Building):
         if len(self.creationQueue) < 5:
             self.creationQueue.insert(1,Unit)
         else:
-            print("la queue est pleine")
+            #print("la queue est pleine")
             return False
 
         if self.creationQueue[0] == Unit:
@@ -1214,16 +1222,6 @@ class Tower(Building):
             self.cooldown += 1
         if self.hpActuel  ==0:
             del self
-
-
-
-
-
-#
-
-
-
-
 
 class Modele(object):
     id=0

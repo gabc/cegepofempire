@@ -105,7 +105,7 @@ class Vue(object):
 
 
     def intercepteFermeture(self):
-        print("Je me ferme")
+        #print("Je me ferme")
         self.parent.jeQuitte()
         self.root.destroy()
 
@@ -238,14 +238,14 @@ class Vue(object):
 
     def selectObject(self, event):  # add
         if self.actionSelectionnee==0 :##
-            print("-------------------------")
-            print("click X: ", self.canx(self.currentX), " - Y: ", self.cany(self.currentY))
+            #print("-------------------------")
+            #print("click X: ", self.canx(self.currentX), " - Y: ", self.cany(self.currentY))
             if len(self.parent.myPlayer.objectsSelectionne) > 0:
                 self.parent.myPlayer.objectsSelectionne.pop()
             for u in self.parent.myPlayer.units:
                 if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 5) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 5):
                     self.parent.myPlayer.objectsSelectionne.append(u)
-                    print("selected object: ", u.type)
+                   # print("selected object: ", u.type)
                     break
 
 
@@ -254,51 +254,51 @@ class Vue(object):
                     if b.type == "TownCenter" or b.type == "Barrack" or b.type == "Maison":
                         if self.canx(self.currentX) >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.canx(self.currentX) <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.cany(self.currentY) >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.cany(self.currentY) <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
-                            print("selected object: ", b.type)
+                            #print("selected object: ", b.type)
                             break
                     else:
                         if self.canx(self.currentX) >= (b.posX) and self.canx(self.currentX) <= (b.posX + 18) and self.cany(self.currentY) >= (b.posY) and self.cany(self.currentY) <= ((b.posY + 18)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
-                            print("selected object: ", b.type)
+                            #print("selected object: ", b.type)
                             break
             #print (self.parent.myPlayer.objectsSelectionne[0])
             self.optionUnite()
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
-            print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating vil with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:#tower
             self.actionSelectionnee = 0
-            print("creating tower with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
-            print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
-            print("creating guerrier with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating guerrier with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==5:# maison
             self.actionSelectionnee = 0
-            print("creating house with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating house with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Maison", caseX, caseY]])
             if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
                 self.parent.myPlayer.maxUnitsDepart+=10
         elif self.actionSelectionnee==6:#Mouton
             self.actionSelectionnee=0##
-            print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==7:# archer
             self.actionSelectionnee=0##
-            print("creating archer with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating archer with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Archer", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==8:# chevalier
             self.actionSelectionnee=0##
-            print("creating chevalier with owner id: ", self.parent.myPlayer.ID)##
+            #print("creating chevalier with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Chevalier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
@@ -320,9 +320,9 @@ class Vue(object):
             self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["maison"], anchor='nw', tags="test")##MAISON
 
     def spawnUnit(self, event):
-        print("creating vil with owner id: ", self.parent.myPlayer.ID)
+        #print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])
-        print("units "+ str(self.parent.myPlayer.maxUnitsCourrant))
+        #print("units "+ str(self.parent.myPlayer.maxUnitsCourrant))
 
     def initCadre(self):
 
@@ -523,7 +523,7 @@ class Vue(object):
         # liste pour tout les joueurs sauf nous dans le dropdown menu
         self.autreJoueur = []
         for j in self.parent.modele.joueurs.values():
-            print(j)
+            #print(j)
             if j.name != self.parent.nom:
                 self.autreJoueur.append(j.name)
 
@@ -586,7 +586,7 @@ class Vue(object):
                                                         self.sliderOr.get(),
                                                         self.sliderPierre.get(),
                                                         self.sliderEnergie.get()]]
-        print("action envoyer :", varEnvoie)
+        #print("action envoyer :", varEnvoie)
         # self.parent.actions.append(varEnvoie)
 
 
@@ -611,7 +611,7 @@ class Vue(object):
 
     def optionUnite(self):
         if len(self.parent.myPlayer.objectsSelectionne) == 0:
-            print("No object selected: grid forget")
+            #print("No object selected: grid forget")
             self.forgetAllCadre()
 
         # TownCenter
@@ -827,7 +827,7 @@ class Vue(object):
     def placeBuilding(self):
         for j in self.parent.modele.joueurs.values():
             for i in j.buildings:
-                print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
+                #print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
                 self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
 
     def placeRessource(self):

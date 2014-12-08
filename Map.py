@@ -192,6 +192,8 @@ class Map:
         for j in listeNomsJoueurs:
             self.clearSpace(listeJoueurs[j].buildings[0],listeRes)
 
+        return listeJoueurs
+
     def clearSpace(self, building, listeRessources):
         x=building.posX
         y=building.posY

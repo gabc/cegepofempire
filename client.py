@@ -38,7 +38,7 @@ class Controleur(object):
         
     def creerServeur(self):
         cwd=os.getcwd()
-        print("AVANT SERVEUR")
+        #print("AVANT SERVEUR")
         if platform.system() == "Linux":
             pythonExe = "/usr/bin/python3"
         else:
@@ -92,7 +92,7 @@ class Controleur(object):
             rep=self.serveur.faitAction([self.nom,0,[]])
             if rep[0]: #demarre partie
                 self.modele.initPartie(rep[2][1][0][1])
-                self.m.placeJoueurs(self.modele.joueurs, rep[2][1][0][1])
+                self.modele.joueurs=self.m.placeJoueurs(self.modele.joueurs, rep[2][1][0][1])
                 self.vue.initPartie(self.modele)
                 self.vue.root.after(10,self.timerJeu)
             elif rep[0]==0: #waiting room
@@ -123,7 +123,7 @@ class Controleur(object):
                         self.modele.actionsAFaire[i].append(k)
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
-                print("Received attend: ", self.cadre)
+                #print("Received attend: ", self.cadre)
             #print("Cadre",self.cadre)     
             self.vue.root.after(50,self.timerJeu)
         else:
@@ -132,4 +132,4 @@ class Controleur(object):
 if __name__ == '__main__':
     c=Controleur()
     c.vue.root.mainloop()
-    print("FIN")
+    #print("FIN")
