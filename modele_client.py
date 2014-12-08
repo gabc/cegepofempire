@@ -215,9 +215,11 @@ class Unit():
                         GOLD : 0,
                         ENERGY : 0}
         self.coutPop=0
+        self.cooldown= 20
+        self.maxCooldown = 20
 
     def say(self, text):
-        #OH BOY
+        #Pour print seulement si le unit appartient a myPlayer
         if self.parent == self.parent.parent.myPlayer:
             print(text)
     
@@ -225,8 +227,17 @@ class Unit():
         self.coutRes[idRes]=nbRes
 
     def faitAction(self):
-        if self.chemin:         # S'il a un chemin. Qu'il se deplace.
+        if len(self.chemin) != 0:
             self.deplacer(self.deplaceur, self.chemin)
+
+        getattr(self, self.actionEnCours)()
+
+        #print(self.actionEnCours)
+
+        if self.cooldown != self.maxCooldown:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
 
     def isAlive(self):
         if self.hpActuel <= 0:
@@ -315,9 +326,6 @@ class Unit():
             elif self.unitCibleType == "Building":
                 caseGx, caseGy = trouveCase(self.posX,self.posY)
                 caseNx, caseNy =self.unitCible.posX,self.unitCible.posY
-
-
-
 
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
                 #self.deplaceUnit(self, (caseNx, caseNy))
@@ -426,20 +434,11 @@ class Villageois(Unit):
         x, y = trouveCase(self.posX, self.posY)
         townXY=self.dumpCoords
 
-        #print(x, y, "arrive", arrive.posX, arrive.posY)
-        #print(arrive.building)
         #Si il est dans le range de 1 case de son arrivee
-
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
-        #Si t'est arrive a un town center, dump cque t'as
-            #print("arrive:", arrive.posX, arrive.posY, "Town:",townXY[0] ,townXY[1])
-
             if arrive.building=="TownCenter":
                 self.dumpRessources()
-                #print("BASE BASE BASE!!")
-            #Si la case n'a pas de ressources
             elif arrive.ressource=='-':
-                #print("Cet case n'a pas de ressources.")
                 self.status="waiting"
             else:
                 self.status="collecting"
@@ -457,6 +456,7 @@ class Villageois(Unit):
 
             self.target=self.currentRes
             self.status="backToRes"
+            
 
 class Mouton(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -486,19 +486,6 @@ class Mouton(Unit):
         self.setCoutRes(GOLD,500)
 
 
-    def faitAction(self):
-        if len(self.chemin) != 0:
-            self.deplacer(self.deplaceur, self.chemin)
-
-        getattr(self, self.actionEnCours)()
-
-        #print(self.actionEnCours)
-
-        if self.cooldown != self.maxCooldown:
-            self.cooldown += 1
-        if self.hpActuel  ==0:
-            del self
-
 class Guerrier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
@@ -526,19 +513,6 @@ class Guerrier(Unit):
         self.coutPop=3
         self.setCoutRes(FOOD,50)
         self.setCoutRes(GOLD,25)
-
-    def faitAction(self):
-        if len(self.chemin) != 0:
-            self.deplacer(self.deplaceur, self.chemin)
-
-        getattr(self, self.actionEnCours)()
-
-        #print(self.actionEnCours)
-
-        if self.cooldown != self.maxCooldown:
-            self.cooldown += 1
-        if self.hpActuel  ==0:
-            del self
     
 
 class Archer(Unit):
@@ -571,20 +545,6 @@ class Archer(Unit):
         self.setCoutRes(WOOD,40)
         self.setCoutRes(GOLD,15)
 
-
-    def faitAction(self):
-        if len(self.chemin) != 0:
-            self.deplacer(self.deplaceur, self.chemin)
-
-        getattr(self, self.actionEnCours)()
-
-        #print(self.actionEnCours)
-
-        if self.cooldown != self.maxCooldown:
-            self.cooldown += 1
-        if self.hpActuel  ==0:
-            del self
-
 class Chevalier(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
@@ -612,20 +572,6 @@ class Chevalier(Unit):
         self.unitCiblePosCase = None
         self.setCoutRes(FOOD,200)
         self.setCoutRes(GOLD,200)
-
-
-    def faitAction(self):
-        if len(self.chemin) != 0:
-            self.deplacer(self.deplaceur, self.chemin)
-
-        getattr(self, self.actionEnCours)()
-
-        #print(self.actionEnCours)
-
-        if self.cooldown != self.maxCooldown:
-            self.cooldown += 1
-        if self.hpActuel  ==0:
-            del self
 
 class Building():
 
@@ -836,10 +782,6 @@ class Tower(Building):
         else:
             self.actionEnCours="scanEnemy"
             self.unitCibleType = None
-
-
-
-
 
     def scanEnemy(self):
         if self.targetedBy and target is None:
