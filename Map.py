@@ -209,12 +209,8 @@ class Map:
                     self.mat[r.posX][r.posY]=r
 
     def placeBuilding(self, posX, posY, buildingType):
-        if self.mat[posX][posY].isPassable():
-            self.mat[posX][posY].building = buildingType
-            self.mat[posX][posY].passable=False
-            return True
-        else:
-            return False
+        self.mat[posX][posY].building = buildingType
+        self.mat[posX][posY].passable=False
 
     def getListeRessources(self):
         ressources=[]
