@@ -98,8 +98,6 @@ class Vue(object):
         trouveB = Buttonjm(self.cadreMenuPartie, text="LOL", command=self.actionButton)
         trouveB.grid(row=10, column=10, sticky=N)
 
-
-
     def intercepteFermeture(self):
         print("Je me ferme")
         self.parent.jeQuitte()
@@ -166,7 +164,6 @@ class Vue(object):
         # Call des cadre
         self.initCadre()
         # Variable bidon
-        n = "100"
         self.initLabel()
         
         self.diplomatieClic()
@@ -182,11 +179,9 @@ class Vue(object):
         self.rLargeur = self.parent.l*20
         self.canevasMilieu = Canvas(self.cadrePartie, width=self.largeur, height=self.hauteur, bg="#006633",scrollregion=(0,0,self.rHauteur, self.rLargeur),xscrollcommand=hbar.set, yscrollcommand=vbar.set)
 
-        #self.canevasMilieu.pack(side=LEFT,expand=True,fill=BOTH)
-
         self.canevasMilieu.grid(column=0, row=1, columnspan=3)
 
-        self.canevasMilieu.bind("<Button-1>", self.selectObject)  # add
+        self.canevasMilieu.bind("<Button-1>", self.selectObject)
         self.canevasMilieu.bind("<Motion>", self.motion)
         self.canevasMilieu.bind("u", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
@@ -197,13 +192,10 @@ class Vue(object):
         self.canevasMilieu.bind("d", self.bougeVersDroite)
 
         self.cadrePartie.pack()
-        # self.cadreMenu.pack_forget()
-        #self.rafraichirCanevas()
         self.rafraichir()
         self.creerLigne()
         self.placeRessource()
         self.placeBuilding()
-        #self.centrer()
 
     def rafraichir(self):
         """ Rafraichi la vue au complet """
@@ -232,10 +224,8 @@ class Vue(object):
     def bougeVersDroite(self, event):
         self.canevasMilieu.xview(SCROLL, 1, "units")
 
-    def selectObject(self, event):  # add
-        if self.actionSelectionnee==0 :##
-            print("-------------------------")
-            print("click X: ", self.canx(self.currentX), " - Y: ", self.cany(self.currentY))
+    def selectObject(self, event):
+        if self.actionSelectionnee==0 :
             if len(self.parent.myPlayer.objectsSelectionne) > 0:
                 self.parent.myPlayer.objectsSelectionne.pop()
             for u in self.parent.myPlayer.units:
@@ -274,30 +264,28 @@ class Vue(object):
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
-            self.actionSelectionnee=0##
+            self.actionSelectionnee=0
             print("creating vil with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
-        self.canevasMilieu.delete("test")
+        self.canevasMilieu.delete("image_motion")
         self.canevasMilieu.focus_set()
         self.currentX = event.x
         self.currentY = event.y
         xcan = self.canx(event.x)
         ycan = self.cany(event.y)
         if self.actionSelectionnee == 1:
-            self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+            self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
         elif self.actionSelectionnee == 2:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["tower"], anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["tower"], anchor='nw', tags="image_motion")
         elif self.actionSelectionnee == 3:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="test")
+            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="image_motion")
         elif self.actionSelectionnee == 4:
-            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="test")
+            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
 
     def spawnUnit(self, event):
-        print("creating vil with owner id: ", self.parent.myPlayer.ID)
         self.parent.actions.append([self.parent.nom, "creerUnite", ["villageois", self.canx(self.currentX), self.cany(self.currentY)]])
-        print("units "+ str(self.parent.myPlayer.maxUnitsCourrant))
 
     def initCadre(self):
 
