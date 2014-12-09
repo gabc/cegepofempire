@@ -88,48 +88,59 @@ class Controleur(object):
                 
     # ******  SECTION d'appels automatique        
     def timerAttend(self):
-        if self.serveur:
-            rep=self.serveur.faitAction([self.nom,0,[]])
-            if rep[0]: #demarre partie
-                self.modele.initPartie(rep[2][1][0][1])
-                self.modele.joueurs=self.m.placeJoueurs(self.modele.joueurs, rep[2][1][0][1])
-                self.vue.initPartie(self.modele)
-                self.vue.root.after(10,self.timerJeu)
-            elif rep[0]==0: #waiting room
-                self.vue.afficheListeJoueurs(rep[2])
-                self.vue.root.after(10,self.timerAttend)
-        else:
-            print("Aucun serveur attache")
+        try:
+            if self.serveur:
+                rep=self.serveur.faitAction([self.nom,0,[]])
+                if rep[0]: #demarre partie
+                    self.modele.initPartie(rep[2][1][0][1])
+                    self.modele.joueurs=self.m.placeJoueurs(self.modele.joueurs, rep[2][1][0][1])
+                    self.vue.initPartie(self.modele)
+                    self.vue.root.after(10,self.timerJeu)
+                elif rep[0]==0: #waiting room
+                    self.vue.afficheListeJoueurs(rep[2])
+                    self.vue.root.after(10,self.timerAttend)
+            else:
+                print("Aucun serveur attache")
+        except:
+            print("T'es mort")
+            tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
                
     def timerJeu(self):
-        if self.serveur:
-            self.cadre=self.cadre+1
+        try:
+            if self.serveur:
+                self.cadre=self.cadre+1
                 #print("executer action a faire")
-            self.modele.prochaineAction(self.cadre)
-            self.vue.rafraichir()
-            if self.actions: ##actions a envoyer au server
-                #print("Envoi d'une action au server")
-                rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
+                self.modele.prochaineAction(self.cadre)
+                self.vue.rafraichir()
+                if self.actions: ##actions a envoyer au server
+                    #print("Envoi d'une action au server")
+                    rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
+                else:
+                    rep=self.serveur.faitAction([self.nom,self.cadre,0])
+                    #print("Pas d'action au server")
+	            # print(self.actions)
+                    self.actions=[]
+                    if rep[0]:
+                        for i in rep[2]:
+                            if i not in self.modele.actionsAFaire.keys():
+                                self.modele.actionsAFaire[i]=[]
+                            for k in rep[2][i]:
+                                self.modele.actionsAFaire[i].append(k)
+                    if rep[1]=="attend":
+                        self.cadre=self.cadre-1  
+	                #print("Received attend: ", self.cadre)
+	            #print("Cadre",self.cadre)     
+                    self.vue.root.after(50,self.timerJeu)
             else:
-                rep=self.serveur.faitAction([self.nom,self.cadre,0])
-                #print("Pas d'action au server")
-            # print(self.actions)
-            self.actions=[]
-            if rep[0]:
-                for i in rep[2]:
-                    if i not in self.modele.actionsAFaire.keys():
-                        self.modele.actionsAFaire[i]=[]
-                    for k in rep[2][i]:
-                        self.modele.actionsAFaire[i].append(k)
-            if rep[1]=="attend":
-                self.cadre=self.cadre-1  
-                #print("Received attend: ", self.cadre)
-            #print("Cadre",self.cadre)     
-            self.vue.root.after(50,self.timerJeu)
-        else:
-            print("Aucun serveur connu")
-        
+                print("Aucun serveur connu")
+        except:
+            print("T'es mort")
+            tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
+            
 if __name__ == '__main__':
-    c=Controleur()
-    c.vue.root.mainloop()
-    #print("FIN")
+    try:
+        c=Controleur()
+        c.vue.root.mainloop()
+    except:
+        print("Tes mort")
+        tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
