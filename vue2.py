@@ -55,14 +55,9 @@ class Vue(object):
                      "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
                      "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png")),
                      "grass": ImageTk.PhotoImage(Image.open("img/grass.png")),
-                     "hometown": ImageTk.PhotoImage(Image.open("img/hometown_build.png")),
-                     "villageois": ImageTk.PhotoImage(Image.open("img/vil_unit.png")),
-                     "archer": ImageTk.PhotoImage(Image.open("img/archer_unit.png")),
-                     "knight": ImageTk.PhotoImage(Image.open("img/knight_unit.png")),
-                     "sheep": ImageTk.PhotoImage(Image.open("img/sheep_unit.png")),
-                     "warrior": ImageTk.PhotoImage(Image.open("img/warrior_unit.png")),
                      "maison": ImageTk.PhotoImage(Image.open("img/maison_build.png"))}
-
+        
+        
     def initLabel(self):
         self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
         self.labelNourriture.grid(column=0, row=0)
@@ -177,6 +172,7 @@ class Vue(object):
 
         self.diplomatieClic()
         self.imgLabelPopulation()
+        self.initLabelBas()
 
         hbar=Scrollbar(self.cadrePartie)
         vbar=Scrollbar(self.cadrePartie)
@@ -193,6 +189,7 @@ class Vue(object):
 
         self.canevasMilieu.bind("<Button-1>", self.selectObject)
         self.canevasMilieu.bind("<Motion>", self.motion)
+        self.canevasMilieu.bind("u", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
 
         self.canevasMilieu.bind("a", self.bougeVersGauche)
@@ -211,14 +208,7 @@ class Vue(object):
         """ Rafraichi la vue au complet """
         self.rafraichirInfo()
         self.rafraichirCanevas()
-        self.rafraichirMiniMap()
-        
-    def rafraichirMiniMap(self):
-        self.canevasMilieu.delete("mini")
-        for j in self.parent.modele.joueurs.values():
-            for u in j.units:
-                self.canevasMiniMap.create_oval(u.posX/30, u.posY/30, u.posX/30 + 2, u.posY/30 + 2, fill="blue", tags="mini")
-                
+
     def rafraichirInfo(self):
         """ Rafraichi les informations (labels, ressources, populations)"""
         self.changeLabelBois(self.parent.myPlayer.ressources[WOOD])
@@ -246,9 +236,9 @@ class Vue(object):
             if len(self.parent.myPlayer.objectsSelectionne) > 0:
                 self.parent.myPlayer.objectsSelectionne.pop()
             for u in self.parent.myPlayer.units:
-                if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 32) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 32):
+                if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 5) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 5):
                     self.parent.myPlayer.objectsSelectionne.append(u)
-                    # print("selected object: ", u.type)
+                   # print("selected object: ", u.type)
                     break
 
 
@@ -268,7 +258,7 @@ class Vue(object):
             self.optionUnite()
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
-            #print("creating vil with owner id: ", self.parent.myPlayer.ID)##
+            print("creating vil with owner id: ", self.parent.myPlayer.ID, " - x: ", self.canx(self.currentX), " y: ", self.cany(self.currentY))##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:#tower
             self.actionSelectionnee = 0
@@ -289,8 +279,8 @@ class Vue(object):
             #print("creating house with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Maison", caseX, caseY]])
-            #if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
-                #self.parent.myPlayer.maxUnitsDepart+=10
+            if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
+                self.parent.myPlayer.maxUnitsDepart+=10
         elif self.actionSelectionnee==6:#Mouton
             self.actionSelectionnee=0##
             #print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
@@ -312,23 +302,12 @@ class Vue(object):
         xcan = self.canx(event.x)
         ycan = self.cany(event.y)
         if self.actionSelectionnee == 1:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["villageois"], anchor='nw', tags="image_motion")
             self.canevasMilieu.create_rectangle(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
         elif self.actionSelectionnee == 2:
             self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["tower"], anchor='nw', tags="image_motion")
         elif self.actionSelectionnee == 3:
             self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["barrack"], anchor='nw', tags="image_motion")
         elif self.actionSelectionnee == 4:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["warrior"], anchor='nw', tags="image_motion")
-            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
-        elif self.actionSelectionnee == 6:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["sheep"], anchor='nw', tags="image_motion")
-            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
-        elif self.actionSelectionnee == 7:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["archer"], anchor='nw', tags="image_motion")
-            self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
-        elif self.actionSelectionnee == 8:
-            self.canevasMilieu.create_image(xcan, ycan, image=self.imgs["knight"], anchor='nw', tags="image_motion")
             self.canevasMilieu.create_oval(xcan, ycan, xcan + 5, ycan + 5, fill=self.parent.myPlayer.playerColor, tags="image_motion")
 
     def spawnUnit(self, event):
@@ -425,11 +404,8 @@ class Vue(object):
         self.labelMaisonNom = Label(self.cadreInfoMaison)
 
 
-        self.cadreMiniMap = Frame(self.cadrePartie, relief=SOLID)
-        self.canevasMiniMap = Canvas(self.cadreMiniMap, bg="green", height=200, width=200)
-        self.canevasMiniMap.grid(column=0, row=0)
-        self.cadreMiniMap.grid(column=3, row=1)
-
+        self.cadreMiniMap = Frame(self.cadrePartie)
+        self.cadreMiniMap.grid(column=2, row=2)
 
     # def initLabelHaut(self):
 
@@ -729,6 +705,12 @@ class Vue(object):
             self.labelAttaquantAttaque.grid(column=0,row=4)##
             self.labelAttaquantDefense.grid(column=0,row=5)##
 
+    # #
+    def initLabelBas(self):
+        # Pour le cadre Mini-Map
+        labelMiniMap = Label(self.cadreMiniMap)
+        labelMiniMap.grid(column=0, row=0)
+
 
 
     #===========================================================================
@@ -762,6 +744,7 @@ class Vue(object):
                 if u.isAlive() == False:
                     uniteMorts.append(u)
             for i in uniteMorts:
+                print("mort: ", i.type)
                 j.units.remove(i)
 
             for u in j.buildings: # Retire les batiments... ish.
@@ -771,32 +754,29 @@ class Vue(object):
                 j.buildings.remove(i)
 
             for u in j.units:
+                print("units: ", u.type)
                 if u.type == "Guerrier":
-                    self.canevasMilieu.create_image(u.posX, u.posY, image=self.imgs["warrior"], anchor='nw', tags="unit")
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 elif u.type == "Villageois":
-                    self.canevasMilieu.create_image(u.posX, u.posY, image=self.imgs["villageois"], anchor='nw', tags="unit")
-                    self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
+                    print("Villageois: x: ", self.canx(u.posX), " x: ", self.canx(u.posX))
+                    self.canevasMilieu.create_rectangle(self.canx(u.posX), self.cany(u.posY), self.canx(u.posX) + 100, self.cany(u.posY) + 100, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 elif u.type == "Archer":
-                    self.canevasMilieu.create_image(u.posX, u.posY, image=self.imgs["archer"], anchor='nw', tags="unit")
                     self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 elif u.type == "Mouton":
-                    self.canevasMilieu.create_image(u.posX, u.posY, image=self.imgs["sheep"], anchor='nw', tags="unit")
                     self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_oval(u.posX, u.posY, u.posX + 5, u.posY + 5, fill="red", tags="unit")
                 elif u.type == "Chevalier":
-                    self.canevasMilieu.create_image(u.posX, u.posY, image=self.imgs["knight"], anchor='nw', tags="unit")
                     self.canevasMilieu.create_rectangle(u.posX, u.posY, u.posX + 5, u.posY + 5, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if u == self.parent.myPlayer.objectsSelectionne[0]:
@@ -806,41 +786,28 @@ class Vue(object):
                 caseX = i.posX * self.longeurLigne + self.longeurLigne / 2
                 caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
                 if i.type == "Barrack":
-                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX , caseY , fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
                     #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
 
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX , caseY , fill="red", tags="unit")
+                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["barrack"], anchor='nw', tags="unit")
                 elif i.type == "Maison":
-                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX , caseY , fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
                     #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
 
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX , caseY , fill="red", tags="unit")
-                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX , caseY , fill=j.playerColor, tags="unit")
-                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
-
-                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
-                        if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX , caseY , fill="red", tags="unit")
+                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["maison"], anchor='nw', tags="unit")#MAISON
                 elif i.type == "Tower":
-                    self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX , caseY , fill=j.playerColor, tags="unit")
-                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
-
-                    if len(self.parent.myPlayer.objectsSelectionne) > 0:
-                        if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX , caseY , fill="red", tags="unit")
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["tower"], anchor='nw', tags="unit")
                 else: ##town center
-                    self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["hometown"], anchor='nw', tags="unit")
-                    self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX , caseY , fill=j.playerColor, tags="unit")
+                    self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill=j.playerColor, tags="unit")
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
-                            self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX , caseY , fill="red", tags="unit")
+                            self.canevasMilieu.create_rectangle(caseX - 9, caseY - 9, caseX + 9, caseY + 9, fill="red", tags="unit")
 
     def creerLigne(self):
         self.canevasMilieu.delete("grass")

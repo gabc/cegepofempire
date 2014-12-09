@@ -7,12 +7,12 @@ def roundtenth(x):
 
 def trouveCase(x, y):
     """Avec une coordonnée en pixel, retrouve la case"""
-    cx = math.trunc(x/20)
-    cy = math.trunc(y/20)
+    cx = math.trunc(x/60)
+    cy = math.trunc(y/60)
     return (cx,cy)
 
 def trouvePixel(x, y):
     """Avec les coordonnée d'une case, retrouve les pixels de son centre"""
-    px = x * 20 + 10
-    py = y * 20 + 10
+    px = x * 60 + 10
+    py = y * 60 + 10
     return (px,py)
