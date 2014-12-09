@@ -51,11 +51,11 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-        self.ressources = {FOOD : 100,
-                           WOOD : 100,
-                           ROCK : 100,
-                           GOLD : 100,
-                           ENERGY : 100}
+        self.ressources = {FOOD : 10000,
+                           WOOD : 10000,
+                           ROCK : 10000,
+                           GOLD : 10000,
+                           ENERGY : 10000}
         self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
@@ -116,9 +116,6 @@ class Joueur():
         self.ageCourrante = self.ageFutur
         for i in range(self.nbTypeDeRessources):
             self.ressources[i] -= 10
-
-    def construireBuilding(self, idBuilding, posX ,posY ):
-        pass
 
     def creerUnit(self, type, x, y):
         #DEM ifs        
@@ -721,6 +718,9 @@ class Maison(Building):
         self.largeur = 100
         self.delaiDeConstruction = 10000
         self.setCoutRes(WOOD,100)
+
+        #
+        self.parent.maxUnitsDepart+=10
 
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY, parent):
