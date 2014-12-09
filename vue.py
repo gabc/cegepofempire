@@ -7,7 +7,6 @@ import math
 from helper import *
 from PIL import Image, ImageTk
 from utils import *
-# from modele_client import *
 from Map import *
 
 class Buttonjm(Button):
@@ -39,7 +38,7 @@ class Vue(object):
         self.placeCadre(self.cadreConnection)
         self.currentX = 0
         self.currentY = 0
-        self.actionSelectionnee=0#1=SpawnUnit, 2=tour##
+        self.actionSelectionnee=0
         self.longeurLigne = 20
 
         self.initImgs()
@@ -69,9 +68,6 @@ class Vue(object):
         self.labelEnergie.grid(column=0, row=2,columnspan=2)#columnspan=2
         self.labelPopulationMax= Label(self.cadrePopulation, text="" +" / " + str(self.parent.myPlayer.maxUnitsDepart))
         self.labelPopulationMax.grid(column=1, row=0)
-        #boutonCentrer=Button(self.cadreRessource,text="Centrer",command=self.centrer)
-        #boutonCentrer.grid(column=1,row=2)
-
 
     def canx(self, x):
         """Retourne le x par rapport au canevas"""
@@ -103,7 +99,6 @@ class Vue(object):
         trouveB.grid(row=10, column=10, sticky=N)
 
     def intercepteFermeture(self):
-        #print("Je me ferme")
         self.parent.jeQuitte()
         self.root.destroy()
 
@@ -122,7 +117,6 @@ class Vue(object):
 
         Nom = Labeljm(cadreMenu, text="Nom: ")
         self.nomjoueur = Entry(cadreMenu)
-        # print("un chiffre au hasard : " + str(random.randint(0,100)))
         self.nomjoueur.insert(0, "Player_" + str(random.randrange(100)))
         Nom.grid(column=0, row=0)
         self.nomjoueur.grid(column=1, row=0)
@@ -235,7 +229,6 @@ class Vue(object):
             for u in self.parent.myPlayer.units:
                 if self.canx(self.currentX) >= u.posX and self.canx(self.currentX) <= (u.posX + 5) and self.cany(self.currentY) >= u.posY and self.cany(self.currentY) <= (u.posY + 5):
                     self.parent.myPlayer.objectsSelectionne.append(u)
-                   # print("selected object: ", u.type)
                     break
 
 
@@ -244,51 +237,40 @@ class Vue(object):
                     if b.type == "TownCenter" or b.type == "Barrack" or b.type == "Maison":
                         if self.canx(self.currentX) >= (b.posX * self.longeurLigne + self.longeurLigne / 2 - 9) and self.canx(self.currentX) <= (b.posX * self.longeurLigne + self.longeurLigne / 2 + 9) and self.cany(self.currentY) >= (b.posY * self.longeurLigne + self.longeurLigne / 2 - 9) and self.cany(self.currentY) <= ((b.posY * self.longeurLigne + self.longeurLigne / 2 + 9)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
-                            #print("selected object: ", b.type)
                             break
                     else:
                         if self.canx(self.currentX) >= (b.posX) and self.canx(self.currentX) <= (b.posX + 18) and self.cany(self.currentY) >= (b.posY) and self.cany(self.currentY) <= ((b.posY + 18)):
                             self.parent.myPlayer.objectsSelectionne.append(b)
-                            #print("selected object: ", b.type)
                             break
-            #print (self.parent.myPlayer.objectsSelectionne[0])
             self.optionUnite()
         elif self.actionSelectionnee==1:##
             self.actionSelectionnee=0##
-            #print("creating vil with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Villageois", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee == 2:#tower
             self.actionSelectionnee = 0
-            #print("creating tower with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Tower", caseX, caseY]])##
         elif self.actionSelectionnee == 3: #barrack
             self.actionSelectionnee = 0
-            #print("creating barrack with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Barrack", caseX, caseY]])##
         elif self.actionSelectionnee==4:# guerrier
             self.actionSelectionnee=0##
-            #print("creating guerrier with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Guerrier", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==5:# maison
             self.actionSelectionnee = 0
-            #print("creating house with owner id: ", self.parent.myPlayer.ID)##
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Maison", caseX, caseY]])
             if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
                 self.parent.myPlayer.maxUnitsDepart+=10
         elif self.actionSelectionnee==6:#Mouton
             self.actionSelectionnee=0##
-            #print("creating mouton with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==7:# archer
             self.actionSelectionnee=0##
-            #print("creating archer with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Archer", self.canx(self.currentX), self.cany(self.currentY)]])##
         elif self.actionSelectionnee==8:# chevalier
             self.actionSelectionnee=0##
-            #print("creating chevalier with owner id: ", self.parent.myPlayer.ID)##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Chevalier", self.canx(self.currentX), self.cany(self.currentY)]])##
 
     def motion(self, event):
@@ -404,9 +386,6 @@ class Vue(object):
         self.cadreMiniMap = Frame(self.cadrePartie)
         self.cadreMiniMap.grid(column=2, row=2)
 
-    # def initLabelHaut(self):
-
-    # Pour le cadre de Ressource
     def optionConstruire(self):##
         self.cadreOptionVillageois.grid_forget()##
         self.cadreOptionConstruire.grid(column=0, row=2)##
@@ -480,7 +459,6 @@ class Vue(object):
     def centrer(self):#Pour centrer la fenetre sur le town center
         for j in self.parent.modele.joueurs.values():
             if j.name == self.parent.nom:
-                #print("mon nom: "+ j.name)
                 for i in j.buildings:
                     if i.type == "TownCenter":
                         x=i.posX*self.longeurLigne
@@ -509,7 +487,6 @@ class Vue(object):
         # liste pour tout les joueurs sauf nous dans le dropdown menu
         self.autreJoueur = []
         for j in self.parent.modele.joueurs.values():
-            #print(j)
             if j.name != self.parent.nom:
                 self.autreJoueur.append(j.name)
 
@@ -572,9 +549,6 @@ class Vue(object):
                                                         self.sliderOr.get(),
                                                         self.sliderPierre.get(),
                                                         self.sliderEnergie.get()]]
-        #print("action envoyer :", varEnvoie)
-        # self.parent.actions.append(varEnvoie)
-
 
     def diplomatieClic(self):
         labelDiplomatie = Label(self.cadreDiplomatie, text="Diplomatie/Echange", relief=SOLID, height=5, width=25)  # anchor:E
@@ -597,7 +571,6 @@ class Vue(object):
 
     def optionUnite(self):
         if len(self.parent.myPlayer.objectsSelectionne) == 0:
-            #print("No object selected: grid forget")
             self.forgetAllCadre()
 
         # TownCenter
@@ -708,15 +681,6 @@ class Vue(object):
         labelMiniMap = Label(self.cadreMiniMap)
         labelMiniMap.grid(column=0, row=0)
 
-
-
-    #===========================================================================
-    # def rafraichirTemps(self,temps):
-    #      labelTemps=Label(self.cadreMiniMap,text="Temps: "+str(temps))
-    #      labelTemps.grid(column=0,row=1)
-    #
-    #===========================================================================
-
     def setArrive(self, event):
         if self.actionSelectionnee > 0:
             self.actionSelectionnee = 0
@@ -781,16 +745,12 @@ class Vue(object):
                 caseY = i.posY * self.longeurLigne + self.longeurLigne / 2
                 if i.type == "Barrack":
                     self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
-                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
-
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
                     self.canevasMilieu.create_image(caseX-9, caseY-9, image=self.imgs["barrack"], anchor='nw', tags="unit")
                 elif i.type == "Maison":
                     self.canevasMilieu.create_rectangle(caseX-11, caseY-11, caseX + 10, caseY + 10, fill=j.playerColor, tags="unit")
-                    #self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="unit")
-
                     if len(self.parent.myPlayer.objectsSelectionne) > 0:
                         if i == self.parent.myPlayer.objectsSelectionne[0]:
                             self.canevasMilieu.create_rectangle(caseX-13, caseY-13, caseX + 12, caseY + 12, fill="red", tags="unit")
@@ -813,7 +773,6 @@ class Vue(object):
     def placeBuilding(self):
         for j in self.parent.modele.joueurs.values():
             for i in j.buildings:
-                #print("building for player: ", j.name, " - x: ", i.posX, " - y: ", i.posY)
                 self.canevasMilieu.create_rectangle(i.posX * self.longeurLigne + self.longeurLigne / 2 - 9, i.posY * self.longeurLigne + self.longeurLigne / 2 - 9, i.posX * self.longeurLigne + self.longeurLigne / 2 + 9, i.posY * self.longeurLigne + self.longeurLigne / 2 + 9, fill=j.playerColor, tags="food")
 
     def placeRessource(self):
@@ -838,10 +797,6 @@ class Vue(object):
         labelPopulation = Label(self.cadrePopulation, text="Population:", width=15)
         labelPopulation.grid(column=0, row=0)
 
-    # ##Pour les changements de labels
-
-
-
     def creerServeur(self):
         nom = self.nomjoueur.get()
         leip = self.parent.monip
@@ -863,6 +818,3 @@ class Vue(object):
         leip = self.autreip.get()
         if nom:
             self.parent.inscritClient(nom, leip)
-
-    def actionButton(self):
-        pass
