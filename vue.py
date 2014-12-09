@@ -8,6 +8,7 @@ from helper import *
 from PIL import Image, ImageTk
 from utils import *
 from Map import *
+Tk.report_callback_exception = lambda: print("MORT")
 
 class Buttonjm(Button):
     def __init__(self, parent, **kw):

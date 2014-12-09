@@ -116,5 +116,9 @@ class Controleur(object):
             print("Aucun serveur connu")
         
 if __name__ == '__main__':
-    c=Controleur()
-    c.vue.root.mainloop()
+    # if True:
+    try:
+        c=Controleur()
+        c.vue.root.mainloop()
+    except:
+        mb.showerror(title="La fin.",message="Tu es mort. C'est la fin. La triste fin de la vie des choses dans laquelle il s'y passe.")
