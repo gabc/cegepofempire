@@ -187,7 +187,6 @@ class Vue(object):
 
         self.canevasMilieu.bind("<Button-1>", self.selectObject)
         self.canevasMilieu.bind("<Motion>", self.motion)
-        self.canevasMilieu.bind("u", self.spawnUnit)
         self.canevasMilieu.bind("<Button-3>", self.setArrive)
 
         self.canevasMilieu.bind("a", self.bougeVersGauche)
