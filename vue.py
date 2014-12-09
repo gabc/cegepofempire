@@ -259,8 +259,8 @@ class Vue(object):
             self.actionSelectionnee = 0
             caseX, caseY = trouveCase(self.canx(self.currentX), self.cany(self.currentY))
             self.parent.actions.append([self.parent.nom, "creerBuilding", ["Maison", caseX, caseY]])
-            if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
-                self.parent.myPlayer.maxUnitsDepart+=10
+            #if self.parent.myPlayer.maxUnitsDepart < self.parent.myPlayer.maxUnits:
+                #self.parent.myPlayer.maxUnitsDepart+=10
         elif self.actionSelectionnee==6:#Mouton
             self.actionSelectionnee=0##
             self.parent.actions.append([self.parent.nom, "creerUnite", ["Mouton", self.canx(self.currentX), self.cany(self.currentY)]])##
