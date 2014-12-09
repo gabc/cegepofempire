@@ -288,7 +288,7 @@ class Unit():
                 if self.cooldown == self.maxCooldown:
                     self.unitCible.recevoirDegats(self.degat)
                     print(self.unitCible.hpActuel, " = la vie de ",self.unitCible.type)
-                    self.cooldown == 0
+                    self.cooldown = 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
         else:
@@ -416,7 +416,7 @@ class Villageois(Unit):
             c = self.collectionType
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
-            self.collectionActuel = 0         
+            self.collectionActuel = 0
             self.target=self.currentRes
             self.status="backToRes"
 
@@ -766,7 +766,7 @@ class Tower(Building):
             self.cooldown += 1
         if self.hpActuel  ==0:
             del self
-            
+
 class Castle(Building):
     def __init__(self, ownerID, posX, posY, parent):
         Building.__init__(self, ownerID, posX, posY, parent)
