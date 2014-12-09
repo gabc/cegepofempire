@@ -7,12 +7,12 @@ from modele_client import *
 
 #Ratio des ressources (sur 100)
 
-WOOD_RATIO=5
-FOOD_RATIO=2
-ROCK_RATIO=2
+WOOD_RATIO=10
+FOOD_RATIO=5
+ROCK_RATIO=5
 ARTE_RATIO=1
-ENERGY_RATIO=1
-GOLD_RATIO=1
+ENERGY_RATIO=2
+GOLD_RATIO=2
 UNDER_RATIO=25
 
 #Caracteres qui representent les ressources, incluant les ressources souterraines

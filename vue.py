@@ -61,8 +61,8 @@ class Vue(object):
                      "knight": ImageTk.PhotoImage(Image.open("img/knight_unit.png")),
                      "sheep": ImageTk.PhotoImage(Image.open("img/sheep_unit.png")),
                      "warrior": ImageTk.PhotoImage(Image.open("img/warrior_unit.png")),
-                     "maison": ImageTk.PhotoImage(Image.open("img/maison_build.png"))}
-                     "castle": ImageTk.PhotoImage(Image.open("img/castlee_build.png"))}
+                     "maison": ImageTk.PhotoImage(Image.open("img/maison_build.png")),
+					 "castle": ImageTk.PhotoImage(Image.open("img/castlee_build.png"))}
 
     def initLabel(self):
         self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
@@ -208,10 +208,12 @@ class Vue(object):
         self.rafraichirMiniMap()
         
     def rafraichirMiniMap(self):
-        self.canevasMilieu.delete("mini")
+        self.canevasMiniMap.delete("mini")
         for j in self.parent.modele.joueurs.values():
             for u in j.units:
                 self.canevasMiniMap.create_oval(u.posX/30, u.posY/30, u.posX/30 + 2, u.posY/30 + 2, fill="blue", tags="mini")
+            for u in j.buildings:
+                self.canevasMiniMap.create_rectangle(u.posX/30, u.posY/30, u.posX/30 + 3, u.posY/30 + 3, fill="blue", tags="mini")
                 
     def rafraichirInfo(self):
         """ Rafraichi les informations (labels, ressources, populations)"""
