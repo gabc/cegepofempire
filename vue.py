@@ -340,10 +340,10 @@ class Vue(object):
         self.cadreOptionTownCenter = Frame(self.cadrePartie)
         self.buttonCreeVillageois = Button(self.cadreOptionTownCenter, text="Villageois", command=self.creeUnite, width=8)  # text="Cree",command=,
         self.buttonCreeVillageois.grid(column=0, row=1)
-        buttonUpgrade = Button(self.cadreOptionTownCenter, text="Upgrade1", width=8)##
-        buttonUpgrade.grid(column=1,row=1)##
-        buttonUpgrade2 = Button(self.cadreOptionTownCenter, text="Upgrade2", width=8)##
-        buttonUpgrade2.grid(column=2,row=1)##
+        #buttonUpgrade = Button(self.cadreOptionTownCenter, text="Upgrade1", width=8)##
+        #buttonUpgrade.grid(column=1,row=1)##
+        #buttonUpgrade2 = Button(self.cadreOptionTownCenter, text="Upgrade2", width=8)##
+        #buttonUpgrade2.grid(column=2,row=1)##
         #mettre anchor
         self.cadreOptionConstruire = Frame(self.cadrePartie)##
         buttonBatiment1 = Button(self.cadreOptionConstruire,text="Tour", command=self.creeTour, width=8)##
@@ -354,10 +354,10 @@ class Vue(object):
         buttonBatiment3.grid(column=2,row=1)##
         buttonBatiment4 = Button(self.cadreOptionConstruire,text="Chateau", command=self.creeCastle, width=8)##
         buttonBatiment4.grid(column=0,row=2)##
-        buttonBatiment5 = Button(self.cadreOptionConstruire,text="Batiment5", width=8)##
-        buttonBatiment5.grid(column=1,row=2)##
+        #buttonBatiment5 = Button(self.cadreOptionConstruire,text="Batiment5", width=8)##
+        #buttonBatiment5.grid(column=1,row=2)##
         buttonRetour = Button(self.cadreOptionConstruire,text="Retour",command=self.optionRetour, width=8)##
-        buttonRetour.grid(column=2,row=2)##
+        buttonRetour.grid(column=1,row=2)##
 
         self.cadreOptionBarrack = Frame(self.cadrePartie)
         buttonCreeGuerrier = Button(self.cadreOptionBarrack, text="Guerrier", command=self.creeGuerrier, width=8)  # text="Cree",command=,
