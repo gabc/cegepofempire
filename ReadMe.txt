@@ -54,6 +54,10 @@ Tour:
 
 	Sert à defendre les points statiques
 
+Chateau:
+
+	Sert à produire des unités de haut niveau (moutons)
+
 Unités disponibles:
 
 Villageois:
@@ -95,9 +99,9 @@ Bois:
 Or:
 	Sert à construire les unités de guerre et les bâtiments
 Pierre:
-	Non implementé
+	Sert à la construction des bâtiments
 Énergie:
-	Non implementé
+	Sert à nourrir les moutons grourmands.
 
 
 
@@ -113,4 +117,3 @@ L'ÉTAT DU JEU:
 	-Les crééables: villageois, guerriers, tours, barracks
 	-Les guerriers et les tours peuvent attaquer (pas d'animation)
 	-Le changement d'ère n'est pas implémenté
-	-
