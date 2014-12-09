@@ -42,12 +42,9 @@ class Controleur(object):
         if platform.system() == "Linux":
             pythonExe = "/usr/bin/python3"
         else:
-            #IL EST IMPORTANT DE CHECKER LA VERSION DE PYTHON!!!
             pythonExe = "C:\\Python33\\Python.exe"
-            #pythonExe = "C:\\Python34\\Python.exe"
         pid = Popen([pythonExe, "serveur.py"]).pid
-        
-        print("APRES SERVEUR")
+
         self.serveurLocal=1
         return pid
         
@@ -70,13 +67,9 @@ class Controleur(object):
             self.nom=nom
             self.rnd=random.Random()
             self.modele.rdseed = rep[2]
-            #mb.showerror(title="Seed!",message="Got seed from server.")
-            #random.seed(frozenset(self.modele.rdseed))
-            #self.m.setSeed(frozenset(self.modele.rdseed))
             self.m.setSeed(self.modele.rdseed)
             self.m.placeRessourcesOverworld()
             self.m.placeRessourcesUnderworld()
-
             self.vue.afficheAttente()
             self.timerAttend()
         else:
@@ -84,7 +77,6 @@ class Controleur(object):
         
     def demarrePartie(self):
         rep=self.serveur.demarrePartie()
-        # print("rep from server: ", rep)
                 
     # ******  SECTION d'appels automatique        
     def timerAttend(self):
@@ -104,16 +96,12 @@ class Controleur(object):
     def timerJeu(self):
         if self.serveur:
             self.cadre=self.cadre+1
-                #print("executer action a faire")
             self.modele.prochaineAction(self.cadre)
             self.vue.rafraichir()
             if self.actions: ##actions a envoyer au server
-                #print("Envoi d'une action au server")
                 rep=self.serveur.faitAction([self.nom,self.cadre,self.actions])
             else:
                 rep=self.serveur.faitAction([self.nom,self.cadre,0])
-                #print("Pas d'action au server")
-            # print(self.actions)
             self.actions=[]
             if rep[0]:
                 for i in rep[2]:
@@ -123,13 +111,14 @@ class Controleur(object):
                         self.modele.actionsAFaire[i].append(k)
             if rep[1]=="attend":
                 self.cadre=self.cadre-1  
-                #print("Received attend: ", self.cadre)
-            #print("Cadre",self.cadre)     
             self.vue.root.after(50,self.timerJeu)
         else:
             print("Aucun serveur connu")
         
 if __name__ == '__main__':
-    c=Controleur()
-    c.vue.root.mainloop()
-    #print("FIN")
+    # if True:
+    try:
+        c=Controleur()
+        c.vue.root.mainloop()
+    except:
+        mb.showerror(title="La fin.",message="Tu es mort. C'est la fin. La triste fin de la vie des choses dans laquelle il s'y passe.")

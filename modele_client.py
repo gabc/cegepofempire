@@ -45,17 +45,11 @@ class Joueur():
         self.maxUnits = 200
         self.maxUnitsDepart = 10
         self.maxUnitsCourrant = 0
-        # Index des ressources:
-        # Nourriture : 0
-        # Bois: 1
-        # Pierre : 2
-        # Or : 3
-        # Energie : 4
-        self.ressources = {FOOD : 10000,
-                           WOOD : 10000,
-                           ROCK : 10000,
-                           GOLD : 10000,
-                           ENERGY : 10000}
+        self.ressources = {FOOD : 100,
+                           WOOD : 100,
+                           ROCK : 100,
+                           GOLD : 100,
+                           ENERGY : 100}
         self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
@@ -85,17 +79,13 @@ class Joueur():
                 self.Ere3()
             elif self.ageCourrante == self.ageModerne:
                 self.Ere4()
-            #print(" changement d'ere reussi ")
-            #print("age courante est " + str(self.ageCourrante))
         self.changerErePossible = False
-
 
     def changerEreVerif(self):
         if self.ageCourrante != self.ageFutur:
             for i in range(self.nbTypeDeRessources):
                 if self.ressources[i] > 10: # 10 etant le cout des ressource pour changer d ere
                     self.changerErePossible = True
-                    #print("peut changer d'ere ! ")
 
     def Ere2(self):
         self.ageCourrante = self.ageContemporain
@@ -103,14 +93,11 @@ class Joueur():
         for i in range(self.nbTypeDeRessources):
             self.ressources[i] -= 10
 
-
-
     def Ere3(self):
         self.ageCourrante = self.ageModerne
         self.nbTypeDeRessources = 5
         for i in range(self.nbTypeDeRessources):
             self.ressources[i] -= 10
-
 
     def Ere4(self):
         self.ageCourrante = self.ageFutur
@@ -118,7 +105,7 @@ class Joueur():
             self.ressources[i] -= 10
 
     def creerUnit(self, type, x, y):
-        #DEM ifs        
+        #DEM ifs
         if type == "Villageois":
             unit=Villageois(self.ID, x, y,self)
         elif type == "Guerrier":
@@ -135,7 +122,7 @@ class Joueur():
             self.units.append(unit)
             self.maxUnitsCourrant+=unit.coutPop
 
-    def creerJoueurBuilding(self, type, x, y):        
+    def creerJoueurBuilding(self, type, x, y):
         if type == "Tower":
             building=Tower(self.ID, x, y,self)
         elif type == "Barrack":
@@ -151,22 +138,18 @@ class Joueur():
                 self.soustraitCout(building.coutRes)
                 self.buildings.append(building)
 
-    def changerAllies(self):
-        pass
-
-    def compareCout(self, cout):      
-        for k in self.ressources:           
+    def compareCout(self, cout):
+        for k in self.ressources:
             if (self.ressources[k] - cout[k]) < 0:
                 print("Pas assez de ressources du type "+k)
                 return False
 
         return True
 
-    def soustraitCout(self, cout):      
+    def soustraitCout(self, cout):
         for k in self.ressources:
             self.ressources[k] -= cout[k]
 
-    #toute les ressources
     def envoyerRessources(self,a,b,c,d,e,f):
         print(a,b,c,d,e,f)
 
@@ -174,7 +157,6 @@ class Joueur():
         idunit = unit[1]
         for u in self.units:
             if u.id == idunit:
-                #print(arrive)
                 u.status="deplace"
                 u.deplacer(self.parent.deplaceur, arrive)
                 u.target=arrive
@@ -194,7 +176,6 @@ class Unit():
 
         self.type = "Unit"
         self.deplaceur = None
-        #le hp d'un unit generique est -1
         self.hpMax = -1
         self.hpActuel = self.hpMax
         self.range = 1 #melee
@@ -205,9 +186,7 @@ class Unit():
         self.degat = 0
         self.posX = posX
         self.posY = posY
-        #le champs de vision est arbitraire et devrait dependre du type du Unit
         self.champDeVision = -1
-        #idem pour le delai de Construction
         self.delaiDeConstruction = -1
         self.chemin = []
         self.parent=parent
@@ -224,21 +203,16 @@ class Unit():
         self.maxCooldown = 20
 
     def say(self, text):
-        #Pour print seulement si le unit appartient a myPlayer
         if self.parent == self.parent.parent.myPlayer:
             print(text)
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
     def faitAction(self):
         if len(self.chemin) != 0:
             self.deplacer(self.deplaceur, self.chemin)
-
         getattr(self, self.actionEnCours)()
-
-        #print(self.actionEnCours)
-
         if self.cooldown != self.maxCooldown:
             self.cooldown += 1
         if self.hpActuel  ==0:
@@ -267,7 +241,7 @@ class Unit():
         if self.posY > ay:
             self.posY -= self.vitesseY
         if self.posY < ay:
-            self.posY += self.vitesseY   
+            self.posY += self.vitesseY
 
     def scanEnemy(self):
             if len(self.chemin) ==0:
@@ -293,7 +267,7 @@ class Unit():
                                 self.unitCiblePosCase = (m.posX,m.posY)
                                 self.unitCible.targetedBy = self
                                 break
-                            
+
     def attaqueCible(self):
         if self.unitCible.isAlive() == True and self.unitCibleType =="Unit":
             caseGx, caseGy = trouveCase(self.posX,self.posY)
@@ -316,9 +290,6 @@ class Unit():
                     self.cooldown == 0
             elif Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, self.unitCible.posX,self.unitCible.posY) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, self.unitCible.posX,self.unitCible.posY)) != 1:
                 self.actionEnCours = "marcheVersEnemy"
-                #print(self.actionEnCours)
-
-
         else:
             self.actionEnCours="scanEnemy"
             self.unitCibleType = None
@@ -333,9 +304,7 @@ class Unit():
                 caseNx, caseNy =self.unitCible.posX,self.unitCible.posY
 
             if Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) <= self.champDaggro and Helper.calcDistance(caseGx, caseGy, caseNx, caseNy) > self.range and math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) != 1:         # S'il a un chemin. Qu'il se deplace.
-                #self.deplaceUnit(self, (caseNx, caseNy))
                 self.deplacer(self.parent.parent.deplaceur, (caseNx, caseNy))
-                #print("on rester pogner dans le marche vers")
             elif Helper.calcDistance(caseNx, caseNy, caseGx, caseGy) <= self.range or math.floor(Helper.calcDistance(caseNx, caseNy, caseGx, caseGy)) == 1:
                 self.actionEnCours = "attaqueCible"
         else:
@@ -357,7 +326,6 @@ class Unit():
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-                
 
 class Villageois(Unit):
     def __init__(self,ownerID, posX, posY,parent):
@@ -365,15 +333,12 @@ class Villageois(Unit):
 
         self.type = "Villageois"
         self.isMoving = False
-        #j'ai decider arbitrairement de l'hp: a modifier
-        #dautres variables arbitraires yee!!
         self.champDeVision = 50
         self.delaiDeConstruction =20000
         self.hpMax = 100
         self.hpActuel = self.hpMax
         self.isSelected = False ##add
 
-        #j'imagine qu'ils veulent dire le temps en millisecondes : arbitraire
         self.collectionRate = 1
         self.collectionMax = 100
         self.collectionActuel = 0
@@ -402,8 +367,6 @@ class Villageois(Unit):
 
             self.deplacer(self.deplaceur, self.currentRes)
 
-        #print(self.status)
-
     def getDumpCoords(self):
         for b in self.parent.buildings:
             if b.type=="TownCenter":
@@ -417,13 +380,11 @@ class Villageois(Unit):
             self.status="backToBase"
             self.target=self.dumpCoords
             s="Villageois no " + str(self.id) + " a remplis son inventaire."
-            #self.say(s)
         elif case.nbRessource > 0:
             case.nbRessource-=self.collectionRate
             self.collectionActuel+=self.collectionRate
             self.collectionType=case.ressource
             self.currentRes=(case.posX, case.posY)
-            #print("resource left: ", case.nbRessource)
             if case.nbRessource == 0:
                 self.parent.parent.m.toDelete.append(case)
                 case.ressource='-'
@@ -439,7 +400,6 @@ class Villageois(Unit):
         x, y = trouveCase(self.posX, self.posY)
         townXY=self.dumpCoords
 
-        #Si il est dans le range de 1 case de son arrivee
         if (x >= arrive.posX - 1 and x <= arrive.posX + 1) and (y >= arrive.posY - 1 and y <= arrive.posY + 1):
             if arrive.building=="TownCenter":
                 self.dumpRessources()
@@ -451,23 +411,20 @@ class Villageois(Unit):
                 game_map.mat[arrive.posX][arrive.posY]=arrive
 
     def dumpRessources(self):
-        #check s'il a vraiment des ressources a dump avant de dump
         if self.collectionActuel > 0:
             c = self.collectionType
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
-            #self.say(s)
             self.collectionActuel = 0         
-
             self.target=self.currentRes
             self.status="backToRes"
-            
+
 
 class Mouton(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Mouton"
-        
+
         #Arbitraire
         self.champDeVision = 50
         self.delaiDeConstruction = 20000
@@ -504,8 +461,8 @@ class Guerrier(Unit):
         self.hpActuel = self.hpMax
         self.range = 1 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
+        self.cooldown= 40
+        self.maxCooldown = 40
         self.defense = 1
         self.vitesseX = 5
         self.vitesseY = 5
@@ -516,10 +473,10 @@ class Guerrier(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
-        self.coutPop=3
+        self.coutPop=2
         self.setCoutRes(FOOD,50)
         self.setCoutRes(GOLD,25)
-    
+
 
 class Archer(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -532,14 +489,14 @@ class Archer(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 25 #melee
+        self.range = 20 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
-        self.defense = 1
-        self.vitesseX = 5
-        self.vitesseY = 5
-        self.champDaggro = 5
+        self.cooldown= 30
+        self.maxCooldown = 30
+        self.defense = 0
+        self.vitesseX = 3
+        self.vitesseY = 3
+        self.champDaggro = 15
         self.degat = 10
         self.actionEnCours = "scanEnemy"
         self.targetedBy = None
@@ -566,7 +523,7 @@ class Chevalier(Unit):
         self.atkSpeed = 50 #en millisecondes
         self.cooldown= 20
         self.maxCooldown = 20
-        self.defense = 1
+        self.defense = 2
         self.vitesseX = 9
         self.vitesseY = 9
         self.champDaggro = 5
@@ -590,21 +547,18 @@ class Building():
 
         self.type = "Building"
 
-        #le hp d'un building generique est -1
         self.hpMax = -1
         self.hpActuel = self.hpMax
         self.posX = posX
         self.posY = posY
-        #le champs de vision est arbitraire et devrait dependre du type du Unit
         self.champDeVision = -1
-        #idem pour le delai de Construction
         self.delaiDeConstruction = -1
         self.coutRes = {FOOD : 0,
                         WOOD : 0,
                         ROCK : 0,
                         GOLD : 0,
                         ENERGY : 0}
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
@@ -620,7 +574,6 @@ class Building():
     def recevoirDegats(self, degatsRecus):
         if degatsRecus > self.hpActuel:
             self.hpActuel = 0
-            #print("je me meurs et je suis un :",self.type, ", appartenant a :", self.ownerID)
         else :
             self.hpActuel -= degatsRecus
 
@@ -632,7 +585,6 @@ class Building():
         if len(self.creationQueue) < 5:
             self.creationQueue.insert(1,Unit)
         else:
-            #print("la queue est pleine")
             return False
 
         if self.creationQueue[0] == Unit:
@@ -641,20 +593,15 @@ class Building():
         return True
 
     def unitSortir(self):
-        # a appeler quand le temps Restant atteint 0
         UnitCree = None
         if len(self.creationQueue) != 0:
             UnitCree = self.creationQueue[0]
             self.creationQueue.pop(0)
             self.tempsRestant =0
-            # creer l'objet dans le canvas I guess
         else:
             return false
-
         if len(self.creationQueue) !=0:
             self.tempsRestant = self.creationQueue[0].delaiDeConstruction
-
-
         return UnitCree
 
     def annulationUnit(self):
@@ -699,7 +646,6 @@ class TownCenter(Building):
         self.largeur = 100
         self.delaiDeConstruction = 20000
         self.champDeVision = 50
-
 
         #Variables specifique au TownCenter
         self.uniteCreable = [Villageois]
@@ -782,9 +728,6 @@ class Tower(Building):
                         print("Hp de la cible: ",self.target.hpActuel)
                         print("la cible est morte ? : ", self.target.isAlive())
                         self.cooldown = 0
-
-
-
             else:
                 self.actionEnCours ="scanEnemy"
                 self.unitCibleType = None
@@ -814,7 +757,6 @@ class Tower(Building):
                             self.typeTarget = "Building"
                             self.actionEnCours = "attaqueCible"
                             break
-
 
     def faitAction(self):
         getattr(self, self.actionEnCours)()
@@ -922,7 +864,6 @@ class Modele(object):
     def initPartie(self,listeNomsJoueurs):
         n=0
         self.playerColors = ["blue", "purple", "yellow", "green", "brown", "black", "white", "orange", "pink"]
-        #init tous les joueur avec leur unite, batiments, etc...
         print("Nombre total de joueurs: ", len(listeNomsJoueurs))
         for j in listeNomsJoueurs:
             self.joueurs[j] = Joueur(self.parent, n, j)
@@ -932,7 +873,6 @@ class Modele(object):
                 self.parent.myPlayer = self.joueurs[j]
                 print("My player color", self.joueurs[j].playerColor)
             n += 1
-
 
     def creerUnite(self, args):
         self.joueurs[args[0]].creerUnit(args[2][0], args[2][1], args[2][2])
@@ -949,6 +889,5 @@ class Modele(object):
             for action in self.actionsAFaire[cadre]:
                 self.actions[action[1]](action)
             del self.actionsAFaire[cadre]
-        # Mise a jour:
         for j in self.joueurs.keys():
             self.joueurs[j].metToiAJour()
