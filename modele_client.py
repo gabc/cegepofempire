@@ -137,11 +137,13 @@ class Joueur():
 
     def creerJoueurBuilding(self, type, x, y):
         if type == "Tower":
-                building=Tower(self.ID, x, y,self)
+            building=Tower(self.ID, x, y,self)
         elif type == "Barrack":
-                building=Barrack(self.ID, x, y,self)
+            building=Barrack(self.ID, x, y,self)
         elif type == "Maison":
-                building=Maison(self.ID, x, y,self)
+            building=Maison(self.ID, x, y,self)
+        elif type == "Castle":
+            building=Castle(self.ID, x, y,self)
 
         if self.parent.m.mat[x][y].isPassable():
             if self.compareCout(building.coutRes):
@@ -764,6 +766,86 @@ class Tower(Building):
         self.setCoutRes(ROCK,200)
         self.setCoutRes(WOOD,200)
         self.setCoutRes(GOLD,100)
+
+    def attaqueCible(self):
+        if self.target.isAlive() == True:
+            if self.typeTarget == "Building":
+                if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        self.cooldown = 0
+            elif self.typeTarget == "Unit":
+                caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
+                if Helper.calcDistance(caseNx, caseNy, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        print("Hp de la cible: ",self.target.hpActuel)
+                        print("la cible est morte ? : ", self.target.isAlive())
+                        self.cooldown = 0
+
+
+
+            else:
+                self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
+        else:
+            self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
+
+    def scanEnemy(self):
+        if self.targetedBy and self.target is None:
+            self.target = self.targetedBy
+            self.attaqueCible(targetedBy)
+        else:
+            for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                for n in i.units:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
+                        caseNx, caseNy = trouveCase(n.posX, n.posY)
+                        if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
+                            self.target = n
+                            self.typeTarget = "Unit"
+                            self.actionEnCours = "attaqueCible"
+                            break
+            for i in self.parent.parent.modele.joueurs.values():
+                for n in i.buildings:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.typeTarget = "Building"
+                            self.actionEnCours = "attaqueCible"
+                            break
+
+
+    def faitAction(self):
+        getattr(self, self.actionEnCours)()
+
+        if self.cooldown != self.cooldownMax:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
+            
+class Castle(Building):
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY, parent)
+        self.type = "Castle"
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
+        self.longueur = 20
+        self.largeur = 20
+        self.delaiDeConstruction = -1
+        self.champDeVision = -1
+        self.champDaggro = 5
+        self.target=None
+        self.typeTarget =None
+        self.targetedBy = None
+
+        self.actionEnCours = "scanEnemy"
+        self.degat = 75
+        self.cooldown = 30
+        self.cooldownMax = self.cooldown
+        self.setCoutRes(ROCK,500)
+        self.setCoutRes(WOOD,500)
+        self.setCoutRes(GOLD,300)
 
     def attaqueCible(self):
         if self.target.isAlive() == True:
