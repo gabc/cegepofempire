@@ -51,11 +51,11 @@ class Joueur():
         # Pierre : 2
         # Or : 3
         # Energie : 4
-        self.ressources = {FOOD : 10000,
-                           WOOD : 10000,
-                           ROCK : 10000,
-                           GOLD : 10000,
-                           ENERGY : 10000}
+        self.ressources = {FOOD : 100,
+                           WOOD : 100,
+                           ROCK : 100,
+                           GOLD : 100,
+                           ENERGY : 100}
         self.playerColor = None
         self.nbTypeDeRessources = 3
         self.ageDePierre = 1
