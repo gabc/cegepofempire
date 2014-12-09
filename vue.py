@@ -95,8 +95,6 @@ class Vue(object):
 
         trouveL = Frame(self.cadreMenuPartie, height=10, bg="grey25")
         trouveL.grid(row=5, column=10, sticky=N)
-        trouveB = Buttonjm(self.cadreMenuPartie, text="LOL", command=self.actionButton)
-        trouveB.grid(row=10, column=10, sticky=N)
 
     def intercepteFermeture(self):
         self.parent.jeQuitte()
