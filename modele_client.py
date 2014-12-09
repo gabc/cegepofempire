@@ -118,7 +118,7 @@ class Joueur():
             self.ressources[i] -= 10
 
     def creerUnit(self, type, x, y):
-        #DEM ifs        
+        #DEM ifs
         if type == "Villageois":
             unit=Villageois(self.ID, x, y,self)
         elif type == "Guerrier":
@@ -135,7 +135,7 @@ class Joueur():
             self.units.append(unit)
             self.maxUnitsCourrant+=unit.coutPop
 
-    def creerJoueurBuilding(self, type, x, y):        
+    def creerJoueurBuilding(self, type, x, y):
         if type == "Tower":
                 building=Tower(self.ID, x, y,self)
         elif type == "Barrack":
@@ -152,15 +152,15 @@ class Joueur():
     def changerAllies(self):
         pass
 
-    def compareCout(self, cout):      
-        for k in self.ressources:           
+    def compareCout(self, cout):
+        for k in self.ressources:
             if (self.ressources[k] - cout[k]) < 0:
                 print("Pas assez de ressources du type "+k)
                 return False
 
         return True
 
-    def soustraitCout(self, cout):      
+    def soustraitCout(self, cout):
         for k in self.ressources:
             self.ressources[k] -= cout[k]
 
@@ -225,7 +225,7 @@ class Unit():
         #Pour print seulement si le unit appartient a myPlayer
         if self.parent == self.parent.parent.myPlayer:
             print(text)
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
@@ -265,7 +265,7 @@ class Unit():
         if self.posY > ay:
             self.posY -= self.vitesseY
         if self.posY < ay:
-            self.posY += self.vitesseY   
+            self.posY += self.vitesseY
 
     def scanEnemy(self):
             if len(self.chemin) ==0:
@@ -291,7 +291,7 @@ class Unit():
                                 self.unitCiblePosCase = (m.posX,m.posY)
                                 self.unitCible.targetedBy = self
                                 break
-                            
+
     def attaqueCible(self):
         if self.unitCible.isAlive() == True and self.unitCibleType =="Unit":
             caseGx, caseGy = trouveCase(self.posX,self.posY)
@@ -355,7 +355,7 @@ class Unit():
                 del self.chemin[0]
             if self.chemin:
                 self.effectueDeplacement(self.chemin[0])
-                
+
 
 class Villageois(Unit):
     def __init__(self,ownerID, posX, posY,parent):
@@ -455,17 +455,17 @@ class Villageois(Unit):
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
             #self.say(s)
-            self.collectionActuel = 0         
+            self.collectionActuel = 0
 
             self.target=self.currentRes
             self.status="backToRes"
-            
+
 
 class Mouton(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Mouton"
-        
+
         #Arbitraire
         self.champDeVision = 50
         self.delaiDeConstruction = 20000
@@ -502,8 +502,8 @@ class Guerrier(Unit):
         self.hpActuel = self.hpMax
         self.range = 1 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
+        self.cooldown= 40
+        self.maxCooldown = 40
         self.defense = 1
         self.vitesseX = 5
         self.vitesseY = 5
@@ -514,10 +514,10 @@ class Guerrier(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
-        self.coutPop=3
+        self.coutPop=2
         self.setCoutRes(FOOD,50)
         self.setCoutRes(GOLD,25)
-    
+
 
 class Archer(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -530,14 +530,14 @@ class Archer(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 25 #melee
+        self.range = 20 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
-        self.defense = 1
-        self.vitesseX = 5
-        self.vitesseY = 5
-        self.champDaggro = 5
+        self.cooldown= 30
+        self.maxCooldown = 30
+        self.defense = 0
+        self.vitesseX = 3
+        self.vitesseY = 3
+        self.champDaggro = 15
         self.degat = 10
         self.actionEnCours = "scanEnemy"
         self.targetedBy = None
@@ -564,7 +564,7 @@ class Chevalier(Unit):
         self.atkSpeed = 50 #en millisecondes
         self.cooldown= 20
         self.maxCooldown = 20
-        self.defense = 1
+        self.defense = 2
         self.vitesseX = 9
         self.vitesseY = 9
         self.champDaggro = 5
@@ -602,7 +602,7 @@ class Building():
                         ROCK : 0,
                         GOLD : 0,
                         ENERGY : 0}
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
