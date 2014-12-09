@@ -105,7 +105,7 @@ class Joueur():
             self.ressources[i] -= 10
 
     def creerUnit(self, type, x, y):
-        #DEM ifs        
+        #DEM ifs
         if type == "Villageois":
             unit=Villageois(self.ID, x, y,self)
         elif type == "Guerrier":
@@ -122,13 +122,15 @@ class Joueur():
             self.units.append(unit)
             self.maxUnitsCourrant+=unit.coutPop
 
-    def creerJoueurBuilding(self, type, x, y):        
+    def creerJoueurBuilding(self, type, x, y):
         if type == "Tower":
-                building=Tower(self.ID, x, y,self)
+            building=Tower(self.ID, x, y,self)
         elif type == "Barrack":
-                building=Barrack(self.ID, x, y,self)
+            building=Barrack(self.ID, x, y,self)
         elif type == "Maison":
-                building=Maison(self.ID, x, y,self)
+            building=Maison(self.ID, x, y,self)
+        elif type == "Castle":
+            building=Castle(self.ID, x, y,self)
 
         if self.parent.m.mat[x][y].isPassable():
             if self.compareCout(building.coutRes):
@@ -136,15 +138,15 @@ class Joueur():
                 self.soustraitCout(building.coutRes)
                 self.buildings.append(building)
 
-    def compareCout(self, cout):      
-        for k in self.ressources:           
+    def compareCout(self, cout):
+        for k in self.ressources:
             if (self.ressources[k] - cout[k]) < 0:
                 print("Pas assez de ressources du type "+k)
                 return False
 
         return True
 
-    def soustraitCout(self, cout):      
+    def soustraitCout(self, cout):
         for k in self.ressources:
             self.ressources[k] -= cout[k]
 
@@ -203,7 +205,7 @@ class Unit():
     def say(self, text):
         if self.parent == self.parent.parent.myPlayer:
             print(text)
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
@@ -239,7 +241,7 @@ class Unit():
         if self.posY > ay:
             self.posY -= self.vitesseY
         if self.posY < ay:
-            self.posY += self.vitesseY   
+            self.posY += self.vitesseY
 
     def scanEnemy(self):
             if len(self.chemin) ==0:
@@ -265,7 +267,7 @@ class Unit():
                                 self.unitCiblePosCase = (m.posX,m.posY)
                                 self.unitCible.targetedBy = self
                                 break
-                            
+
     def attaqueCible(self):
         if self.unitCible.isAlive() == True and self.unitCibleType =="Unit":
             caseGx, caseGy = trouveCase(self.posX,self.posY)
@@ -414,16 +416,15 @@ class Villageois(Unit):
             self.parent.ressources[c]+=int(self.collectionActuel/10)
             s="Villageois no "+str(self.id)+" a rapporter "+str(int(self.collectionActuel/10))+" ressources a la base, de type "+c
             self.collectionActuel = 0         
-
             self.target=self.currentRes
             self.status="backToRes"
-            
+
 
 class Mouton(Unit):
     def __init__(self, ownerID, posX, posY, parent):
         Unit.__init__(self, ownerID,posX,posY, parent)
         self.type = "Mouton"
-        
+
         #Arbitraire
         self.champDeVision = 50
         self.delaiDeConstruction = 20000
@@ -460,8 +461,8 @@ class Guerrier(Unit):
         self.hpActuel = self.hpMax
         self.range = 1 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
+        self.cooldown= 40
+        self.maxCooldown = 40
         self.defense = 1
         self.vitesseX = 5
         self.vitesseY = 5
@@ -472,10 +473,10 @@ class Guerrier(Unit):
         self.unitCible = None
         self.unitCibleType = None
         self.unitCiblePosCase = None
-        self.coutPop=3
+        self.coutPop=2
         self.setCoutRes(FOOD,50)
         self.setCoutRes(GOLD,25)
-    
+
 
 class Archer(Unit):
     def __init__(self, ownerID, posX, posY, parent):
@@ -488,14 +489,14 @@ class Archer(Unit):
         self.delaiDeConstruction = 20000
         self.hpMax =100
         self.hpActuel = self.hpMax
-        self.range = 25 #melee
+        self.range = 20 #melee
         self.atkSpeed = 50 #en millisecondes
-        self.cooldown= 20
-        self.maxCooldown = 20
-        self.defense = 1
-        self.vitesseX = 5
-        self.vitesseY = 5
-        self.champDaggro = 5
+        self.cooldown= 30
+        self.maxCooldown = 30
+        self.defense = 0
+        self.vitesseX = 3
+        self.vitesseY = 3
+        self.champDaggro = 15
         self.degat = 10
         self.actionEnCours = "scanEnemy"
         self.targetedBy = None
@@ -522,7 +523,7 @@ class Chevalier(Unit):
         self.atkSpeed = 50 #en millisecondes
         self.cooldown= 20
         self.maxCooldown = 20
-        self.defense = 1
+        self.defense = 2
         self.vitesseX = 9
         self.vitesseY = 9
         self.champDaggro = 5
@@ -557,7 +558,7 @@ class Building():
                         ROCK : 0,
                         GOLD : 0,
                         ENERGY : 0}
-    
+
     def setCoutRes(self, idRes, nbRes):
         self.coutRes[idRes]=nbRes
 
@@ -756,6 +757,86 @@ class Tower(Building):
                             self.typeTarget = "Building"
                             self.actionEnCours = "attaqueCible"
                             break
+
+    def faitAction(self):
+        getattr(self, self.actionEnCours)()
+
+        if self.cooldown != self.cooldownMax:
+            self.cooldown += 1
+        if self.hpActuel  ==0:
+            del self
+            
+class Castle(Building):
+    def __init__(self, ownerID, posX, posY, parent):
+        Building.__init__(self, ownerID, posX, posY, parent)
+        self.type = "Castle"
+        self.hpMax = 1000
+        self.hpActuel = self.hpMax
+        self.longueur = 20
+        self.largeur = 20
+        self.delaiDeConstruction = -1
+        self.champDeVision = -1
+        self.champDaggro = 5
+        self.target=None
+        self.typeTarget =None
+        self.targetedBy = None
+
+        self.actionEnCours = "scanEnemy"
+        self.degat = 75
+        self.cooldown = 30
+        self.cooldownMax = self.cooldown
+        self.setCoutRes(ROCK,500)
+        self.setCoutRes(WOOD,500)
+        self.setCoutRes(GOLD,300)
+
+    def attaqueCible(self):
+        if self.target.isAlive() == True:
+            if self.typeTarget == "Building":
+                if Helper.calcDistance(self.target.posX, self.target.posY, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        self.cooldown = 0
+            elif self.typeTarget == "Unit":
+                caseNx, caseNy =trouveCase(self.target.posX,self.target.posY)
+                if Helper.calcDistance(caseNx, caseNy, self.posX, self.posY) <= self.champDaggro:
+                    if self.cooldown == self.cooldownMax:
+                        self.target.recevoirDegats(self.degat)
+                        print("Hp de la cible: ",self.target.hpActuel)
+                        print("la cible est morte ? : ", self.target.isAlive())
+                        self.cooldown = 0
+
+
+
+            else:
+                self.actionEnCours ="scanEnemy"
+                self.unitCibleType = None
+        else:
+            self.actionEnCours="scanEnemy"
+            self.unitCibleType = None
+
+    def scanEnemy(self):
+        if self.targetedBy and self.target is None:
+            self.target = self.targetedBy
+            self.attaqueCible(targetedBy)
+        else:
+            for i in self.parent.parent.modele.joueurs.values():# il faut reussir a avoir la liste des unite
+                for n in i.units:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
+                        caseNx, caseNy = trouveCase(n.posX, n.posY)
+                        if Helper.calcDistance(self.posX, self.posY , caseNx, caseNy) <= self.champDaggro:
+                            self.target = n
+                            self.typeTarget = "Unit"
+                            self.actionEnCours = "attaqueCible"
+                            break
+            for i in self.parent.parent.modele.joueurs.values():
+                for n in i.buildings:
+                    if n.ownerID is not self.ownerID and n.isAlive() == True:
+                        if Helper.calcDistance(self.posX, self.posY , n.posX, n.posY) <= self.champDaggro:
+                            self.target = n
+                            self.typeTarget = "Building"
+                            self.actionEnCours = "attaqueCible"
+                            break
+
 
     def faitAction(self):
         getattr(self, self.actionEnCours)()
