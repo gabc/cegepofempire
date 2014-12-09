@@ -117,9 +117,6 @@ class Joueur():
         for i in range(self.nbTypeDeRessources):
             self.ressources[i] -= 10
 
-    def construireBuilding(self, idBuilding, posX ,posY ):
-        pass
-
     def creerUnit(self, type, x, y):
         #DEM ifs        
         if type == "Villageois":
@@ -723,6 +720,9 @@ class Maison(Building):
         self.largeur = 100
         self.delaiDeConstruction = 10000
         self.setCoutRes(WOOD,100)
+
+        #
+        self.parent.maxUnitsDepart+=10
 
 class Barrack(Building):
     def __init__(self, ownerID, posX, posY, parent):
