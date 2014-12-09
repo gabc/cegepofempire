@@ -55,7 +55,8 @@ class Vue(object):
                      "tower": ImageTk.PhotoImage(Image.open("img/tower_build.png")),
                      "barrack": ImageTk.PhotoImage(Image.open("img/barrack_build.png")),
                      "maison": ImageTk.PhotoImage(Image.open("img/maison_build.png"))}
-
+        
+        
     def initLabel(self):
         self.labelNourriture = Label(self.cadreRessource, text="Nourriture: ", bg="red", relief=SOLID, width=15)
         self.labelNourriture.grid(column=0, row=0)

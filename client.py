@@ -26,7 +26,7 @@ class Controleur(object):
         self.attend = False
         
         self.m=Map(self.l,self.h)
-		
+
         s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         s.connect(("gmail.com",80))
         self.monip=s.getsockname()[0]
@@ -103,7 +103,7 @@ class Controleur(object):
                 print("Aucun serveur attache")
         except:
             print("T'es mort")
-            tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
+    # tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
                
     def timerJeu(self):
         try:
@@ -135,7 +135,7 @@ class Controleur(object):
                 print("Aucun serveur connu")
         except:
             print("T'es mort")
-            tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
+            # tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
             
 if __name__ == '__main__':
     try:
@@ -143,4 +143,4 @@ if __name__ == '__main__':
         c.vue.root.mainloop()
     except:
         print("Tes mort")
-        tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
+        # tkMessageBox.showerror(title="T'es mort",message="Ben t'es mort la..")
